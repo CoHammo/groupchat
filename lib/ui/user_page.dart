@@ -29,16 +29,17 @@ class _UserPageState extends State<UserPage> with SignalsMixin {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         children: [
           CircleAvatar(
+            radius: 100,
+            child: CircleAvatar(
               radius: 100,
-              child: CircleAvatar(
-                radius: 100,
-                foregroundImage: NetworkImage(controller.user.imageUrl!),
-              )),
+              foregroundImage: NetworkImage(controller.user.imageUrl!),
+            ),
+          ),
           const SizedBox(height: 20),
           UserField('Name', controller.user.name),
           UserField('Email', controller.user.email ?? ''),
           UserField('Phone', controller.user.phoneNumber ?? ''),
-          UserField('Bio', controller.user.bio ?? 'ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'),
+          UserField('Bio', controller.user.bio ?? '', maxLength: 191),
         ],
       ),
     );
