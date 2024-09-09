@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/controller.dart';
 import 'package:signals/signals_flutter.dart';
+import '../settings_controller.dart';
 
 class UserField extends StatefulWidget {
   const UserField({
@@ -85,8 +86,8 @@ class _UserFieldState extends State<UserField> with SignalsMixin {
                   width: 50,
                   child: Text(
                     widget.label,
-                    style: const TextStyle(
-                      color: Colors.white60,
+                    style: TextStyle(
+                      color: settingsController.themeMode.value == ThemeMode.dark ? Colors.white60 : Colors.black54,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
