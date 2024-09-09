@@ -21,7 +21,7 @@ class _GroupChatState extends State<GroupChat> with SignalsMixin {
     return Watch<MaterialApp>(
       (context) => MaterialApp(
         title: 'GroupChat',
-        themeMode: sController.themeMode.value,
+        themeMode: settingsController.themeMode.value,
         theme: ThemeData(
           appBarTheme: const AppBarTheme(
               scrolledUnderElevation: 0.0,
@@ -42,7 +42,9 @@ class _GroupChatState extends State<GroupChat> with SignalsMixin {
             backgroundColor: Color.fromARGB(255, 21, 103, 255),
           ),
           colorScheme: ColorScheme.fromSeed(
-              seedColor: Colors.blue, brightness: Brightness.dark),
+            seedColor: Colors.blue,
+            brightness: Brightness.dark,
+          ),
           filledButtonTheme: FilledButtonThemeData(
             style: FilledButton.styleFrom(
               shape: RoundedRectangleBorder(

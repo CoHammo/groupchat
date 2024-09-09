@@ -25,17 +25,17 @@ class _SettingsPageState extends State<SettingsPage> {
           SubmenuButton(menuChildren: [
             MenuItemButton(
               child: const Text('System Theme'),
-              onPressed: () {sController.themeMode.value = ThemeMode.system; setState(() {});},
+              onPressed: () {settingsController.themeMode.value = ThemeMode.system; setState(() {});},
             ),
             MenuItemButton(
               child: const Text('Light'),
-              onPressed: () {sController.themeMode.value = ThemeMode.light; setState(() {});},
+              onPressed: () {settingsController.themeMode.value = ThemeMode.light; setState(() {});},
             ),
             MenuItemButton(
               child: const Text('Dark'),
-              onPressed: () {sController.themeMode.value = ThemeMode.dark; setState(() {});},
+              onPressed: () {settingsController.themeMode.value = ThemeMode.dark; setState(() {});},
             ),
-          ], child: Text('Theme: ${sController.themeMode.value.name}')),
+          ], child: Text('Theme: ${settingsController.themeMode.value.name}')),
           FilledButton(
               style: Theme.of(context).filledButtonTheme.style,
               child: const Text('Logout'),
