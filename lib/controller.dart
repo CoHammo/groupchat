@@ -15,7 +15,8 @@ class ChatController {
 
   late ChatApi _api;
 
-  static const _secureStore = FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true));
+  static const _secureStore = FlutterSecureStorage(
+      aOptions: AndroidOptions(encryptedSharedPreferences: true));
 
   static const _key = 'group_chat_token';
 
@@ -51,8 +52,8 @@ class ChatController {
   Future<void> startLoginServer(void Function() popFunction) async {
     _loginServer ??= await shelf_io.serve(
         logRequests().addHandler((request) {
-          if (request.url.queryParameters.containsKey('access_token')) {
-            controller.initUser(request.url.queryParameters['access_token']!);
+          if (request.url.queryParameters.containsKey(Labels.accessToken)) {
+            controller.initUser(request.url.queryParameters[Labels.accessToken]!);
             popFunction();
             _loginServer!.close();
             _loginServer = null;
@@ -72,45 +73,74 @@ class ChatController {
   MainUser get user =>
       hasToken.value ? _realm.find<MainUser>(_userId)! : MainUser('', '');
 
-  Future<void> loadGroups() async {
+  Future<bool> loadGroups() async {
     if (hasToken.value) {
       var groups = await _api.getGroups();
-      List<Group> realmGroups = [];
-      for (Map<String, dynamic> group in groups) {
-        realmGroups.add(
-          Group(
-            group['id'],
-            group['created_at'],
-            group['updated_at'],
-            group['name'],
-            group['description'],
-            group['creator_user_id'],
-            imageUrl: group['image_url'],
-          ),
-        );
+      if (groups != null) {
+        List<Group> realmGroups = [];
+        for (Map<String, dynamic> group in groups) {
+          realmGroups.add(
+            Group(
+              group[Labels.id],
+              group[Labels.createdAt],
+              group[Labels.updatedAt],
+              group[Labels.name],
+              group[Labels.description],
+              group[Labels.creatorUserId],
+              imageUrl: group[Labels.imageUrl],
+            ),
+          );
+        }
+        _realm.write(() => _realm.addAll(realmGroups));
+        dev.log(_realm.all<Group>().toString());
+        return true;
       }
-      _realm.write(() => _realm.addAll(realmGroups));
-      dev.log(_realm.all<Group>().toString());
     }
+    return false;
   }
 
-  Future<void> loadUserData() async {
+  Future<bool> loadUserData() async {
     if (hasToken.value) {
       var data = await _api.getUserData();
-      _userId = data['id'];
-      var user = MainUser(data['id'], data['name'],
-          imageUrl: data['image_url'],
-          shareUrl: data['share_url'],
-          shareQrCodeUrl: data['share_qr_code_url'],
-          email: data['email'],
-          bio: data['bio'],
-          locale: data['locale'],
-          phoneNumber: data['phone_number'],
-          createdAt: data['created_at'],
-          updatedAt: data['updated_at']);
-      _realm.write(() => _realm.add<MainUser>(user, update: true));
-      dev.log(user.toString());
+      if (data != null) {
+        _userId = data['id'];
+        var user = MainUser(data[Labels.id], data[Labels.name],
+            imageUrl: data[Labels.imageUrl],
+            shareUrl: data[Labels.shareUrl],
+            shareQrCodeUrl: data[Labels.shareQrCodeUrl],
+            email: data[Labels.email],
+            bio: data[Labels.bio],
+            locale: data[Labels.locale],
+            phoneNumber: data[Labels.phoneNumber],
+            createdAt: data[Labels.createdAt],
+            updatedAt: data[Labels.updatedAt]);
+        _realm.write(() => _realm.add<MainUser>(user, update: true));
+        dev.log(user.toString());
+        return true;
+      }
     }
+    return false;
+  }
+
+  Future<bool> updateUserData(Map<String, dynamic> data) async {
+    if (hasToken.value) {
+      var uData = await _api.updateUserData(data);
+      if (uData != null) {
+        var usr = user;
+        _realm.write(() {
+          usr.name = uData[Labels.name];
+          usr.email = uData[Labels.email];
+          usr.bio = uData[Labels.bio];
+          usr.phoneNumber = uData[Labels.phoneNumber];
+          usr.createdAt = uData[Labels.createdAt];
+          usr.updatedAt = uData[Labels.updatedAt];
+          usr.imageUrl = uData[Labels.imageUrl];
+        });
+        dev.log('User Updated');
+        return true;
+      }
+    }
+    return false;
   }
 
   void initUser(String token) {
@@ -142,4 +172,24 @@ class ChatController {
   }
 
   ChatController();
+}
+
+class Labels {
+  static const accessToken = 'access_token';
+  static const id = 'id';
+  static const userId = 'user_id';
+  static const creatorUserId = 'creator_user_id';
+  static const name = 'name';
+  static const email = 'email';
+  static const phoneNumber = 'phone_number';
+  static const zipCode = 'zip_code';
+  static const createdAt = 'created_at';
+  static const updatedAt = 'updated_at';
+  static const imageUrl = 'image_url';
+  static const bio = 'bio';
+  static const response = 'response';
+  static const shareUrl = 'share_url';
+  static const shareQrCodeUrl = 'share_qr_code_url';
+  static const locale = 'locale';
+  static const description = 'description';
 }

@@ -13,8 +13,6 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> with SignalsMixin {
-  late Signal<bool> readOnlyName = super.createSignal(true);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,10 +34,27 @@ class _UserPageState extends State<UserPage> with SignalsMixin {
             ),
           ),
           const SizedBox(height: 20),
-          UserField('Name', controller.user.name),
-          UserField('Email', controller.user.email ?? ''),
-          UserField('Phone', controller.user.phoneNumber ?? ''),
-          UserField('Bio', controller.user.bio ?? '', maxLength: 191),
+          UserField(
+            label: 'Name',
+            dataLabel: Labels.name,
+            content: controller.user.name,
+          ),
+          UserField(
+            label: 'Email',
+            dataLabel: Labels.email,
+            content: controller.user.email ?? '',
+          ),
+          UserField(
+            label: 'Phone',
+            dataLabel: Labels.phoneNumber,
+            content: controller.user.phoneNumber ?? '',
+          ),
+          UserField(
+            label: 'Bio',
+            dataLabel: Labels.bio,
+            content: controller.user.bio ?? '',
+            maxLength: 191,
+          ),
         ],
       ),
     );

@@ -1,35 +1,52 @@
 import 'package:flutter/material.dart';
-//import 'package:signals/signals_flutter.dart';
+import 'package:groupchat/controller.dart';
+import 'package:signals/signals_flutter.dart';
 
-class UserField extends StatelessWidget {
-  const UserField(this.label, this.content, {this.maxLength, super.key});
+class UserField extends StatefulWidget {
+  const UserField({
+    required this.label,
+    required this.dataLabel,
+    required this.content,
+    this.maxLength,
+    super.key,
+  });
   final String label;
+  final String dataLabel;
   final String content;
   final int? maxLength;
+
+  @override
+  State<UserField> createState() => _UserFieldState();
+}
+
+class _UserFieldState extends State<UserField> with SignalsMixin {
+
+  late final Signal<String> content = super.createSignal(widget.content);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         var node = FocusNode();
+        var textController = TextEditingController.fromValue(
+          TextEditingValue(
+            text: content.value,
+            selection: TextSelection.collapsed(offset: content.value.length),
+          ),
+        );
         showAdaptiveDialog(
           context: context,
           builder: (context) {
             FocusScope.of(context).requestFocus(node);
             return AlertDialog.adaptive(
-              title: Text('Edit $label'),
+              title: Text('Edit ${widget.label}'),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
               content: TextField(
                 focusNode: node,
-                maxLength: maxLength,
+                maxLength: widget.maxLength,
                 maxLines: null,
-                controller: TextEditingController.fromValue(
-                  TextEditingValue(
-                    text: content,
-                    selection: TextSelection.collapsed(offset: content.length),
-                  ),
-                ),
+                controller: textController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding:
@@ -41,7 +58,15 @@ class UserField extends StatelessWidget {
                 TextButton(
                     child: const Text('Cancel'),
                     onPressed: () => Navigator.pop(context)),
-                TextButton(child: const Text('Save'), onPressed: () {}),
+                TextButton(
+                  child: const Text('Save'),
+                  onPressed: () {
+                    content.value = textController.text;
+                    controller
+                        .updateUserData({widget.dataLabel: content.value});
+                    Navigator.pop(context);
+                  },
+                ),
               ],
             );
           },
@@ -59,7 +84,7 @@ class UserField extends StatelessWidget {
                 SizedBox(
                   width: 50,
                   child: Text(
-                    label,
+                    widget.label,
                     style: const TextStyle(
                       color: Colors.white60,
                       fontSize: 16,
@@ -70,7 +95,7 @@ class UserField extends StatelessWidget {
                 const SizedBox(width: 10),
                 Flexible(
                   fit: FlexFit.tight,
-                  child: Text(content, style: const TextStyle(fontSize: 16)),
+                  child: Text(content.value, style: const TextStyle(fontSize: 16)),
                 ),
               ],
             ),
