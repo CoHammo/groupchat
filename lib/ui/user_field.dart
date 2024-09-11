@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/controller.dart';
 import 'package:signals/signals_flutter.dart';
-import '../settings_controller.dart';
 
 class UserField extends StatefulWidget {
   const UserField({
@@ -74,6 +73,8 @@ class _UserFieldState extends State<UserField> with SignalsMixin {
         );
       },
       child: Card(
+        elevation: 0,
+        color: Theme.of(context).cardColor,
         child: Padding(
           padding: const EdgeInsets.all(2),
           child: Padding(
@@ -87,7 +88,7 @@ class _UserFieldState extends State<UserField> with SignalsMixin {
                   child: Text(
                     widget.label,
                     style: TextStyle(
-                      color: settingsController.themeMode.value == ThemeMode.dark ? Colors.white60 : Colors.black54,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.white60 : Colors.black54,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),

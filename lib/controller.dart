@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:realm/realm.dart';
 import 'package:signals/signals_flutter.dart';
@@ -11,6 +12,8 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 final ChatController controller = ChatController();
 
 class ChatController {
+  late final userChanged = signal(0);
+
   late Realm _realm;
 
   late ChatApi _api;
@@ -39,12 +42,9 @@ class ChatController {
     hasToken.value = true;
   }
 
-  void _deleteToken() {
+  void _deleteData() {
     _secureStore.delete(key: _key);
     hasToken.value = false;
-  }
-
-  void _deleteData() {
     _realm.close();
     Realm.deleteRealm(_realm.config.path);
   }
@@ -66,11 +66,9 @@ class ChatController {
         3000);
   }
 
-  RealmResults<Group> allGroups() {
-    return _realm.all<Group>();
-  }
+  RealmResults<Group>? get groups => hasToken.value ? _realm.all<Group>() : null;
 
-  MainUser get user =>
+  MainUser? get user =>
       hasToken.value ? _realm.find<MainUser>(_userId)! : MainUser('', '');
 
   Future<bool> loadGroups() async {
@@ -116,6 +114,7 @@ class ChatController {
             updatedAt: data[Labels.updatedAt]);
         _realm.write(() => _realm.add<MainUser>(user, update: true));
         dev.log(user.toString());
+        userChanged.value++;
         return true;
       }
     }
@@ -128,15 +127,28 @@ class ChatController {
       if (uData != null) {
         var usr = user;
         _realm.write(() {
-          usr.name = uData[Labels.name];
-          usr.email = uData[Labels.email];
-          usr.bio = uData[Labels.bio];
-          usr.phoneNumber = uData[Labels.phoneNumber];
-          usr.createdAt = uData[Labels.createdAt];
-          usr.updatedAt = uData[Labels.updatedAt];
-          usr.imageUrl = uData[Labels.imageUrl];
+          usr?.name = uData[Labels.name];
+          usr?.email = uData[Labels.email];
+          usr?.bio = uData[Labels.bio];
+          usr?.phoneNumber = uData[Labels.phoneNumber];
+          usr?.createdAt = uData[Labels.createdAt];
+          usr?.updatedAt = uData[Labels.updatedAt];
+          usr?.imageUrl = uData[Labels.imageUrl];
         });
         dev.log('User Updated');
+        userChanged.value++;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> changeAvatar(Uint8List imageBinary) async {
+    if (hasToken.value) {
+      var data = await _api.uploadImage(imageBinary);
+      String url = data?[Labels.pictureUrl];
+      if (await updateUserData({Labels.imageUrl: url})) {
+        dev.log('Avatar Changed');
         return true;
       }
     }
@@ -144,8 +156,8 @@ class ChatController {
   }
 
   void initUser(String token) {
-    _saveToken(token);
     _deleteData();
+    _saveToken(token);
     _realm = Realm(
         Configuration.inMemory(_schemas)); //TODO: change to local database
     _api = ChatApi(token);
@@ -154,7 +166,6 @@ class ChatController {
   }
 
   void logout() {
-    _deleteToken();
     _deleteData();
     dev.log('Logged Out');
   }
@@ -192,4 +203,5 @@ class Labels {
   static const shareQrCodeUrl = 'share_qr_code_url';
   static const locale = 'locale';
   static const description = 'description';
+  static const pictureUrl = 'picture_url';
 }

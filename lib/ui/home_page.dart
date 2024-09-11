@@ -23,6 +23,7 @@ class _GroupChatState extends State<GroupChat> with SignalsMixin {
         title: 'GroupChat',
         themeMode: settingsController.themeMode.value,
         theme: ThemeData(
+          cardColor: const Color.fromARGB(255, 224, 224, 224),
           appBarTheme: const AppBarTheme(
               scrolledUnderElevation: 0.0,
               backgroundColor: Colors.lightBlueAccent),
@@ -37,6 +38,7 @@ class _GroupChatState extends State<GroupChat> with SignalsMixin {
           useMaterial3: true,
         ),
         darkTheme: ThemeData(
+          cardColor: const Color.fromARGB(255, 43, 43, 43),
           appBarTheme: const AppBarTheme(
             scrolledUnderElevation: 0.0,
             backgroundColor: Color.fromARGB(255, 21, 103, 255),
@@ -96,12 +98,12 @@ class _HomePageState extends State<HomePage> with SignalsMixin {
 
   late final Signal<int> numGroups = super.createSignal(0);
 
-  late RealmResults<Group> groups = controller.allGroups();
+  late RealmResults<Group>? groups = controller.groups;
 
   @override
   void initState() {
     super.initState();
-    groups.changes.listen((changes) => numGroups.value = groups.length);
+    groups?.changes.listen((changes) => numGroups.value = groups?.length ?? 0);
   }
 
   @override
@@ -114,7 +116,7 @@ class _HomePageState extends State<HomePage> with SignalsMixin {
             onTap: () => Navigator.pushNamed(context, UserPage.route),
             child: CircleAvatar(
               radius: 24,
-              foregroundImage: NetworkImage(controller.user.imageUrl!),
+              foregroundImage: NetworkImage(controller.user?.imageUrl ?? ''),
             ),
           ),
           const SizedBox(width: 10),
@@ -138,8 +140,8 @@ class _HomePageState extends State<HomePage> with SignalsMixin {
         separatorBuilder: (context, index) => const Divider(thickness: 2),
         itemBuilder: (context, index) {
           return ListTile(
-              title: Text(groups[index].name),
-              subtitle: Text(groups[index].description));
+              title: Text(groups?[index].name ?? ''),
+              subtitle: Text(groups?[index].description ?? ''));
         },
       ),
     );
