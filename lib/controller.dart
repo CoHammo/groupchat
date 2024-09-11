@@ -37,6 +37,16 @@ class ChatController {
 
   final Signal<bool> hasToken = signal(false);
 
+  late final groups = computed<RealmResults<Group>?>(() {
+    return hasToken.value ? _realm.all<Group>() : null;
+  });
+
+  late final chats = computed<RealmResults<Chat>?>(() {
+    return hasToken.value ? _realm.all<Chat>() : null;
+  });
+
+  MainUser? get user => hasToken.value ? _realm.find<MainUser>(_userId) : null;
+
   void _saveToken(String token) {
     _secureStore.write(key: _key, value: token);
     hasToken.value = true;
@@ -53,7 +63,8 @@ class ChatController {
     _loginServer ??= await shelf_io.serve(
         logRequests().addHandler((request) {
           if (request.url.queryParameters.containsKey(Labels.accessToken)) {
-            controller.initUser(request.url.queryParameters[Labels.accessToken]!);
+            controller
+                .initUser(request.url.queryParameters[Labels.accessToken]!);
             popFunction();
             _loginServer!.close();
             _loginServer = null;
@@ -66,14 +77,9 @@ class ChatController {
         3000);
   }
 
-  RealmResults<Group>? get groups => hasToken.value ? _realm.all<Group>() : null;
-
-  MainUser? get user =>
-      hasToken.value ? _realm.find<MainUser>(_userId)! : MainUser('', '');
-
   Future<bool> loadGroups() async {
     if (hasToken.value) {
-      var groups = await _api.getGroups();
+      var groups = await _api.getAllGroups();
       if (groups != null) {
         List<Group> realmGroups = [];
         for (Map<String, dynamic> group in groups) {
@@ -82,6 +88,7 @@ class ChatController {
               group[Labels.id],
               group[Labels.createdAt],
               group[Labels.updatedAt],
+              group[Labels.unreadCount] ?? 0,
               group[Labels.name],
               group[Labels.description],
               group[Labels.creatorUserId],
@@ -89,8 +96,38 @@ class ChatController {
             ),
           );
         }
-        _realm.write(() => _realm.addAll(realmGroups));
+        _realm.write(() => _realm.addAll<Group>(realmGroups));
         dev.log(_realm.all<Group>().toString());
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> loadChats() async {
+    if (hasToken.value) {
+      var chats = await _api.getAllChats();
+      if (chats != null) {
+        List<Chat> realmChats = [];
+        for (Map<String, dynamic> chat in chats) {
+          var otherUser = ChatUser(
+            chat[Labels.otherUser][Labels.id],
+            chat[Labels.otherUser][Labels.name],
+            imageUrl: chat[Labels.otherUser][Labels.avatarUrl],
+          );
+          realmChats.add(
+            Chat(
+              otherUser.id,
+              chat[Labels.createdAt],
+              chat[Labels.updatedAt],
+              chat[Labels.unreadCount] ?? 0,
+              chat[Labels.messageCount] ?? 0,
+              otherUser: otherUser,
+            ),
+          );
+        }
+        _realm.write(() => _realm.addAll<Chat>(realmChats));
+        dev.log(_realm.all<Chat>().toString());
         return true;
       }
     }
@@ -157,12 +194,13 @@ class ChatController {
 
   void initUser(String token) {
     _deleteData();
-    _saveToken(token);
     _realm = Realm(
         Configuration.inMemory(_schemas)); //TODO: change to local database
     _api = ChatApi(token);
+    _saveToken(token);
     loadUserData();
     loadGroups();
+    loadChats();
   }
 
   void logout() {
@@ -176,8 +214,9 @@ class ChatController {
       _api = ChatApi((await _secureStore.read(key: _key))!);
       _realm = Realm(
           Configuration.inMemory(_schemas)); //TODO: change to local database
-      await loadGroups();
       await loadUserData();
+      await loadGroups();
+      await loadChats();
     }
     _realm = Realm(Configuration.inMemory(_schemas));
   }
@@ -204,4 +243,8 @@ class Labels {
   static const locale = 'locale';
   static const description = 'description';
   static const pictureUrl = 'picture_url';
+  static const messageCount = 'message_count';
+  static const otherUser = 'other_user';
+  static const unreadCount = 'unread_count';
+  static const avatarUrl = 'avatar_url';
 }

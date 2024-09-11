@@ -16,6 +16,9 @@ class $Group implements IConversation {
   @override
   late int updatedAt;
 
+  @override
+  late int unreadCount;
+
   late String name;
 
   late String description;

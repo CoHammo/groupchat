@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/settings_controller.dart';
-import 'package:groupchat/ui/user_page.dart';
-import 'package:realm/realm.dart';
-import '../classes/models.dart';
+import 'package:groupchat/ui/account_page.dart';
 import 'login_page.dart';
 import 'package:signals/signals_flutter.dart';
 import '../controller.dart';
@@ -16,8 +14,11 @@ class GroupChat extends StatefulWidget {
 }
 
 class _GroupChatState extends State<GroupChat> with SignalsMixin {
+  late final hasToken = super.createComputed(() => controller.hasToken.value);
+
   @override
   Widget build(BuildContext context) {
+    var changed = hasToken.value;
     return Watch<MaterialApp>(
       (context) => MaterialApp(
         title: 'GroupChat',
@@ -93,21 +94,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SignalsMixin {
-  late final Computed<bool> hasToken =
-      super.createComputed(() => controller.hasToken.value);
+  late final groups = super.createComputed(() => controller.groups.value);
+  late final chats = super.createComputed(() => controller.chats.value);
+  late final pageIndex = super.createSignal(0);
+  late final userChanged =
+      super.createComputed(() => controller.userChanged.value);
 
-  late final Signal<int> numGroups = super.createSignal(0);
-
-  late RealmResults<Group>? groups = controller.groups;
-
-  @override
-  void initState() {
-    super.initState();
-    groups?.changes.listen((changes) => numGroups.value = groups?.length ?? 0);
-  }
+  var scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    var changed = userChanged.value;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65,
@@ -134,14 +131,39 @@ class _HomePageState extends State<HomePage> with SignalsMixin {
           const SizedBox(width: 15),
         ],
       ),
-      body: ListView.separated(
+      body: pageIndex.value == 0 ? ListView.separated(
+        controller: scrollController,
         padding: const EdgeInsets.only(top: 10),
-        itemCount: numGroups.value,
+        itemCount: groups.value?.length ?? 0,
         separatorBuilder: (context, index) => const Divider(thickness: 2),
         itemBuilder: (context, index) {
           return ListTile(
-              title: Text(groups?[index].name ?? ''),
-              subtitle: Text(groups?[index].description ?? ''));
+            title: Text(groups.value?[index].name ?? ''),
+            subtitle: Text(groups.value?[index].description ?? ''),
+          );
+        },
+      ) : 
+      ListView.separated(
+        controller: scrollController,
+        padding: const EdgeInsets.only(top: 10),
+        itemCount: chats.value?.length ?? 0,
+        separatorBuilder: (context, index) => const Divider(thickness: 2),
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(chats.value?[index].name ?? ''),
+            subtitle: Text(chats.value?[index].description ?? ''),
+          );
+        },
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: pageIndex.value,
+        destinations: const [
+          NavigationDestination(icon: Icon(Icons.group), label: 'Groups'),
+          NavigationDestination(icon: Icon(Icons.chat), label: 'Chats'),
+        ],
+        onDestinationSelected: (value) {
+          pageIndex.value = value;
+          scrollController.position.moveTo(0);
         },
       ),
     );

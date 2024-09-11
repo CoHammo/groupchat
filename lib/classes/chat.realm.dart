@@ -12,12 +12,14 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
     String id,
     int createdAt,
     int updatedAt,
+    int unreadCount,
     int messageCount, {
     ChatUser? otherUser,
   }) {
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'createdAt', createdAt);
     RealmObjectBase.set(this, 'updatedAt', updatedAt);
+    RealmObjectBase.set(this, 'unreadCount', unreadCount);
     RealmObjectBase.set(this, 'messageCount', messageCount);
     RealmObjectBase.set(this, 'otherUser', otherUser);
   }
@@ -38,6 +40,11 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
   int get updatedAt => RealmObjectBase.get<int>(this, 'updatedAt') as int;
   @override
   set updatedAt(int value) => RealmObjectBase.set(this, 'updatedAt', value);
+
+  @override
+  int get unreadCount => RealmObjectBase.get<int>(this, 'unreadCount') as int;
+  @override
+  set unreadCount(int value) => RealmObjectBase.set(this, 'unreadCount', value);
 
   @override
   int get messageCount => RealmObjectBase.get<int>(this, 'messageCount') as int;
@@ -68,6 +75,7 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
       'id': id.toEJson(),
       'createdAt': createdAt.toEJson(),
       'updatedAt': updatedAt.toEJson(),
+      'unreadCount': unreadCount.toEJson(),
       'messageCount': messageCount.toEJson(),
       'otherUser': otherUser.toEJson(),
     };
@@ -81,12 +89,14 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
         'id': EJsonValue id,
         'createdAt': EJsonValue createdAt,
         'updatedAt': EJsonValue updatedAt,
+        'unreadCount': EJsonValue unreadCount,
         'messageCount': EJsonValue messageCount,
       } =>
         Chat(
           fromEJson(id),
           fromEJson(createdAt),
           fromEJson(updatedAt),
+          fromEJson(unreadCount),
           fromEJson(messageCount),
           otherUser: fromEJson(ejson['otherUser']),
         ),
@@ -101,6 +111,7 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
       SchemaProperty('createdAt', RealmPropertyType.int),
       SchemaProperty('updatedAt', RealmPropertyType.int),
+      SchemaProperty('unreadCount', RealmPropertyType.int),
       SchemaProperty('messageCount', RealmPropertyType.int),
       SchemaProperty('otherUser', RealmPropertyType.object,
           optional: true, linkTarget: 'ChatUser'),

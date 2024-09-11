@@ -16,9 +16,16 @@ class $Chat implements IConversation {
   @override
   late int updatedAt;
 
+  @override
+  late int unreadCount;
+
   late int messageCount;
 
   late $ChatUser? otherUser;
+
+  String get name => otherUser?.name ?? '';
+
+  String get description => 'Chat with ${otherUser?.name}';
 
   @override
   String toString() {

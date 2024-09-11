@@ -51,13 +51,47 @@ class ChatApi {
     return null;
   }
 
-  Future<List<dynamic>?> getGroups() async {
+  Future<List<dynamic>?> getAllGroups() async {
     try {
-      var rs = await _dio.get('/groups?omit=memberships');
-      if (rs.statusCode == 200) {
-        return rs.data['response'];
+      List groups = [];
+      bool fullPage = true;
+      int pageNumber = 1;
+      while (fullPage) {
+        var rs = await _dio.get('/groups', queryParameters: {'page': pageNumber,'omit': 'memberships', 'per_page': 50});
+        if (rs.statusCode == 200) {
+          var pageList = rs.data['response'] as List;
+          groups.addAll(pageList);
+          fullPage = pageList.length == 50;
+          pageNumber++;
+        } else {
+          fullPage = false;
+        }
       }
+      return groups;
     } catch (e) {
+      dev.log(e.toString());
+    }
+    return null;
+  }
+
+  Future<List<dynamic>?> getAllChats() async {
+    try {
+      List chats = [];
+      bool fullPage = true;
+      int pageNumber = 1;
+      while (fullPage) {
+        var rs = await _dio.get('/chats', queryParameters: {'page': pageNumber, 'per_page': 50});
+        if (rs.statusCode == 200) {
+          var pageList = rs.data['response'] as List;
+          chats.addAll(pageList);
+          fullPage = pageList.length == 50;
+          pageNumber++;
+        } else {
+          fullPage = false;
+        }
+        return chats;
+      }
+    } catch(e) {
       dev.log(e.toString());
     }
     return null;
@@ -84,8 +118,8 @@ class ChatApi {
 // For testing the api on the command line
 void main() async {
   String token = await File('${Directory.current.path}/token').readAsString();
-  var image = File('${Directory.current.path}/crossroads-banner.jpg');
   print(token);
   final api = ChatApi(token);
-  print(api.prettyString(await api.uploadImage(await image.readAsBytes())));
+  var chats = await api.getAllGroups();
+  print(api.prettyString(chats));
 }

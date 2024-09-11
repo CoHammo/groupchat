@@ -3,12 +3,11 @@ import 'package:groupchat/controller.dart';
 import 'package:groupchat/ui/user_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signals/signals_flutter.dart';
-import 'dart:developer' as dev;
 
 class UserPage extends StatefulWidget {
   const UserPage({super.key});
 
-  static const route = '/user';
+  static const route = '/account';
 
   @override
   State<UserPage> createState() => _UserPageState();
@@ -27,7 +26,7 @@ class _UserPageState extends State<UserPage> with SignalsMixin {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('User Info'),
+        title: const Text('Account'),
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),

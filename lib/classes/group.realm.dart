@@ -12,6 +12,7 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
     String id,
     int createdAt,
     int updatedAt,
+    int unreadCount,
     String name,
     String description,
     String creatorUserId, {
@@ -21,6 +22,7 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'createdAt', createdAt);
     RealmObjectBase.set(this, 'updatedAt', updatedAt);
+    RealmObjectBase.set(this, 'unreadCount', unreadCount);
     RealmObjectBase.set(this, 'name', name);
     RealmObjectBase.set(this, 'description', description);
     RealmObjectBase.set(this, 'imageUrl', imageUrl);
@@ -45,6 +47,11 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
   int get updatedAt => RealmObjectBase.get<int>(this, 'updatedAt') as int;
   @override
   set updatedAt(int value) => RealmObjectBase.set(this, 'updatedAt', value);
+
+  @override
+  int get unreadCount => RealmObjectBase.get<int>(this, 'unreadCount') as int;
+  @override
+  set unreadCount(int value) => RealmObjectBase.set(this, 'unreadCount', value);
 
   @override
   String get name => RealmObjectBase.get<String>(this, 'name') as String;
@@ -94,6 +101,7 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
       'id': id.toEJson(),
       'createdAt': createdAt.toEJson(),
       'updatedAt': updatedAt.toEJson(),
+      'unreadCount': unreadCount.toEJson(),
       'name': name.toEJson(),
       'description': description.toEJson(),
       'imageUrl': imageUrl.toEJson(),
@@ -110,6 +118,7 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
         'id': EJsonValue id,
         'createdAt': EJsonValue createdAt,
         'updatedAt': EJsonValue updatedAt,
+        'unreadCount': EJsonValue unreadCount,
         'name': EJsonValue name,
         'description': EJsonValue description,
         'creatorUserId': EJsonValue creatorUserId,
@@ -118,6 +127,7 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
           fromEJson(id),
           fromEJson(createdAt),
           fromEJson(updatedAt),
+          fromEJson(unreadCount),
           fromEJson(name),
           fromEJson(description),
           fromEJson(creatorUserId),
@@ -135,6 +145,7 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
       SchemaProperty('createdAt', RealmPropertyType.int),
       SchemaProperty('updatedAt', RealmPropertyType.int),
+      SchemaProperty('unreadCount', RealmPropertyType.int),
       SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('description', RealmPropertyType.string),
       SchemaProperty('imageUrl', RealmPropertyType.string, optional: true),

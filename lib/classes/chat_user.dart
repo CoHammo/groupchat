@@ -15,9 +15,9 @@ class $ChatUser implements IUser {
   @override
   late String? imageUrl;
 
-  late String nickname;
+  late String? nickname;
 
-  late bool muted;
+  late bool? muted;
 
   @override
   String toString() {

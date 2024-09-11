@@ -11,10 +11,10 @@ class ChatUser extends $ChatUser
     with RealmEntity, RealmObjectBase, RealmObject {
   ChatUser(
     String id,
-    String name,
-    String nickname,
-    bool muted, {
+    String name, {
     String? imageUrl,
+    String? nickname,
+    bool? muted,
   }) {
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'name', name);
@@ -42,15 +42,15 @@ class ChatUser extends $ChatUser
   set imageUrl(String? value) => RealmObjectBase.set(this, 'imageUrl', value);
 
   @override
-  String get nickname =>
-      RealmObjectBase.get<String>(this, 'nickname') as String;
+  String? get nickname =>
+      RealmObjectBase.get<String>(this, 'nickname') as String?;
   @override
-  set nickname(String value) => RealmObjectBase.set(this, 'nickname', value);
+  set nickname(String? value) => RealmObjectBase.set(this, 'nickname', value);
 
   @override
-  bool get muted => RealmObjectBase.get<bool>(this, 'muted') as bool;
+  bool? get muted => RealmObjectBase.get<bool>(this, 'muted') as bool?;
   @override
-  set muted(bool value) => RealmObjectBase.set(this, 'muted', value);
+  set muted(bool? value) => RealmObjectBase.set(this, 'muted', value);
 
   @override
   Stream<RealmObjectChanges<ChatUser>> get changes =>
@@ -80,15 +80,13 @@ class ChatUser extends $ChatUser
       {
         'id': EJsonValue id,
         'name': EJsonValue name,
-        'nickname': EJsonValue nickname,
-        'muted': EJsonValue muted,
       } =>
         ChatUser(
           fromEJson(id),
           fromEJson(name),
-          fromEJson(nickname),
-          fromEJson(muted),
           imageUrl: fromEJson(ejson['imageUrl']),
+          nickname: fromEJson(ejson['nickname']),
+          muted: fromEJson(ejson['muted']),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -101,8 +99,8 @@ class ChatUser extends $ChatUser
       SchemaProperty('id', RealmPropertyType.string, primaryKey: true),
       SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('imageUrl', RealmPropertyType.string, optional: true),
-      SchemaProperty('nickname', RealmPropertyType.string),
-      SchemaProperty('muted', RealmPropertyType.bool),
+      SchemaProperty('nickname', RealmPropertyType.string, optional: true),
+      SchemaProperty('muted', RealmPropertyType.bool, optional: true),
     ]);
   }();
 
