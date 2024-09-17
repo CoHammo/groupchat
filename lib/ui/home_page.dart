@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/settings_controller.dart';
 import 'package:groupchat/ui/account_page.dart';
+import '../classes/models.dart';
 import 'login_page.dart';
 import 'package:signals/signals_flutter.dart';
 import '../controller.dart';
 import 'settings_page.dart';
+import 'widgets/chat_tile.dart';
+import 'widgets/group_tile.dart';
 
 class GroupChat extends StatefulWidget {
   const GroupChat({super.key});
@@ -131,29 +134,24 @@ class _HomePageState extends State<HomePage> with SignalsMixin {
           const SizedBox(width: 15),
         ],
       ),
-      body: pageIndex.value == 0 ? ListView.separated(
+      body: pageIndex.value == 0 ? ListView(
+        cacheExtent: 9999,
         controller: scrollController,
-        padding: const EdgeInsets.only(top: 10),
-        itemCount: groups.value?.length ?? 0,
-        separatorBuilder: (context, index) => const Divider(thickness: 2),
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(groups.value?[index].name ?? ''),
-            subtitle: Text(groups.value?[index].description ?? ''),
-          );
-        },
-      ) : 
-      ListView.separated(
+        children: [
+          for (Group group in groups.value ?? [])...[
+            GroupTile(group),
+            const Divider(thickness: 2, height: 2),
+          ],
+        ],
+      ) : ListView(
+        cacheExtent: 9999,
         controller: scrollController,
-        padding: const EdgeInsets.only(top: 10),
-        itemCount: chats.value?.length ?? 0,
-        separatorBuilder: (context, index) => const Divider(thickness: 2),
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(chats.value?[index].name ?? ''),
-            subtitle: Text(chats.value?[index].description ?? ''),
-          );
-        },
+        children: [
+          for (Chat chat in chats.value ?? [])...[
+            ChatTile(chat),
+            const Divider(thickness: 2, height: 2),
+          ],
+        ],
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: pageIndex.value,

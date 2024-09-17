@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/controller.dart';
-import 'package:groupchat/ui/user_field.dart';
+import 'package:groupchat/ui/widgets/user_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signals/signals_flutter.dart';
 

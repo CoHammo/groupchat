@@ -37,13 +37,11 @@ class ChatController {
 
   final Signal<bool> hasToken = signal(false);
 
-  late final groups = computed<RealmResults<Group>?>(() {
-    return hasToken.value ? _realm.all<Group>() : null;
-  });
+  late final groups = computed<RealmResults<Group>?>(
+      () => hasToken.value ? _realm.all<Group>() : null);
 
-  late final chats = computed<RealmResults<Chat>?>(() {
-    return hasToken.value ? _realm.all<Chat>() : null;
-  });
+  late final chats = computed<RealmResults<Chat>?>(
+      () => hasToken.value ? _realm.all<Chat>() : null);
 
   MainUser? get user => hasToken.value ? _realm.find<MainUser>(_userId) : null;
 
@@ -63,8 +61,7 @@ class ChatController {
     _loginServer ??= await shelf_io.serve(
         logRequests().addHandler((request) {
           if (request.url.queryParameters.containsKey(Labels.accessToken)) {
-            controller
-                .initUser(request.url.queryParameters[Labels.accessToken]!);
+            controller.login(request.url.queryParameters[Labels.accessToken]!);
             popFunction();
             _loginServer!.close();
             _loginServer = null;
@@ -90,8 +87,8 @@ class ChatController {
               group[Labels.updatedAt],
               group[Labels.unreadCount] ?? 0,
               group[Labels.name],
-              group[Labels.description],
               group[Labels.creatorUserId],
+              description: group[Labels.description],
               imageUrl: group[Labels.imageUrl],
             ),
           );
@@ -192,7 +189,7 @@ class ChatController {
     return false;
   }
 
-  void initUser(String token) {
+  void login(String token) {
     _deleteData();
     _realm = Realm(
         Configuration.inMemory(_schemas)); //TODO: change to local database

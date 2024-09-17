@@ -21,7 +21,7 @@ class $Group implements IConversation {
 
   late String name;
 
-  late String description;
+  late String? description;
 
   late String? imageUrl;
 

@@ -14,8 +14,8 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
     int updatedAt,
     int unreadCount,
     String name,
-    String description,
     String creatorUserId, {
+    String? description,
     String? imageUrl,
     Iterable<ChatUser> members = const [],
   }) {
@@ -59,10 +59,10 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
   set name(String value) => RealmObjectBase.set(this, 'name', value);
 
   @override
-  String get description =>
-      RealmObjectBase.get<String>(this, 'description') as String;
+  String? get description =>
+      RealmObjectBase.get<String>(this, 'description') as String?;
   @override
-  set description(String value) =>
+  set description(String? value) =>
       RealmObjectBase.set(this, 'description', value);
 
   @override
@@ -120,7 +120,6 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
         'updatedAt': EJsonValue updatedAt,
         'unreadCount': EJsonValue unreadCount,
         'name': EJsonValue name,
-        'description': EJsonValue description,
         'creatorUserId': EJsonValue creatorUserId,
       } =>
         Group(
@@ -129,8 +128,8 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
           fromEJson(updatedAt),
           fromEJson(unreadCount),
           fromEJson(name),
-          fromEJson(description),
           fromEJson(creatorUserId),
+          description: fromEJson(ejson['description']),
           imageUrl: fromEJson(ejson['imageUrl']),
           members: fromEJson(ejson['members']),
         ),
@@ -147,7 +146,7 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('updatedAt', RealmPropertyType.int),
       SchemaProperty('unreadCount', RealmPropertyType.int),
       SchemaProperty('name', RealmPropertyType.string),
-      SchemaProperty('description', RealmPropertyType.string),
+      SchemaProperty('description', RealmPropertyType.string, optional: true),
       SchemaProperty('imageUrl', RealmPropertyType.string, optional: true),
       SchemaProperty('creatorUserId', RealmPropertyType.string),
       SchemaProperty('members', RealmPropertyType.object,
