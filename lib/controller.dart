@@ -25,10 +25,13 @@ class ChatController {
 
   static final _schemas = [
     MainUser.schema,
-    ChatUser.schema,
+    OtherUser.schema,
+    GroupUser.schema,
     Chat.schema,
     Group.schema,
     Message.schema,
+    Reaction.schema,
+    Attachment.schema
   ];
 
   late String _userId;
@@ -74,27 +77,134 @@ class ChatController {
         3000);
   }
 
+  MainUser _createMainUser(Map<String, dynamic> user) {
+    return MainUser(
+      user[Labels.id],
+      name: user[Labels.name],
+      imageUrl: user[Labels.imageUrl],
+      shareUrl: user[Labels.shareUrl],
+      shareQrCodeUrl: user[Labels.shareQrCodeUrl],
+      email: user[Labels.email],
+      bio: user[Labels.bio],
+      locale: user[Labels.locale],
+      phoneNumber: user[Labels.phoneNumber],
+      createdAt: user[Labels.createdAt],
+      updatedAt: user[Labels.updatedAt],
+    );
+  }
+
+  Group _createGroup(Map<String, dynamic> group) {
+    return Group(
+      group[Labels.id],
+      createdAt: group[Labels.createdAt],
+      updatedAt: group[Labels.updatedAt],
+      unreadCount: group[Labels.unreadCount] ?? 0,
+      name: group[Labels.name],
+      creatorUserId: group[Labels.creatorUserId],
+      description: group[Labels.description],
+      imageUrl: group[Labels.imageUrl],
+      messageCount: group[Labels.messages][Labels.count]
+    );
+  }
+
+  Chat _createChat(Map<String, dynamic> chat) {
+    var otherUser = _creatOtherUser(chat[Labels.otherUser]);
+    return Chat(
+      otherUser.id,
+      createdAt: chat[Labels.createdAt],
+      updatedAt: chat[Labels.updatedAt],
+      unreadCount: chat[Labels.unreadCount] ?? 0,
+      messageCount: chat[Labels.messagesCount] ?? 0,
+      otherUser: otherUser,
+    );
+  }
+
+  OtherUser _creatOtherUser(Map<String, dynamic> user) {
+    return OtherUser(
+      user[Labels.id],
+      name: user[Labels.name],
+      imageUrl: user[Labels.avatarUrl],
+    );
+  }
+
+  Message _createMessage(Map<String, dynamic> message) {
+    List<Reaction> reactions = [];
+    if ((message[Labels.favoritedBy] as List).isNotEmpty) {
+      for (Map<String, dynamic> reaction in message[Labels.reactions]) {
+        reactions.add(_createReaction(reaction));
+      }
+    }
+
+    List<Attachment> attachments = [];
+    for (Map<String, dynamic> attachment in message[Labels.attachments]) {
+      attachments.add(_createAttachment(attachment));
+    }
+
+    return Message(
+      message[Labels.id],
+      senderId: message[Labels.senderId],
+      text: message[Labels.text],
+      createdAt: message[Labels.createdAt],
+      system: message[Labels.system],
+      attachments: attachments,
+      reactions: reactions,
+    );
+  }
+
+  Attachment _createAttachment(Map<String, dynamic> attachment) {
+    return Attachment(
+        type: attachment[Labels.type],
+        url: attachment[Labels.url],
+        fileId: attachment[Labels.fileId]);
+  }
+
+  Reaction _createReaction(Map<String, dynamic> reaction) {
+    return Reaction(
+      code: reaction[Labels.code],
+      type: reaction[Labels.type],
+      users: (reaction[Labels.userIds] as List).map((item) => item as String),
+    );
+  }
+
   Future<bool> loadGroups() async {
     if (hasToken.value) {
       var groups = await _api.getAllGroups();
       if (groups != null) {
         List<Group> realmGroups = [];
-        for (Map<String, dynamic> group in groups) {
-          realmGroups.add(
-            Group(
-              group[Labels.id],
-              group[Labels.createdAt],
-              group[Labels.updatedAt],
-              group[Labels.unreadCount] ?? 0,
-              group[Labels.name],
-              group[Labels.creatorUserId],
-              description: group[Labels.description],
-              imageUrl: group[Labels.imageUrl],
-            ),
-          );
+        for (var group in groups) {
+          realmGroups.add(_createGroup(group));
         }
-        _realm.write(() => _realm.addAll<Group>(realmGroups));
+        _realm.write(() => _realm.addAll<Group>(realmGroups, update: true));
         dev.log(_realm.all<Group>().toString());
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool> loadGroupMessages({
+    required Group group,
+    int numMessages = 0,
+    String beforeId = '',
+  }) async {
+    if (hasToken.value) {
+      var messages = await _api.getGroupMessages(
+        groupId: group.id,
+        messages: numMessages,
+        beforeId: beforeId,
+      );
+      if (messages != null) {
+        List<Message> realmMessages = [];
+        for (var message in messages) {
+          realmMessages.add(_createMessage(message));
+        }
+        _realm.write(() {
+          _realm.addAll(realmMessages, update: true);
+          group.messages.clear();
+          group.messages.addAll(realmMessages);
+        });
+        dev.log('${group.name} has ${group.messages.length} local messages, ${group.messageCount} total messages');
+        dev.log('${_realm.all<Message>().length} total local messages');
         return true;
       }
     }
@@ -106,24 +216,10 @@ class ChatController {
       var chats = await _api.getAllChats();
       if (chats != null) {
         List<Chat> realmChats = [];
-        for (Map<String, dynamic> chat in chats) {
-          var otherUser = ChatUser(
-            chat[Labels.otherUser][Labels.id],
-            chat[Labels.otherUser][Labels.name],
-            imageUrl: chat[Labels.otherUser][Labels.avatarUrl],
-          );
-          realmChats.add(
-            Chat(
-              otherUser.id,
-              chat[Labels.createdAt],
-              chat[Labels.updatedAt],
-              chat[Labels.unreadCount] ?? 0,
-              chat[Labels.messageCount] ?? 0,
-              otherUser: otherUser,
-            ),
-          );
+        for (var chat in chats) {
+          realmChats.add(_createChat(chat));
         }
-        _realm.write(() => _realm.addAll<Chat>(realmChats));
+        _realm.write(() => _realm.addAll<Chat>(realmChats, update: true));
         dev.log(_realm.all<Chat>().toString());
         return true;
       }
@@ -133,21 +229,14 @@ class ChatController {
 
   Future<bool> loadUserData() async {
     if (hasToken.value) {
-      var data = await _api.getUserData();
-      if (data != null) {
-        _userId = data['id'];
-        var user = MainUser(data[Labels.id], data[Labels.name],
-            imageUrl: data[Labels.imageUrl],
-            shareUrl: data[Labels.shareUrl],
-            shareQrCodeUrl: data[Labels.shareQrCodeUrl],
-            email: data[Labels.email],
-            bio: data[Labels.bio],
-            locale: data[Labels.locale],
-            phoneNumber: data[Labels.phoneNumber],
-            createdAt: data[Labels.createdAt],
-            updatedAt: data[Labels.updatedAt]);
-        _realm.write(() => _realm.add<MainUser>(user, update: true));
-        dev.log(user.toString());
+      var user = await _api.getUserData();
+      if (user != null) {
+        _userId = user[Labels.id];
+        var newUser = _createMainUser(user);
+        _realm.write(
+          () => _realm.add<MainUser>(newUser, update: true),
+        );
+        dev.log(newUser.toString());
         userChanged.value++;
         return true;
       }
@@ -225,7 +314,9 @@ class Labels {
   static const accessToken = 'access_token';
   static const id = 'id';
   static const userId = 'user_id';
+  static const userIds = 'user_ids';
   static const creatorUserId = 'creator_user_id';
+  static const senderId = 'sender_id';
   static const name = 'name';
   static const email = 'email';
   static const phoneNumber = 'phone_number';
@@ -240,8 +331,19 @@ class Labels {
   static const locale = 'locale';
   static const description = 'description';
   static const pictureUrl = 'picture_url';
-  static const messageCount = 'message_count';
   static const otherUser = 'other_user';
   static const unreadCount = 'unread_count';
   static const avatarUrl = 'avatar_url';
+  static const messages = 'messages';
+  static const text = 'text';
+  static const system = 'system';
+  static const attachments = 'attachments';
+  static const favoritedBy = 'favorited_by';
+  static const reactions = 'reactions';
+  static const code = 'code';
+  static const type = 'type';
+  static const url = 'url';
+  static const fileId = 'file_id';
+  static const messagesCount = 'messages_count';
+  static const count = 'count';
 }

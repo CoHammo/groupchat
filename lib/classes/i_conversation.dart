@@ -6,4 +6,6 @@ interface class IConversation {
   late int updatedAt;
 
   late int unreadCount;
+
+  late int messageCount;
 }

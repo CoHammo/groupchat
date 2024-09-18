@@ -9,9 +9,11 @@ part of 'main_user.dart';
 // ignore_for_file: type=lint
 class MainUser extends $MainUser
     with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
   MainUser(
-    String id,
-    String name, {
+    String id, {
+    String name = '',
     String? imageUrl,
     String? email,
     String? shareUrl,
@@ -19,9 +21,16 @@ class MainUser extends $MainUser
     String? bio,
     String? locale,
     String? phoneNumber,
-    int? createdAt,
-    int? updatedAt,
+    int createdAt = 0,
+    int updatedAt = 0,
   }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<MainUser>({
+        'name': '',
+        'createdAt': 0,
+        'updatedAt': 0,
+      });
+    }
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'name', name);
     RealmObjectBase.set(this, 'imageUrl', imageUrl);
@@ -89,14 +98,14 @@ class MainUser extends $MainUser
       RealmObjectBase.set(this, 'phoneNumber', value);
 
   @override
-  int? get createdAt => RealmObjectBase.get<int>(this, 'createdAt') as int?;
+  int get createdAt => RealmObjectBase.get<int>(this, 'createdAt') as int;
   @override
-  set createdAt(int? value) => RealmObjectBase.set(this, 'createdAt', value);
+  set createdAt(int value) => RealmObjectBase.set(this, 'createdAt', value);
 
   @override
-  int? get updatedAt => RealmObjectBase.get<int>(this, 'updatedAt') as int?;
+  int get updatedAt => RealmObjectBase.get<int>(this, 'updatedAt') as int;
   @override
-  set updatedAt(int? value) => RealmObjectBase.set(this, 'updatedAt', value);
+  set updatedAt(int value) => RealmObjectBase.set(this, 'updatedAt', value);
 
   @override
   Stream<RealmObjectChanges<MainUser>> get changes =>
@@ -131,11 +140,10 @@ class MainUser extends $MainUser
     return switch (ejson) {
       {
         'id': EJsonValue id,
-        'name': EJsonValue name,
       } =>
         MainUser(
           fromEJson(id),
-          fromEJson(name),
+          name: fromEJson(ejson['name'], defaultValue: ''),
           imageUrl: fromEJson(ejson['imageUrl']),
           email: fromEJson(ejson['email']),
           shareUrl: fromEJson(ejson['shareUrl']),
@@ -143,8 +151,8 @@ class MainUser extends $MainUser
           bio: fromEJson(ejson['bio']),
           locale: fromEJson(ejson['locale']),
           phoneNumber: fromEJson(ejson['phoneNumber']),
-          createdAt: fromEJson(ejson['createdAt']),
-          updatedAt: fromEJson(ejson['updatedAt']),
+          createdAt: fromEJson(ejson['createdAt'], defaultValue: 0),
+          updatedAt: fromEJson(ejson['updatedAt'], defaultValue: 0),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -164,8 +172,8 @@ class MainUser extends $MainUser
       SchemaProperty('bio', RealmPropertyType.string, optional: true),
       SchemaProperty('locale', RealmPropertyType.string, optional: true),
       SchemaProperty('phoneNumber', RealmPropertyType.string, optional: true),
-      SchemaProperty('createdAt', RealmPropertyType.int, optional: true),
-      SchemaProperty('updatedAt', RealmPropertyType.int, optional: true),
+      SchemaProperty('createdAt', RealmPropertyType.int),
+      SchemaProperty('updatedAt', RealmPropertyType.int),
     ]);
   }();
 

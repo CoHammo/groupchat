@@ -1,10 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../classes/group.dart';
+import '../../controller.dart';
 
 class GroupTile extends StatefulWidget {
   const GroupTile(this.group, {super.key});
-  final Group? group;
+  final Group group;
 
   @override
   State<GroupTile> createState() => _GroupTileState();
@@ -60,7 +61,9 @@ class _GroupTileState extends State<GroupTile> {
           ),
         ],
       ),
-      onTap: () {},
+      onTap: () {
+        controller.loadGroupMessages(group: widget.group, numMessages: 50);
+      },
     );
   }
 }

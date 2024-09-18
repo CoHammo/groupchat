@@ -10,7 +10,7 @@ class $MainUser implements IUser {
   late String id;
 
   @override
-  late String name;
+  late String name = '';
 
   @override
   late String? imageUrl;
@@ -27,9 +27,9 @@ class $MainUser implements IUser {
 
   late String? phoneNumber;
 
-  late int? createdAt;
+  late int createdAt = 0;
 
-  late int? updatedAt;
+  late int updatedAt = 0;
 
   @override
   String toString() {

@@ -1,6 +1,7 @@
 import 'package:realm/realm.dart';
-import 'chat_user.dart';
+import 'other_user.dart';
 import 'i_conversation.dart';
+import 'message.dart';
 
 part 'chat.realm.dart';
 
@@ -11,17 +12,20 @@ class $Chat implements IConversation {
   late final String id;
 
   @override
-  late int createdAt;
+  late int createdAt = 0;
 
   @override
-  late int updatedAt;
+  late int updatedAt = 0;
 
   @override
-  late int unreadCount;
+  late int unreadCount = 0;
 
-  late int messageCount;
+  @override
+  late int messageCount = 0;
 
-  late $ChatUser? otherUser;
+  late $OtherUser? otherUser;
+
+  late List<$Message> messages;
 
   String get name => otherUser?.name ?? '';
 
@@ -29,6 +33,6 @@ class $Chat implements IConversation {
 
   @override
   String toString() {
-    return 'Chat with ${otherUser?.name}';
+    return 'Chat: $name, ${messages.length} messages';
   }
 }

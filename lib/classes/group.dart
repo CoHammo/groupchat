@@ -1,6 +1,7 @@
 import 'package:realm/realm.dart';
-import 'chat_user.dart';
+import 'other_user.dart';
 import 'i_conversation.dart';
+import 'message.dart';
 
 part 'group.realm.dart';
 
@@ -11,26 +12,31 @@ class $Group implements IConversation {
   late final String id;
 
   @override
-  late int createdAt;
+  late int createdAt = 0;
 
   @override
-  late int updatedAt;
+  late int updatedAt = 0;
 
   @override
-  late int unreadCount;
+  late int unreadCount = 0;
 
-  late String name;
+  @override
+  late int messageCount = 0;
+
+  late String name = '';
 
   late String? description;
 
   late String? imageUrl;
 
-  late String creatorUserId;
+  late String creatorUserId = '';
 
-  late List<$ChatUser> members;
+  late List<$OtherUser> members;
+
+  late List<$Message> messages;
 
   @override
   String toString() {
-    return 'Group: $name';
+    return 'Group: $name, ${members.length} members, ${messages.length} messages';
   }
 }

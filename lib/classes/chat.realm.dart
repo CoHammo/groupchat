@@ -8,20 +8,33 @@ part of 'chat.dart';
 
 // ignore_for_file: type=lint
 class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
   Chat(
-    String id,
-    int createdAt,
-    int updatedAt,
-    int unreadCount,
-    int messageCount, {
-    ChatUser? otherUser,
+    String id, {
+    int createdAt = 0,
+    int updatedAt = 0,
+    int unreadCount = 0,
+    int messageCount = 0,
+    OtherUser? otherUser,
+    Iterable<Message> messages = const [],
   }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<Chat>({
+        'createdAt': 0,
+        'updatedAt': 0,
+        'unreadCount': 0,
+        'messageCount': 0,
+      });
+    }
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'createdAt', createdAt);
     RealmObjectBase.set(this, 'updatedAt', updatedAt);
     RealmObjectBase.set(this, 'unreadCount', unreadCount);
     RealmObjectBase.set(this, 'messageCount', messageCount);
     RealmObjectBase.set(this, 'otherUser', otherUser);
+    RealmObjectBase.set<RealmList<Message>>(
+        this, 'messages', RealmList<Message>(messages));
   }
 
   Chat._();
@@ -53,11 +66,18 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.set(this, 'messageCount', value);
 
   @override
-  ChatUser? get otherUser =>
-      RealmObjectBase.get<ChatUser>(this, 'otherUser') as ChatUser?;
+  OtherUser? get otherUser =>
+      RealmObjectBase.get<OtherUser>(this, 'otherUser') as OtherUser?;
   @override
-  set otherUser(covariant ChatUser? value) =>
+  set otherUser(covariant OtherUser? value) =>
       RealmObjectBase.set(this, 'otherUser', value);
+
+  @override
+  RealmList<Message> get messages =>
+      RealmObjectBase.get<Message>(this, 'messages') as RealmList<Message>;
+  @override
+  set messages(covariant RealmList<Message> value) =>
+      throw RealmUnsupportedSetError();
 
   @override
   Stream<RealmObjectChanges<Chat>> get changes =>
@@ -78,6 +98,7 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
       'unreadCount': unreadCount.toEJson(),
       'messageCount': messageCount.toEJson(),
       'otherUser': otherUser.toEJson(),
+      'messages': messages.toEJson(),
     };
   }
 
@@ -87,18 +108,15 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
     return switch (ejson) {
       {
         'id': EJsonValue id,
-        'createdAt': EJsonValue createdAt,
-        'updatedAt': EJsonValue updatedAt,
-        'unreadCount': EJsonValue unreadCount,
-        'messageCount': EJsonValue messageCount,
       } =>
         Chat(
           fromEJson(id),
-          fromEJson(createdAt),
-          fromEJson(updatedAt),
-          fromEJson(unreadCount),
-          fromEJson(messageCount),
+          createdAt: fromEJson(ejson['createdAt'], defaultValue: 0),
+          updatedAt: fromEJson(ejson['updatedAt'], defaultValue: 0),
+          unreadCount: fromEJson(ejson['unreadCount'], defaultValue: 0),
+          messageCount: fromEJson(ejson['messageCount'], defaultValue: 0),
           otherUser: fromEJson(ejson['otherUser']),
+          messages: fromEJson(ejson['messages']),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -114,7 +132,9 @@ class Chat extends $Chat with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('unreadCount', RealmPropertyType.int),
       SchemaProperty('messageCount', RealmPropertyType.int),
       SchemaProperty('otherUser', RealmPropertyType.object,
-          optional: true, linkTarget: 'ChatUser'),
+          optional: true, linkTarget: 'OtherUser'),
+      SchemaProperty('messages', RealmPropertyType.object,
+          linkTarget: 'Message', collectionType: RealmCollectionType.list),
     ]);
   }();
 

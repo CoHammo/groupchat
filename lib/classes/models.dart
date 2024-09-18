@@ -1,5 +1,8 @@
 export 'main_user.dart';
+export 'other_user.dart';
+export 'group_user.dart';
+export 'group.dart';
 export 'chat.dart';
 export 'message.dart';
-export 'group.dart';
-export 'chat_user.dart';
+export 'reaction.dart';
+export 'attachment.dart';

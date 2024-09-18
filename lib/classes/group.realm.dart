@@ -8,27 +8,44 @@ part of 'group.dart';
 
 // ignore_for_file: type=lint
 class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
   Group(
-    String id,
-    int createdAt,
-    int updatedAt,
-    int unreadCount,
-    String name,
-    String creatorUserId, {
+    String id, {
+    int createdAt = 0,
+    int updatedAt = 0,
+    int unreadCount = 0,
+    int messageCount = 0,
+    String name = '',
     String? description,
     String? imageUrl,
-    Iterable<ChatUser> members = const [],
+    String creatorUserId = '',
+    Iterable<OtherUser> members = const [],
+    Iterable<Message> messages = const [],
   }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<Group>({
+        'createdAt': 0,
+        'updatedAt': 0,
+        'unreadCount': 0,
+        'messageCount': 0,
+        'name': '',
+        'creatorUserId': '',
+      });
+    }
     RealmObjectBase.set(this, 'id', id);
     RealmObjectBase.set(this, 'createdAt', createdAt);
     RealmObjectBase.set(this, 'updatedAt', updatedAt);
     RealmObjectBase.set(this, 'unreadCount', unreadCount);
+    RealmObjectBase.set(this, 'messageCount', messageCount);
     RealmObjectBase.set(this, 'name', name);
     RealmObjectBase.set(this, 'description', description);
     RealmObjectBase.set(this, 'imageUrl', imageUrl);
     RealmObjectBase.set(this, 'creatorUserId', creatorUserId);
-    RealmObjectBase.set<RealmList<ChatUser>>(
-        this, 'members', RealmList<ChatUser>(members));
+    RealmObjectBase.set<RealmList<OtherUser>>(
+        this, 'members', RealmList<OtherUser>(members));
+    RealmObjectBase.set<RealmList<Message>>(
+        this, 'messages', RealmList<Message>(messages));
   }
 
   Group._();
@@ -52,6 +69,12 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
   int get unreadCount => RealmObjectBase.get<int>(this, 'unreadCount') as int;
   @override
   set unreadCount(int value) => RealmObjectBase.set(this, 'unreadCount', value);
+
+  @override
+  int get messageCount => RealmObjectBase.get<int>(this, 'messageCount') as int;
+  @override
+  set messageCount(int value) =>
+      RealmObjectBase.set(this, 'messageCount', value);
 
   @override
   String get name => RealmObjectBase.get<String>(this, 'name') as String;
@@ -79,10 +102,17 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.set(this, 'creatorUserId', value);
 
   @override
-  RealmList<ChatUser> get members =>
-      RealmObjectBase.get<ChatUser>(this, 'members') as RealmList<ChatUser>;
+  RealmList<OtherUser> get members =>
+      RealmObjectBase.get<OtherUser>(this, 'members') as RealmList<OtherUser>;
   @override
-  set members(covariant RealmList<ChatUser> value) =>
+  set members(covariant RealmList<OtherUser> value) =>
+      throw RealmUnsupportedSetError();
+
+  @override
+  RealmList<Message> get messages =>
+      RealmObjectBase.get<Message>(this, 'messages') as RealmList<Message>;
+  @override
+  set messages(covariant RealmList<Message> value) =>
       throw RealmUnsupportedSetError();
 
   @override
@@ -102,11 +132,13 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
       'createdAt': createdAt.toEJson(),
       'updatedAt': updatedAt.toEJson(),
       'unreadCount': unreadCount.toEJson(),
+      'messageCount': messageCount.toEJson(),
       'name': name.toEJson(),
       'description': description.toEJson(),
       'imageUrl': imageUrl.toEJson(),
       'creatorUserId': creatorUserId.toEJson(),
       'members': members.toEJson(),
+      'messages': messages.toEJson(),
     };
   }
 
@@ -116,22 +148,19 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
     return switch (ejson) {
       {
         'id': EJsonValue id,
-        'createdAt': EJsonValue createdAt,
-        'updatedAt': EJsonValue updatedAt,
-        'unreadCount': EJsonValue unreadCount,
-        'name': EJsonValue name,
-        'creatorUserId': EJsonValue creatorUserId,
       } =>
         Group(
           fromEJson(id),
-          fromEJson(createdAt),
-          fromEJson(updatedAt),
-          fromEJson(unreadCount),
-          fromEJson(name),
-          fromEJson(creatorUserId),
+          createdAt: fromEJson(ejson['createdAt'], defaultValue: 0),
+          updatedAt: fromEJson(ejson['updatedAt'], defaultValue: 0),
+          unreadCount: fromEJson(ejson['unreadCount'], defaultValue: 0),
+          messageCount: fromEJson(ejson['messageCount'], defaultValue: 0),
+          name: fromEJson(ejson['name'], defaultValue: ''),
           description: fromEJson(ejson['description']),
           imageUrl: fromEJson(ejson['imageUrl']),
+          creatorUserId: fromEJson(ejson['creatorUserId'], defaultValue: ''),
           members: fromEJson(ejson['members']),
+          messages: fromEJson(ejson['messages']),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -145,12 +174,15 @@ class Group extends $Group with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('createdAt', RealmPropertyType.int),
       SchemaProperty('updatedAt', RealmPropertyType.int),
       SchemaProperty('unreadCount', RealmPropertyType.int),
+      SchemaProperty('messageCount', RealmPropertyType.int),
       SchemaProperty('name', RealmPropertyType.string),
       SchemaProperty('description', RealmPropertyType.string, optional: true),
       SchemaProperty('imageUrl', RealmPropertyType.string, optional: true),
       SchemaProperty('creatorUserId', RealmPropertyType.string),
       SchemaProperty('members', RealmPropertyType.object,
-          linkTarget: 'ChatUser', collectionType: RealmCollectionType.list),
+          linkTarget: 'OtherUser', collectionType: RealmCollectionType.list),
+      SchemaProperty('messages', RealmPropertyType.object,
+          linkTarget: 'Message', collectionType: RealmCollectionType.list),
     ]);
   }();
 

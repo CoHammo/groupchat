@@ -1,26 +1,22 @@
 import 'package:realm/realm.dart';
 import 'i_user.dart';
 
-part 'chat_user.realm.dart';
+part 'other_user.realm.dart';
 
 @RealmModel()
-class $ChatUser implements IUser {
+class $OtherUser implements IUser {
   @override
   @PrimaryKey()
-  late String id;
+  late final String id;
 
   @override
-  late String name;
+  late String name = '';
 
   @override
   late String? imageUrl;
 
-  late String? nickname;
-
-  late bool? muted;
-
   @override
   String toString() {
-    return 'ChatUser: $nickname, $id';
+    return 'OtherUser: $name, $id';
   }
 }
