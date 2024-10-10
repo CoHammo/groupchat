@@ -72,34 +72,37 @@ class _UserFieldState extends State<UserField> with SignalsMixin {
           },
         );
       },
-      child: Card(
-        elevation: 0,
-        color: Theme.of(context).cardColor,
-        child: Padding(
-          padding: const EdgeInsets.all(2),
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: Card(
+          elevation: 0,
+          color: Theme.of(context).cardColor,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 50,
-                  child: Text(
-                    widget.label,
-                    style: TextStyle(
-                      color: Theme.of(context).brightness == Brightness.dark ? Colors.white60 : Colors.black54,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+            padding: const EdgeInsets.all(2),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 50,
+                    child: Text(
+                      widget.label,
+                      style: TextStyle(
+                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white60 : Colors.black54,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                Flexible(
-                  fit: FlexFit.tight,
-                  child: Text(content.value, style: const TextStyle(fontSize: 16)),
-                ),
-              ],
+                  const SizedBox(width: 10),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    child: Text(content.value, style: const TextStyle(fontSize: 16)),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

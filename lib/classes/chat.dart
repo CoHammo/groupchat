@@ -33,6 +33,6 @@ class $Chat implements IConversation {
 
   @override
   String toString() {
-    return 'Chat: $name, ${messages.length} messages';
+    return 'Chat: $name, $messageCount messages';
   }
 }

@@ -12,8 +12,6 @@ import 'package:shelf/shelf_io.dart' as shelf_io;
 final ChatController controller = ChatController();
 
 class ChatController {
-  late final userChanged = signal(0);
-
   late Realm _realm;
 
   late ChatApi _api;
@@ -40,13 +38,13 @@ class ChatController {
 
   final Signal<bool> hasToken = signal(false);
 
-  late final groups = computed<RealmResults<Group>?>(
-      () => hasToken.value ? _realm.all<Group>() : null);
+  MainUser? get user => _realm.find<MainUser>(_userId);
 
-  late final chats = computed<RealmResults<Chat>?>(
-      () => hasToken.value ? _realm.all<Chat>() : null);
+  RealmResults<Group> get groups =>
+      _realm.query<Group>('TRUEPREDICATE SORT(updatedAt DESC)');
 
-  MainUser? get user => hasToken.value ? _realm.find<MainUser>(_userId) : null;
+  RealmResults<Chat> get chats =>
+      _realm.query<Chat>('TRUEPREDICATE SORT(updatedAt DESC)');
 
   void _saveToken(String token) {
     _secureStore.write(key: _key, value: token);
@@ -60,21 +58,31 @@ class ChatController {
     Realm.deleteRealm(_realm.config.path);
   }
 
-  Future<void> startLoginServer(void Function() popFunction) async {
+  Future<bool> startLoginServer(void Function() popFunction) async {
     _loginServer ??= await shelf_io.serve(
-        logRequests().addHandler((request) {
+      logRequests().addHandler(
+        (request) {
           if (request.url.queryParameters.containsKey(Labels.accessToken)) {
             controller.login(request.url.queryParameters[Labels.accessToken]!);
             popFunction();
-            _loginServer!.close();
-            _loginServer = null;
             return Response.ok('Login successful, go back to app');
           } else {
-            return Response.notFound('Login Unsuccessful');
+            return Response.notFound('Login possibly went wrong?');
           }
-        }),
-        'localhost',
-        3000);
+        },
+      ),
+      'localhost',
+      3000,
+    );
+    return true;
+  }
+
+  void ensureLoginServerClosed() {
+    if (_loginServer != null) {
+      _loginServer?.close();
+      _loginServer = null;
+      dev.log('Login Server Closed');
+    }
   }
 
   MainUser _createMainUser(Map<String, dynamic> user) {
@@ -94,17 +102,15 @@ class ChatController {
   }
 
   Group _createGroup(Map<String, dynamic> group) {
-    return Group(
-      group[Labels.id],
-      createdAt: group[Labels.createdAt],
-      updatedAt: group[Labels.updatedAt],
-      unreadCount: group[Labels.unreadCount] ?? 0,
-      name: group[Labels.name],
-      creatorUserId: group[Labels.creatorUserId],
-      description: group[Labels.description],
-      imageUrl: group[Labels.imageUrl],
-      messageCount: group[Labels.messages][Labels.count]
-    );
+    return Group(group[Labels.id],
+        createdAt: group[Labels.createdAt],
+        updatedAt: group[Labels.updatedAt],
+        unreadCount: group[Labels.unreadCount] ?? 0,
+        name: group[Labels.name],
+        creatorUserId: group[Labels.creatorUserId],
+        description: group[Labels.description],
+        imageUrl: group[Labels.imageUrl],
+        messageCount: group[Labels.messages][Labels.count]);
   }
 
   Chat _createChat(Map<String, dynamic> chat) {
@@ -145,7 +151,7 @@ class ChatController {
       senderId: message[Labels.senderId],
       text: message[Labels.text],
       createdAt: message[Labels.createdAt],
-      system: message[Labels.system],
+      system: message[Labels.system] ?? false,
       attachments: attachments,
       reactions: reactions,
     );
@@ -166,7 +172,7 @@ class ChatController {
     );
   }
 
-  Future<bool> loadGroups() async {
+  Future<bool> loadGroups({bool omitMemberships = false}) async {
     if (hasToken.value) {
       var groups = await _api.getAllGroups();
       if (groups != null) {
@@ -203,7 +209,8 @@ class ChatController {
           group.messages.clear();
           group.messages.addAll(realmMessages);
         });
-        dev.log('${group.name} has ${group.messages.length} local messages, ${group.messageCount} total messages');
+        dev.log(
+            '${group.name} has ${group.messages.length} local messages, ${group.messageCount} total messages');
         dev.log('${_realm.all<Message>().length} total local messages');
         return true;
       }
@@ -227,6 +234,38 @@ class ChatController {
     return false;
   }
 
+  Future<bool> loadChatMessages({
+    required Chat chat,
+    Message? before,
+    Message? since,
+  }) async {
+    assert(
+      !(before != null && since != null),
+    );
+    if (hasToken.value) {
+      var messages = await _api.getChatMessages(
+        userId: chat.otherUser?.id ?? '',
+        beforeId: before?.id ?? '',
+        sinceId: since?.id ?? '',
+      );
+      if (messages != null) {
+        List<Message> realmMessages = [];
+        for (var message in messages) {
+          realmMessages.add(_createMessage(message));
+        }
+        _realm.write(() {
+          _realm.addAll(realmMessages, update: true);
+          chat.messages.clear();
+          chat.messages.addAll(realmMessages);
+        });
+        dev.log(
+            '${chat.name} has ${chat.messages.length} local messages, ${chat.messageCount} total messages');
+        dev.log('${_realm.all<Message>().length} total local messages');
+      }
+    }
+    return false;
+  }
+
   Future<bool> loadUserData() async {
     if (hasToken.value) {
       var user = await _api.getUserData();
@@ -237,7 +276,6 @@ class ChatController {
           () => _realm.add<MainUser>(newUser, update: true),
         );
         dev.log(newUser.toString());
-        userChanged.value++;
         return true;
       }
     }
@@ -259,7 +297,6 @@ class ChatController {
           usr?.imageUrl = uData[Labels.imageUrl];
         });
         dev.log('User Updated');
-        userChanged.value++;
         return true;
       }
     }
@@ -303,6 +340,7 @@ class ChatController {
       await loadUserData();
       await loadGroups();
       await loadChats();
+      _userId = user?.id ?? '';
     }
     _realm = Realm(Configuration.inMemory(_schemas));
   }

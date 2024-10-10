@@ -1,7 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:groupchat/settings_controller.dart';
 import 'package:groupchat/ui/account_page.dart';
-import '../classes/models.dart';
 import 'login_page.dart';
 import 'package:signals/signals_flutter.dart';
 import '../controller.dart';
@@ -16,13 +16,10 @@ class GroupChat extends StatefulWidget {
   State<GroupChat> createState() => _GroupChatState();
 }
 
-class _GroupChatState extends State<GroupChat> with SignalsMixin {
-  late final hasToken = super.createComputed(() => controller.hasToken.value);
-
+class _GroupChatState extends State<GroupChat> {
   @override
   Widget build(BuildContext context) {
-    var changed = hasToken.value;
-    return Watch<MaterialApp>(
+    return Watch(
       (context) => MaterialApp(
         title: 'GroupChat',
         themeMode: settingsController.themeMode.value,
@@ -72,8 +69,8 @@ class _GroupChatState extends State<GroupChat> with SignalsMixin {
                   return const LoginPage();
                 case SettingsPage.route:
                   return const SettingsPage();
-                case UserPage.route:
-                  return const UserPage();
+                case AccountPage.route:
+                  return const AccountPage();
                 default:
                   return controller.hasToken.value
                       ? const HomePage()
@@ -97,26 +94,46 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with SignalsMixin {
-  late final groups = super.createComputed(() => controller.groups.value);
-  late final chats = super.createComputed(() => controller.chats.value);
-  late final pageIndex = super.createSignal(0);
-  late final userChanged =
-      super.createComputed(() => controller.userChanged.value);
+  late final groups = controller.groups;
+  late final chats = controller.chats;
+  late final stateChanged = super.createSignal(0);
 
-  var scrollController = ScrollController();
+  late final pageIndex = super.createSignal(0);
+
+  late List<StreamSubscription?> subs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    controller.ensureLoginServerClosed();
+    var sub1 = groups.changes.listen((event) => stateChanged.value++);
+    var sub2 = chats.changes.listen((event) => stateChanged.value++);
+    var sub3 = controller.user?.changes.listen((event) => stateChanged.value++);
+    subs.addAll([sub1, sub2, sub3]);
+  }
+
+  @override
+  void dispose() async {
+    super.dispose();
+    for (var sub in subs) {
+      await sub?.cancel();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var changed = userChanged.value;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 65,
         title: Row(children: [
           GestureDetector(
-            onTap: () => Navigator.pushNamed(context, UserPage.route),
-            child: CircleAvatar(
-              radius: 24,
-              foregroundImage: NetworkImage(controller.user?.imageUrl ?? ''),
+            onTap: () => Navigator.pushNamed(context, AccountPage.route),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: CircleAvatar(
+                radius: 24,
+                foregroundImage: NetworkImage(controller.user?.imageUrl ?? ''),
+              ),
             ),
           ),
           const SizedBox(width: 10),
@@ -134,34 +151,31 @@ class _HomePageState extends State<HomePage> with SignalsMixin {
           const SizedBox(width: 15),
         ],
       ),
-      body: pageIndex.value == 0 ? ListView(
-        cacheExtent: 9999,
-        controller: scrollController,
-        children: [
-          for (Group group in groups.value ?? [])...[
-            GroupTile(group),
-            const Divider(thickness: 2, height: 2),
-          ],
-        ],
-      ) : ListView(
-        cacheExtent: 9999,
-        controller: scrollController,
-        children: [
-          for (Chat chat in chats.value ?? [])...[
-            ChatTile(chat),
-            const Divider(thickness: 2, height: 2),
-          ],
-        ],
-      ),
+      body: IndexedStack(index: pageIndex.value, children: [
+        ListView.separated(
+          cacheExtent: 1000,
+          separatorBuilder: (context, index) =>
+              const Divider(thickness: 2, height: 2),
+          itemCount: groups.length,
+          itemBuilder: (context, index) => GroupTile(groups[index]),
+        ),
+        ListView.separated(
+          cacheExtent: 1000,
+          separatorBuilder: (context, index) =>
+              const Divider(thickness: 2, height: 2),
+          itemCount: chats.length,
+          itemBuilder: (context, index) => ChatTile(chats[index]),
+        ),
+      ]),
       bottomNavigationBar: NavigationBar(
         selectedIndex: pageIndex.value,
         destinations: const [
           NavigationDestination(icon: Icon(Icons.group), label: 'Groups'),
-          NavigationDestination(icon: Icon(Icons.chat), label: 'Chats'),
+          NavigationDestination(
+              icon: Icon(Icons.person), label: 'Direct Messages'),
         ],
         onDestinationSelected: (value) {
           pageIndex.value = value;
-          scrollController.position.moveTo(0);
         },
       ),
     );

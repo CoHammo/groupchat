@@ -1,26 +1,27 @@
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/status.dart' as status;
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'dart:developer' as dev;
 
 class ChatApi {
-  ChatApi(this.token);
+  ChatApi(this._token);
 
-  final String token;
+  final String _token;
 
   late final _dio = Dio(
     BaseOptions(
       baseUrl: 'https://api.groupme.com/v3',
-      headers: {'X-Access-Token': token},
+      headers: {'X-Access-Token': _token},
     ),
   );
 
   late final _dioImage = Dio(
     BaseOptions(
       baseUrl: 'https://image.groupme.com',
-      headers: {'X-Access-Token': token},
+      headers: {'X-Access-Token': _token},
     ),
   );
 
@@ -51,7 +52,8 @@ class ChatApi {
     return null;
   }
 
-  Future<List<Map<String, dynamic>>?> getAllGroups() async {
+  Future<List<Map<String, dynamic>>?> getAllGroups(
+      {bool getMembers = false}) async {
     try {
       List<Map<String, dynamic>> groups = [];
       bool fullPage = true;
@@ -59,7 +61,7 @@ class ChatApi {
       while (fullPage) {
         var rs = await _dio.get('/groups', queryParameters: {
           'page': pageNumber,
-          'omit': 'memberships',
+          (getMembers ? '' : 'omit'): (getMembers ? '' : 'memberships'),
           'per_page': 50,
         });
         if (rs.statusCode == 200) {
@@ -81,22 +83,31 @@ class ChatApi {
     return null;
   }
 
+  Future<Map<String, dynamic>?> getGroup(String id) async {
+    try {
+      var rs = await _dio.get('/groups/$id');
+      if (rs.statusCode == 200) {
+        return rs.data['response'];
+      }
+    } catch (e) {
+      dev.log(e.toString());
+    }
+    return null;
+  }
+
   /// Gets [messages] messages that were sent before the [beforeId] from the group with the [groupId].
   /// If [messages] is 0 or isn't given, it will get all messages from the group.
   /// If [beforeId] isn't given, it will get the most recent messages.
   /// The most recent message will be at index 0, and the oldest one at the last index.
-  Future<List<Map<String, dynamic>>?> getGroupMessages({
-    required String groupId,
-    int messages = 0,
-    String beforeId = ''
-  }) async {
+  Future<List<Map<String, dynamic>>?> getGroupMessages(
+      {required String groupId, int messages = 0, String beforeId = ''}) async {
     try {
       List<Map<String, dynamic>> messageList = [];
       bool fullPage = true;
       bool needsMore = true;
       int pageSize = 0;
 
-      switch(messages) {
+      switch (messages) {
         case < 0:
           pageSize = 1;
           messages = 1;
@@ -165,14 +176,29 @@ class ChatApi {
     return null;
   }
 
-  Future<List<Map<String, dynamic>>?> getChatMessages(String userId) async {
+  /// Returns 20 messages around the given parameters
+  Future<List<Map<String, dynamic>>?> getChatMessages({
+    required String userId,
+    String beforeId = '',
+    String sinceId = '',
+  }) async {
     try {
       var rs = await _dio.get(
         '/direct_messages',
-        queryParameters: {'other_user_id': userId},
+        queryParameters: {
+          'other_user_id': userId,
+          'before_id': beforeId,
+          'since_id': sinceId
+        },
       );
       if (rs.statusCode == 200) {
-        return rs.data['response']['direct_messages'];
+        var msgs = (rs.data['response']['direct_messages'] as List)
+            .map(
+              (item) => item as Map<String, dynamic>,
+            )
+            .toList();
+        return msgs;
+        //return rs.data['response']['direct_messages'];
       }
     } catch (e) {
       dev.log(e.toString());
@@ -195,6 +221,43 @@ class ChatApi {
     return null;
   }
 
+  Future<bool> wsConnect() async {
+    try {
+      var rs = await _dio.post('https://push.groupme.com/faye', data: [
+        {
+          "channel": "/meta/handshake",
+          "version": "1.0",
+          "supportedConnectionTypes": ["long-polling"],
+          "id": "1"
+        }
+      ]);
+      prettyPrint(rs.data);
+      print('\nNext One\n');
+      String clientId = rs.data[0]['clientId'];
+      rs = await _dio.post('https://push.groupme.com/faye', data: [
+        {
+          "channel": "/meta/subscribe",
+          "clientId": clientId,
+          "subscription": "/user/40514102",
+          "id": "2",
+          "ext": {
+            "access_token": _token,
+          }
+        }
+      ]);
+      var ws = WebSocketChannel.connect(
+          Uri.parse('ws://push.groupme.com/faye/meta/subscribe/user/40514102'));
+      await ws.ready;
+      ws.stream.listen((event) => print(event));
+      prettyPrint(rs.data);
+      return true;
+    } catch (e) {
+      print(e);
+      dev.log(e.toString());
+    }
+    return false;
+  }
+
   void prettyPrint(Object? data) {
     print(_encoder.convert(data));
   }
@@ -205,7 +268,5 @@ void main() async {
   String token = await File('${Directory.current.path}/token').readAsString();
   print(token);
   final api = ChatApi(token);
-  var groups = await api.getAllGroups();
-  var chats = await api.getAllChats();
-  api.prettyPrint(chats?[0]);
+  api.wsConnect();
 }

@@ -23,31 +23,35 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: ListView(padding: const EdgeInsets.all(5), children: [
         SubmenuButton(
-            menuChildren: [
-              MenuItemButton(
-                child: const Text('System Theme'),
-                onPressed: () {
-                  settingsController.themeMode.value = ThemeMode.system;
-                  setState(() {});
-                },
-              ),
-              MenuItemButton(
-                child: const Text('Light'),
-                onPressed: () {
-                  settingsController.themeMode.value = ThemeMode.light;
-                  setState(() {});
-                },
-              ),
-              MenuItemButton(
-                child: const Text('Dark'),
-                onPressed: () {
-                  settingsController.themeMode.value = ThemeMode.dark;
-                  setState(() {});
-                },
-              ),
-            ],
-            child: Text(
-                'Theme: ${settingsController.themeMode.value.name[0].toUpperCase()}${settingsController.themeMode.value.name.substring(1)}')),
+          onHover: (value) {},
+          onFocusChange: (value) {},
+          menuChildren: [
+            MenuItemButton(
+              child: const Text('System Theme'),
+              onPressed: () {
+                settingsController.themeMode.value = ThemeMode.system;
+                setState(() {});
+              },
+            ),
+            MenuItemButton(
+              child: const Text('Light'),
+              onPressed: () {
+                settingsController.themeMode.value = ThemeMode.light;
+                setState(() {});
+              },
+            ),
+            MenuItemButton(
+              child: const Text('Dark'),
+              onPressed: () {
+                settingsController.themeMode.value = ThemeMode.dark;
+                setState(() {});
+              },
+            ),
+          ],
+          child: Text(
+              'Theme: ${settingsController.themeMode.value.name[0].toUpperCase()}${settingsController.themeMode.value.name.substring(1)}'),
+        ),
+        const SizedBox(height: 10),
         FilledButton(
           style: Theme.of(context).filledButtonTheme.style,
           child: const Text('Logout'),

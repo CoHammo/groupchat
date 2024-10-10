@@ -37,6 +37,6 @@ class $Group implements IConversation {
 
   @override
   String toString() {
-    return 'Group: $name, ${members.length} members, ${messages.length} messages';
+    return 'Group: $name, ${members.length} members, $messageCount messages';
   }
 }

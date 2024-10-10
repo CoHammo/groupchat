@@ -1,25 +1,41 @@
+import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:groupchat/controller.dart';
 import 'package:groupchat/ui/widgets/user_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:signals/signals_flutter.dart';
+import 'dart:developer' as dev;
 
-class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+class AccountPage extends StatefulWidget {
+  const AccountPage({super.key});
 
   static const route = '/account';
 
   @override
-  State<UserPage> createState() => _UserPageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
-class _UserPageState extends State<UserPage> with SignalsMixin {
+class _AccountPageState extends State<AccountPage> with SignalsMixin {
+  var user = controller.user;
   final imagePicker = ImagePicker();
-  late final userChanged = super.createComputed(() => controller.userChanged.value);
+  late final userChanged = super.createSignal(0);
+  late StreamSubscription? sub;
+
+  @override
+  void initState() {
+    super.initState();
+    sub = controller.user?.changes.listen((event) => userChanged.value++);
+  }
+
+  @override
+  void dispose() async {
+    super.dispose();
+    await sub?.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var changed = userChanged.value;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -35,7 +51,13 @@ class _UserPageState extends State<UserPage> with SignalsMixin {
             radius: 110,
             child: CircleAvatar(
               radius: 110,
-              foregroundImage: NetworkImage(controller.user?.imageUrl ?? ''),
+              foregroundImage: user?.imageUrl != null && user?.imageUrl != ''
+                  ? CachedNetworkImageProvider(
+                      user!.imageUrl!,
+                      errorListener: (p0) => dev.log(p0.toString()),
+                    )
+                  : null,
+              onForegroundImageError: (e, stackTrace) => dev.log(e.toString()),
             ),
           ),
           const SizedBox(height: 15),
@@ -43,42 +65,46 @@ class _UserPageState extends State<UserPage> with SignalsMixin {
             style: Theme.of(context).filledButtonTheme.style,
             child: const Text('Choose New Image'),
             onPressed: () async {
-              var image =
-                  await imagePicker.pickImage(source: ImageSource.gallery);
-              if (image != null) {
-                var bytes = await image.readAsBytes();
-                if (context.mounted) {
-                  var success = await showDialog<bool>(
-                    context: context,
-                    builder: (context) {
-                      return FutureBuilder(
-                        future: controller.changeAvatar(bytes),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            Navigator.pop<bool>(context, snapshot.data!);
-                          }
-                          return const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 50,
-                                height: 50,
-                                child: CircularProgressIndicator.adaptive(),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  );
+              try {
+                var image =
+                    await imagePicker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  var bytes = await image.readAsBytes();
                   if (context.mounted) {
-                    var message =
-                        success! ? 'Avatar Changed' : 'Avatar Not Changed';
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Center(child: Text(message))),
+                    var success = await showDialog<bool>(
+                      context: context,
+                      builder: (context) {
+                        return FutureBuilder(
+                          future: controller.changeAvatar(bytes),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              Navigator.pop<bool>(context, snapshot.data!);
+                            }
+                            return const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: CircularProgressIndicator.adaptive(),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     );
+                    if (context.mounted) {
+                      var message =
+                          success! ? 'Avatar Changed' : 'Avatar Not Changed';
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Center(child: Text(message))),
+                      );
+                    }
                   }
                 }
+              } catch (e) {
+                print(e);
               }
             },
           ),

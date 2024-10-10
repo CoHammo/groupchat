@@ -25,10 +25,14 @@ class _GroupTileState extends State<GroupTile> {
                 borderRadius: BorderRadius.circular(12),
               ),
               clipBehavior: Clip.hardEdge,
-              child: CachedNetworkImage(
-                imageUrl: widget.group?.imageUrl ?? '',
-                errorWidget: (context, url, error) => const Icon(Icons.group),
-              ),
+              child:
+                  widget.group.imageUrl != null && widget.group.imageUrl != ''
+                      ? CachedNetworkImage(
+                          imageUrl: widget.group.imageUrl!,
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.person),
+                        )
+                      : const Icon(Icons.group),
             ),
           ),
           const SizedBox(width: 8),
@@ -37,24 +41,20 @@ class _GroupTileState extends State<GroupTile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.group?.name ?? 'No Group',
+                  widget.group.name,
                   style: const TextStyle(fontSize: 20, height: 1.2),
                 ),
                 const SizedBox(height: 8),
-                if (widget.group?.description != '') ...[
-                  Text(
-                    widget.group?.description ?? '',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 15)
-                  ),
-                ] else...[
-                  const Text(
-                    'No Messages Yet',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 15)
-                  ),
+                if (widget.group.description != '') ...[
+                  Text(widget.group.description ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 15)),
+                ] else ...[
+                  const Text('No Messages Yet',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 15)),
                 ],
               ],
             ),
