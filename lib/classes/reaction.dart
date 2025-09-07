@@ -4,8 +4,8 @@ part 'reaction.realm.dart';
 
 @RealmModel(ObjectType.embeddedObject)
 class $Reaction {
-  late String code = '';
   late String type = '';
+  late String? code = '';
   late List<String> users;
 
   @override

@@ -56,6 +56,7 @@ class _GroupChatState extends State<GroupChat> {
             ),
           ),
         ),
+        initialRoute: HomePage.route,
         onGenerateRoute: (routeSettings) {
           return MaterialPageRoute(
             settings: routeSettings,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/settings_controller.dart';
+import 'package:groupchat/ui/login_page.dart';
 import '../controller.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -57,7 +58,8 @@ class _SettingsPageState extends State<SettingsPage> {
           child: const Text('Logout'),
           onPressed: () {
             controller.logout();
-            Navigator.pushReplacementNamed(context, '/login');
+            Navigator.pushNamedAndRemoveUntil(context, LoginPage.route, (route) => false);
+            // Navigator.pushReplacementNamed(context, LoginPage.route);
           },
         ),
       ]),

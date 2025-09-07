@@ -61,9 +61,9 @@ class ChatController {
   Future<bool> startLoginServer(void Function() popFunction) async {
     _loginServer ??= await shelf_io.serve(
       logRequests().addHandler(
-        (request) {
+        (request) async {
           if (request.url.queryParameters.containsKey(Labels.accessToken)) {
-            controller.login(request.url.queryParameters[Labels.accessToken]!);
+            await login(request.url.queryParameters[Labels.accessToken]!);
             popFunction();
             return Response.ok('Login successful, go back to app');
           } else {
@@ -315,19 +315,21 @@ class ChatController {
     return false;
   }
 
-  void login(String token) {
-    _deleteData();
+  Future login(String token) async {
+    //_deleteData();
     _realm = Realm(
         Configuration.inMemory(_schemas)); //TODO: change to local database
     _api = ChatApi(token);
     _saveToken(token);
-    loadUserData();
-    loadGroups();
-    loadChats();
+    await loadUserData();
+    await loadGroups();
+    await loadChats();
+    _api.websocketConnect(userId: _userId);
   }
 
   void logout() {
     _deleteData();
+    _api.websocketDisconnect();
     dev.log('Logged Out');
   }
 
@@ -340,12 +342,10 @@ class ChatController {
       await loadUserData();
       await loadGroups();
       await loadChats();
-      _userId = user?.id ?? '';
+      await _api.websocketConnect(userId: _userId);
     }
     _realm = Realm(Configuration.inMemory(_schemas));
   }
-
-  ChatController();
 }
 
 class Labels {

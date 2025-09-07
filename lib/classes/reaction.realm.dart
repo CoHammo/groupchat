@@ -12,7 +12,7 @@ class Reaction extends $Reaction
   static var _defaultsSet = false;
 
   Reaction({
-    String code = '',
+    String? code = '',
     String type = '',
     Iterable<String> users = const [],
   }) {
@@ -31,9 +31,9 @@ class Reaction extends $Reaction
   Reaction._();
 
   @override
-  String get code => RealmObjectBase.get<String>(this, 'code') as String;
+  String? get code => RealmObjectBase.get<String>(this, 'code') as String?;
   @override
-  set code(String value) => RealmObjectBase.set(this, 'code', value);
+  set code(String? value) => RealmObjectBase.set(this, 'code', value);
 
   @override
   String get type => RealmObjectBase.get<String>(this, 'type') as String;
@@ -80,7 +80,7 @@ class Reaction extends $Reaction
     RealmObjectBase.registerFactory(Reaction._);
     register(_toEJson, _fromEJson);
     return const SchemaObject(ObjectType.embeddedObject, Reaction, 'Reaction', [
-      SchemaProperty('code', RealmPropertyType.string),
+      SchemaProperty('code', RealmPropertyType.string, optional: true),
       SchemaProperty('type', RealmPropertyType.string),
       SchemaProperty('users', RealmPropertyType.string,
           collectionType: RealmCollectionType.list),

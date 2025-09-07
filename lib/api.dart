@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:signals/signals.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:dio/dio.dart';
@@ -24,6 +26,8 @@ class ChatApi {
       headers: {'X-Access-Token': _token},
     ),
   );
+
+  WebSocketChannel? _socket;
 
   final _encoder = const JsonEncoder.withIndent('  ');
 
@@ -221,41 +225,43 @@ class ChatApi {
     return null;
   }
 
-  Future<bool> wsConnect() async {
+  Future<bool> websocketConnect({required String userId}) async {
     try {
-      var rs = await _dio.post('https://push.groupme.com/faye', data: [
-        {
-          "channel": "/meta/handshake",
-          "version": "1.0",
-          "supportedConnectionTypes": ["long-polling"],
-          "id": "1"
-        }
-      ]);
-      prettyPrint(rs.data);
-      print('\nNext One\n');
-      String clientId = rs.data[0]['clientId'];
-      rs = await _dio.post('https://push.groupme.com/faye', data: [
-        {
-          "channel": "/meta/subscribe",
-          "clientId": clientId,
-          "subscription": "/user/40514102",
-          "id": "2",
-          "ext": {
-            "access_token": _token,
-          }
-        }
-      ]);
-      var ws = WebSocketChannel.connect(
-          Uri.parse('ws://push.groupme.com/faye/meta/subscribe/user/40514102'));
-      await ws.ready;
-      ws.stream.listen((event) => print(event));
-      prettyPrint(rs.data);
+      dev.log('connecting websocket...');
+      _socket = WebSocketChannel.connect(
+          Uri.parse('wss://push.groupme.com/faye'));
+      await _socket?.ready;
+      StreamSubscription? sub;
+      sub = _socket?.stream.listen((event) => _socketFinishHandshake(event, sub, userId));
+      _socket?.sink.add('[{"channel":"/meta/handshake","version":"1.0","supportedConnectionTypes":["long-polling"],"id":"1"}]');
       return true;
     } catch (e) {
-      print(e);
       dev.log(e.toString());
     }
     return false;
+  }
+
+  void _socketFinishHandshake(dynamic event, StreamSubscription? sub, String userId) {
+    Map<String, dynamic> data = (jsonDecode(event))[0];
+    prettyPrint(data);
+    String clientId = data['clientId'];
+    sub?.onData((data) => _socketOnData(data));
+    _socket?.sink.add('[{"channel":"/meta/subscribe","clientId":"$clientId","subscription":"/user/$userId","id":"2","ext":{"access_token":"$_token","timestamp":1322556419}}]');
+  }
+
+  void _socketOnData(dynamic event) {
+    Map<String, dynamic> data = jsonDecode(event)[0];
+    //prettyPrint(data);
+    if (data.containsKey('data')) {
+      String message = data['data']['alert'];
+      print(message);
+    }
+  }
+
+  void websocketDisconnect() {
+    _socket?.sink.close();
+    _socket = null;
+    dev.log('websocket closed');
   }
 
   void prettyPrint(Object? data) {
@@ -268,5 +274,5 @@ void main() async {
   String token = await File('${Directory.current.path}/token').readAsString();
   print(token);
   final api = ChatApi(token);
-  api.wsConnect();
+  api.websocketConnect(userId: '40514102');
 }

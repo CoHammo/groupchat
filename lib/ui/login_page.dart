@@ -18,7 +18,8 @@ class _LoginPageState extends State<LoginPage> with SignalsMixin {
       super.createSignal(const Text('Login to GroupMe'));
 
   void _changePage() {
-    Navigator.pushReplacementNamed(context, HomePage.route);
+    Navigator.pushNamedAndRemoveUntil(
+        context, HomePage.route, (route) => false);
   }
 
   @override
