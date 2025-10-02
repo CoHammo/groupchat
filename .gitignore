@@ -47,3 +47,4 @@ app.*.map.json
 # Mine
 groupme-api-testing.nu
 token
+libduckdb-linux-amd64

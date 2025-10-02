@@ -6,6 +6,7 @@ import 'package:groupchat/api.dart';
 void main() async {
   var token = await File('token').readAsString();
   Api.setToken(token);
+
   group('Api', () {
     test('getMe returns user data', () async {
       final me = await Api.getMe();
@@ -64,5 +65,15 @@ void main() async {
     print(removeUser);
     final response = await Api.removeMember('104758726', removeUser['id']);
     print(response);
+  });
+
+  test('updateMe updates user data', () async {
+    final response = await Api.updateMe(bio: 'Hello!');
+    print(JsonEncoder.withIndent('  ').convert(response));
+  });
+
+  test('getMessages', () async {
+    final response = await Api.getMessages('104758726');
+    print(JsonEncoder.withIndent('  ').convert(response));
   });
 }
