@@ -1,24 +1,27 @@
+import 'dart:async';
 import 'package:dart_duckdb/dart_duckdb.dart';
 import 'package:path_provider/path_provider.dart';
+import 'classes/classes.dart';
 
 class _Columns {
-  final List<String> me;
-  final List<String> users;
-  final List<String> groups;
-  final List<String> members;
-
-  _Columns(this.me, this.users, this.groups, this.members);
+  List<String> get me => Me.columns;
+  List<String> get users => User.columns;
+  List<String> get groups => Group.columns;
+  List<String> get members => Member.columns;
+  List<String> get messages => Message.columns;
 
   List<String> operator [](String table) {
     switch (table) {
       case 'me':
-        return me;
+        return Me.columns;
       case 'users':
-        return users;
+        return User.columns;
       case 'groups':
-        return groups;
+        return Group.columns;
       case 'members':
-        return members;
+        return Member.columns;
+      case 'messages':
+        return Message.columns;
       default:
         return [];
     }
@@ -29,15 +32,6 @@ class Db {
   static late final Database _db;
   static late final Connection _conn;
   static late final _Columns _columns;
-
-  static String _values(int rows, int columns) {
-    String template = '(${List.filled(columns, '?').join(',')})';
-    StringBuffer values = StringBuffer();
-    for (int i = 0; i < rows; i++) {
-      values.write('$template,');
-    }
-    return values.toString();
-  }
 
   static Future<void> init({bool memory = false}) async {
     String dir;
@@ -70,7 +64,7 @@ class Db {
         image_url VARCHAR,
         bio VARCHAR,
         song_url VARCHAR,
-        shared_groups BIGINT[]
+        shared_groups VARCHAR[]
       );
 
       CREATE TABLE IF NOT EXISTS groups (
@@ -84,6 +78,7 @@ class Db {
         updated_at BIGINT,
         message_count BIGINT,
         last_message_id VARCHAR,
+        last_message_created_at BIGINT,
         last_message_updated_at BIGINT,
         theme_name VARCHAR,
         requires_approval BOOLEAN,
@@ -92,24 +87,49 @@ class Db {
         message_deletion_mode VARCHAR[],
         share_url VARCHAR,
         share_qr_code_url VARCHAR,
+        members_saved BOOLEAN,
+        messages_saved BOOLEAN,
       );
-      
-      CREATE TABLE IF NOT EXISTS members (
-        group_id VARCHAR REFERENCES groups(id),
-        user_id VARCHAR REFERENCES users(id),
-        member_id VARCHAR,
-        roles VARCHAR[],
-        nickname VARCHAR,
-        PRIMARY KEY (group_id, user_id, member_id)
-      );
-      ''');
 
-    _columns = _Columns(
-      (await _conn.getColumnOrder('me')).toList(),
-      (await _conn.getColumnOrder('users')).toList(),
-      (await _conn.getColumnOrder('groups')).toList(),
-      (await _conn.getColumnOrder('members')).toList(),
+      CREATE TABLE IF NOT EXISTS members (
+        id VARCHAR REFERENCES users(id),
+        group_id VARCHAR REFERENCES groups(id),
+        member_id VARCHAR,
+        nickname VARCHAR,
+        roles VARCHAR[],
+        muted BOOLEAN,
+        autokicked BOOLEAN,
+        PRIMARY KEY (id, group_id, member_id),
+      );
+
+      CREATE TYPE attachment_type AS ENUM ('image', 'reply', 'file', 'location', 'unsupported');
+
+      CREATE TABLE IF NOT EXISTS messages (
+        id VARCHAR PRIMARY KEY,
+        group_id VARCHAR REFERENCES groups(id),
+        sender_id VARCHAR REFERENCES users(id),
+        system BOOLEAN,
+        text VARCHAR,
+        reactions STRUCT(unicode VARCHAR, user_ids VARCHAR[])[],
+        attachments STRUCT(type attachment_type, id VARCHAR, lat VARCHAR, lng VARCHAR)[],
+        source_guid VARCHAR,
+        pinned_at BIGINT,
+        pinned_by VARCHAR,
+        created_at BIGINT,
+        updated_at BIGINT,
+      );
+    ''');
+
+    await _conn.execute(
+      '''INSERT INTO users VALUES ('system', 'system', NULL, NULL, NULL, NULL);''',
     );
+
+    Me.columns.addAll((await _conn.getColumnOrder('me')));
+    User.columns.addAll((await _conn.getColumnOrder('users')));
+    Member.columns.addAll((await _conn.getColumnOrder('members')));
+    Group.columns.addAll((await _conn.getColumnOrder('groups')));
+    Message.columns.addAll((await _conn.getColumnOrder('messages')));
+    _columns = _Columns();
   }
 
   static Future<void> close() async {
@@ -117,8 +137,13 @@ class Db {
     await _conn.dispose();
   }
 
-  static Future<void> testMergeGroups(List<Map<String, dynamic>> things) async {
-    return;
+  static String _values(int rows, int columns) {
+    String template = '(${List.filled(columns, '?').join(',')})';
+    StringBuffer values = StringBuffer();
+    for (int i = 0; i < rows; i++) {
+      values.write('$template,');
+    }
+    return values.toString();
   }
 
   static Future<(bool, Object?)> _save(
@@ -149,18 +174,12 @@ class Db {
     return _save([me], 'me');
   }
 
-  static Future<Map<String, dynamic>?> getMe() async {
+  static Future<Me> getMe() async {
     try {
-      final res = await _conn.query('SELECT * FROM me;');
-      final me = res.fetchOne();
-      if (me != null) {
-        var map = Map.fromIterables(res.columnNames, me);
-        return map;
-      } else {
-        return null;
-      }
+      var res = (await _conn.query('SELECT * FROM me;')).fetchOne()!;
+      return Me.fromRow(res);
     } catch (e) {
-      return null;
+      rethrow;
     }
   }
 
@@ -168,35 +187,63 @@ class Db {
     return _save([users], 'users');
   }
 
-  static Future<Map<String, dynamic>?> getUser(String id) async {
+  static Future<User> getUser(String id) async {
     try {
-      final res = await _conn.query('SELECT * FROM users WHERE id = $id');
-      final user = res.fetchOne();
-      if (user != null) {
-        var map = Map.fromIterables(res.columnNames, user);
-        return map;
-      } else {
-        return null;
-      }
+      var row = (await _conn.query(
+        'SELECT * FROM users WHERE id = $id',
+      )).fetchOne()!;
+      return User.fromRow(row);
     } catch (e) {
-      return null;
+      rethrow;
     }
   }
 
-  static Future<List<List>?> getAllUsers() async {
+  static Future<List<User>> getAllUsers() async {
     try {
-      final res = await _conn.query('SELECT * FROM users');
-      final results = res.fetchAll();
-      results.add(res.columnNames);
-      return results;
+      var rows = (await _conn.query('SELECT * FROM users')).fetchAll();
+      List<User> users = [];
+      for (var row in rows) {
+        users.add(User.fromRow(row));
+      }
+      return users;
     } catch (e) {
-      return null;
+      rethrow;
+    }
+  }
+
+  static Future<(bool, Object?)> saveGroups(List<Map<String, dynamic>> groups) {
+    return _save(groups, 'groups');
+  }
+
+  static Future<List<Group>> getGroups() async {
+    try {
+      var rows = (await _conn.query(
+        'SELECT * FROM groups ORDER BY updated_at DESC',
+      )).fetchAll();
+      List<Group> groups = [];
+      for (var row in rows) {
+        groups.add(Group.fromRow(row));
+      }
+      return groups;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<Group> getGroup(String groupId) async {
+    try {
+      var row = (await _conn.query(
+        'SELECT * FROM groups WHERE id = $groupId',
+      )).fetchOne()!;
+      return Group.fromRow(row);
+    } catch (e) {
+      rethrow;
     }
   }
 
   static Future<(bool, Object?)> saveMembers(
     List<Map<String, dynamic>> members,
-    String group,
+    String groupId,
   ) async {
     try {
       var values = _values(members.length, _columns.users.length);
@@ -204,7 +251,7 @@ class Db {
         INSERT INTO users VALUES $values ON CONFLICT DO UPDATE
           SET name = EXCLUDED.name, image_url = EXCLUDED.image_url;
       ''');
-      values = _values(members.length, 5);
+      values = _values(members.length, _columns.members.length);
       final saveMembers = await _conn.prepare(
         'INSERT OR REPLACE INTO members VALUES $values',
       );
@@ -216,11 +263,9 @@ class Db {
           userParams.add(member[column]);
         }
 
-        memberParams.add(group);
-        memberParams.add(member['id']);
-        memberParams.add(member['member_id']);
-        memberParams.add(member['roles']);
-        memberParams.add(member['nickname']);
+        for (final column in _columns.members) {
+          memberParams.add(member[column]);
+        }
       }
 
       prepUsers.bindParams(userParams);
@@ -236,29 +281,91 @@ class Db {
     }
   }
 
-  static Future<List<List>?> getMembers(String group) async {
+  static Future<List<Member>> getMembers(String groupId) async {
     try {
-      final res = await _conn.query('''
-        SELECT id, member_id, name, nickname, image_url, roles
+      final rows = (await _conn.query('''
+        SELECT id, name, group_id, member_id, nickname, roles, muted, image_url
         FROM members
-        JOIN users ON members.user_id = users.id
-        WHERE group_id = $group;
-      ''');
-      final results = res.fetchAll();
-      results.add(res.columnNames);
-      return results;
+        JOIN users ON members.id = users.id
+        WHERE group_id = $groupId
+        ORDER BY nickname ASC;
+      ''')).fetchAll();
+      List<Member> members = [];
+      for (var row in rows) {
+        members.add(Member.fromRow(row));
+      }
+      return members;
     } catch (e) {
       rethrow;
     }
   }
 
-  static Future<(bool, Object?)> saveGroups(
-    List<Map<String, dynamic>> groups,
+  static Future<(bool, Object?)> saveMessages(
+    List<Map<String, dynamic>> messages,
   ) async {
-    return _save(groups, 'groups');
+    try {
+      StringBuffer values = StringBuffer();
+      for (int i = 0; i < messages.length; i++) {
+        values.write('(?, ?, ?, ?, ?, json(?), json(?), ?, ?, ?, ?, ?),\n');
+      }
+
+      final prep = await _conn.prepare(
+        'INSERT OR REPLACE INTO messages VALUES $values',
+      );
+      final params = [];
+      for (final message in messages) {
+        for (final col in _columns.messages) {
+          params.add(message[col]);
+        }
+      }
+      prep.bindParams(params);
+      await prep.execute();
+      prep.dispose();
+      return (true, null);
+    } catch (e) {
+      rethrow;
+    }
   }
 
-  static Future<ResultSet> getGroups() async {
-    return _conn.query('SELECT * FROM groups');
+  static Future<List<Message>> getMessages(
+    String groupId, {
+    bool onlyPinned = false,
+  }) async {
+    try {
+      var rows = (await _conn.query('''
+        SELECT
+          messages.id, messages.group_id, sender_id, system, text, reactions, attachments,
+          source_guid, pinned_at, pinned_by, created_at, updated_at, name, nickname, image_url,
+        FROM messages
+        LEFT JOIN members ON messages.group_id = members.group_id AND messages.sender_id = members.id
+        LEFT JOIN users ON messages.sender_id = users.id
+        WHERE messages.group_id = $groupId ${onlyPinned ? 'AND messages.pinned_at NOT NULL' : ''}
+        ORDER BY created_at DESC;
+      ''')).fetchAll();
+      List<Message> messages = [];
+      for (var row in rows) {
+        messages.add(Message.fromRow(row));
+      }
+      return messages;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<Message> getMessage(String messageId) async {
+    try {
+      var row = (await _conn.query('''
+        SELECT
+          messages.id, messages.group_id, sender_id, system, text, reactions, attachments,
+          source_guid, pinned_at, pinned_by, created_at, updated_at, name, nickname, image_url,
+        FROM messages
+        LEFT JOIN members ON messages.group_id = members.group_id AND messages.sender_id = members.id
+        LEFT JOIN users ON messages.sender_id = users.id
+        WHERE messages.id = $messageId
+      ''')).fetchOne()!;
+      return Message.fromRow(row);
+    } catch (e) {
+      rethrow;
+    }
   }
 }

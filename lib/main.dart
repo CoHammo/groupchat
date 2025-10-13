@@ -1,26 +1,35 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:groupchat/api.dart';
-import 'package:groupchat/database.dart';
-
+import 'package:signals/signals_flutter.dart';
+import 'ui/group_card.dart';
+import 'chat_controller.dart';
 
 void main() async {
-  runApp(const GroupChat());
-
-  var token = await File('token').readAsString();
-  Api.setToken(token);
-  await Db.init(memory: true);
+  SignalsObserver.instance = null;
+  var chatCon = await ChatController.make();
+  runApp(GroupChat(chatCon));
 }
 
 class GroupChat extends StatelessWidget {
-  const GroupChat({super.key});
+  const GroupChat(this.chatCon, {super.key});
+
+  final ChatController chatCon;
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData(
+        textTheme: TextTheme(bodyMedium: TextStyle(fontSize: 18)),
+      ),
       home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+        appBar: AppBar(),
+        body: Watch.builder(
+          builder: (context) {
+            return ListView.builder(
+              itemCount: chatCon.groups.length,
+              itemBuilder: (context, index) =>
+                  GroupCard(chatCon, chatCon.groups[index]),
+            );
+          },
         ),
       ),
     );

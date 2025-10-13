@@ -36,6 +36,12 @@ void main() async {
       expect(groups, isA<List>());
     });
 
+    test('getGroup', () async {
+      final groups = await Api.getGroups();
+      final group = await Api.getGroup(groups.first['id']);
+      print(JsonEncoder.withIndent('  ').convert(group));
+    });
+
     test('getMembers returns a list of members for a valid groupId', () async {
       final groups = await Api.getGroups();
       if (groups.isNotEmpty) {
@@ -47,33 +53,5 @@ void main() async {
         fail('No groups available to test getMembers');
       }
     });
-  });
-
-  test('addMembers adds a member to a group', () async {
-    final response = await Api.addMembers('104758726', [
-      '68017822',
-    ]); // Adds a friend to my test group
-    print(JsonEncoder.withIndent('  ').convert(response));
-  });
-
-  test('removeMember removes a member from a group', () async {
-    await Api.addMembers('104758726', [
-      '68017822',
-    ]); // Adds a friend to my test group
-    final members = await Api.getMembers('104758726');
-    final removeUser = members.firstWhere((m) => m['user_id'] == '68017822');
-    print(removeUser);
-    final response = await Api.removeMember('104758726', removeUser['id']);
-    print(response);
-  });
-
-  test('updateMe updates user data', () async {
-    final response = await Api.updateMe(bio: 'Hello!');
-    print(JsonEncoder.withIndent('  ').convert(response));
-  });
-
-  test('getMessages', () async {
-    final response = await Api.getMessages('104758726');
-    print(JsonEncoder.withIndent('  ').convert(response));
   });
 }
