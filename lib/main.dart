@@ -1,9 +1,6 @@
 // The original content is temporarily commented out to allow generating a self-contained demo - feel free to uncomment later.
 
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:groupchat/ui/home_page.dart';
-import 'chat_controller.dart';
 import 'package:groupchat/src/rust/frb_generated.dart';
 import 'package:groupchat/src/rust/api/rust.dart';
 // import 'package:path_provider/path_provider.dart';
