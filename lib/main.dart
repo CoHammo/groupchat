@@ -1,37 +1,40 @@
+// The original content is temporarily commented out to allow generating a self-contained demo - feel free to uncomment later.
+
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:signals/signals_flutter.dart';
-import 'ui/group_card.dart';
+import 'package:groupchat/ui/home_page.dart';
 import 'chat_controller.dart';
+import 'package:groupchat/src/rust/frb_generated.dart';
+import 'package:groupchat/src/rust/api/rust.dart';
+// import 'package:path_provider/path_provider.dart';
 
 void main() async {
-  SignalsObserver.instance = null;
-  var chatCon = await ChatController.make();
-  runApp(GroupChat(chatCon));
-}
-
-class GroupChat extends StatelessWidget {
-  const GroupChat(this.chatCon, {super.key});
-
-  final ChatController chatCon;
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        textTheme: TextTheme(bodyMedium: TextStyle(fontSize: 18)),
-      ),
-      home: Scaffold(
-        appBar: AppBar(),
-        body: Watch.builder(
-          builder: (context) {
-            return ListView.builder(
-              itemCount: chatCon.groups.length,
-              itemBuilder: (context, index) =>
-                  GroupCard(chatCon, chatCon.groups[index]),
-            );
-          },
-        ),
-      ),
-    );
+  await RustLib.init();
+  WidgetsFlutterBinding.ensureInitialized();
+  // var dir = (await getApplicationCacheDirectory()).path;
+  try {
+    var token = "YL5adURLQUmATab5V3z31cIl9MBKKER4DI80YhPs";
+    // var token = await File('token').readAsString();
+    var api = await Api.init(token: token);
+    var me = await api.getMe();
+    print(me.name);
+  } on ChatError catch (e) {
+    print(e.message);
   }
 }
+
+// class GroupChat extends StatelessWidget {
+//   const GroupChat(this.chatCon, {super.key});
+
+//   final ChatController chatCon;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       theme: ThemeData(
+//         textTheme: TextTheme(bodyMedium: TextStyle(fontSize: 18)),
+//       ),
+//       home: HomePage(chatCon),
+//     );
+//   }
+// }

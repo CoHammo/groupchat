@@ -34,13 +34,11 @@ class Db {
   static late final _Columns _columns;
 
   static Future<void> init({bool memory = false}) async {
-    String dir;
     if (memory) {
-      dir = ':memory:';
+      _db = await duckdb.open(':memory:');
     } else {
-      dir = (await getApplicationDocumentsDirectory()).path;
+      _db = await duckdb.open((await getApplicationDocumentsDirectory()).path);
     }
-    _db = await duckdb.open(dir);
     _conn = await duckdb.connect(_db);
 
     await _conn.execute('''
@@ -52,6 +50,7 @@ class Db {
         email VARCHAR,
         bio VARCHAR,
         song_url VARCHAR,
+        locale VARCHAR,
         created_at BIGINT,
         updated_at BIGINT,
         share_url VARCHAR,
@@ -64,8 +63,11 @@ class Db {
         image_url VARCHAR,
         bio VARCHAR,
         song_url VARCHAR,
+        photo_urls VARCHAR[],
         shared_groups VARCHAR[]
       );
+
+      INSERT OR REPLACE INTO users VALUES ('system', 'system', NULL, NULL, NULL, NULL, NULL);
 
       CREATE TABLE IF NOT EXISTS groups (
         id VARCHAR PRIMARY KEY,
@@ -118,11 +120,15 @@ class Db {
         created_at BIGINT,
         updated_at BIGINT,
       );
-    ''');
 
-    await _conn.execute(
-      '''INSERT INTO users VALUES ('system', 'system', NULL, NULL, NULL, NULL);''',
-    );
+      CREATE TABLE IF NOT EXISTS metadata (
+        id SMALLINT PRIMARY KEY,
+        loaded_groups BOOLEAN,
+        initialized BOOLEAN,
+      );
+
+      INSERT OR REPLACE INTO metadata VALUES (1, false, false);
+    ''');
 
     Me.columns.addAll((await _conn.getColumnOrder('me')));
     User.columns.addAll((await _conn.getColumnOrder('users')));
@@ -152,15 +158,23 @@ class Db {
   ) async {
     try {
       final values = _values(things.length, _columns[table].length);
-      var prep = await _conn.prepare(
-        'INSERT OR REPLACE INTO $table VALUES $values',
-      );
-      List params = [];
-      for (final thing in things) {
-        for (final col in _columns[table]) {
-          params.add(thing[col]);
+      StringBuffer updateSet = StringBuffer();
+      for (var col in _columns[table]) {
+        if (col != 'id') {
+          updateSet.write('$col = EXCLUDED.$col, ');
         }
       }
+      var prep = await _conn.prepare('''
+        INSERT INTO $table VALUES $values
+        ON CONFLICT DO UPDATE SET
+          $updateSet
+      ''');
+
+      final params = [
+        for (var thing in things)
+          for (var col in _columns[table]) thing[col],
+      ];
+
       prep.bindParams(params);
       await prep.execute();
       prep.dispose();
@@ -176,8 +190,8 @@ class Db {
 
   static Future<Me> getMe() async {
     try {
-      var res = (await _conn.query('SELECT * FROM me;')).fetchOne()!;
-      return Me.fromRow(res);
+      var row = (await _conn.query('SELECT * FROM me')).fetchOne()! as List;
+      return Me.fromRow(row);
     } catch (e) {
       rethrow;
     }
@@ -284,7 +298,7 @@ class Db {
   static Future<List<Member>> getMembers(String groupId) async {
     try {
       final rows = (await _conn.query('''
-        SELECT id, name, group_id, member_id, nickname, roles, muted, image_url
+        SELECT id, name, image_url, group_id, member_id, nickname, roles, muted
         FROM members
         JOIN users ON members.id = users.id
         WHERE group_id = $groupId
@@ -312,12 +326,12 @@ class Db {
       final prep = await _conn.prepare(
         'INSERT OR REPLACE INTO messages VALUES $values',
       );
-      final params = [];
-      for (final message in messages) {
-        for (final col in _columns.messages) {
-          params.add(message[col]);
-        }
-      }
+
+      final params = [
+        for (var message in messages)
+          for (var col in _columns.messages) message[col],
+      ];
+
       prep.bindParams(params);
       await prep.execute();
       prep.dispose();
@@ -335,18 +349,15 @@ class Db {
       var rows = (await _conn.query('''
         SELECT
           messages.id, messages.group_id, sender_id, system, text, reactions, attachments,
-          source_guid, pinned_at, pinned_by, created_at, updated_at, name, nickname, image_url,
+          source_guid, pinned_at, pinned_by, created_at, updated_at, nickname, image_url,
         FROM messages
         LEFT JOIN members ON messages.group_id = members.group_id AND messages.sender_id = members.id
         LEFT JOIN users ON messages.sender_id = users.id
         WHERE messages.group_id = $groupId ${onlyPinned ? 'AND messages.pinned_at NOT NULL' : ''}
         ORDER BY created_at DESC;
       ''')).fetchAll();
-      List<Message> messages = [];
-      for (var row in rows) {
-        messages.add(Message.fromRow(row));
-      }
-      return messages;
+
+      return [for (var row in rows) Message.fromRow(row)];
     } catch (e) {
       rethrow;
     }
@@ -357,7 +368,7 @@ class Db {
       var row = (await _conn.query('''
         SELECT
           messages.id, messages.group_id, sender_id, system, text, reactions, attachments,
-          source_guid, pinned_at, pinned_by, created_at, updated_at, name, nickname, image_url,
+          source_guid, pinned_at, pinned_by, created_at, updated_at, nickname, image_url,
         FROM messages
         LEFT JOIN members ON messages.group_id = members.group_id AND messages.sender_id = members.id
         LEFT JOIN users ON messages.sender_id = users.id

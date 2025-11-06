@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
 import 'dart:io';
 import 'package:groupchat/classes/classes.dart';
 import 'package:signals/signals_flutter.dart';
@@ -8,24 +7,25 @@ import 'api.dart';
 import 'database.dart';
 
 class ChatController {
-  final ListSignal<Group> groups = ListSignal([]);
   late Me me;
-
+  final ListSignal<Group> groups = listSignal([]);
   final ListQueue<Group> cachedGroups = ListQueue(5);
 
   ChatController._make();
 
   static Future<ChatController> make() async {
     var token = await File('token').readAsString();
-    Api.setToken(token);
+    Api.init(token);
     await Db.init(memory: true);
-    var con = ChatController._make();
-    await Db.saveMe(await Api.getMe());
-    con.me = await Db.getMe();
-    var apiGroups = await Api.getGroups();
-    await Db.saveGroups(apiGroups);
-    await con._updateGroups();
-    return con;
+    var chatCon = ChatController._make();
+    chatCon.me = await Db.saveMe(await Api.getMe()).then((value) => Db.getMe());
+    await Db.saveGroups(await Api.getGroups());
+    await chatCon._updateGroups();
+    return chatCon;
+  }
+
+  Future<void> getGroups() async {
+    await Db.saveGroups(await Api.getGroups());
   }
 
   Future<void> _updateGroups() async {
@@ -78,7 +78,7 @@ class ChatController {
   }
 
   Future<void> sendMessage(Group group, String text) async {
-    var message = Message(text, group.id, me.id);
+    var message = Message.toSend(me, me.name, group.id, text);
     var inMemory = cachedGroups.contains(group);
     if (inMemory) {
       group.messages.insert(0, message);

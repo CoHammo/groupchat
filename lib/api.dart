@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
-import 'package:uuid/uuid.dart';
-
-import 'classes/message.dart';
+import '/classes/classes.dart';
 
 class Api {
   static final Dio _api = Dio(
@@ -14,7 +12,7 @@ class Api {
     ),
   );
 
-  static void setToken(String token) {
+  static void init(String token) {
     _api.options.headers['X-Access-Token'] = token;
   }
 
@@ -155,12 +153,12 @@ class Api {
 
   static Future<Map<String, dynamic>> addMembers(
     String groupId,
-    List<String> userIds,
+    List<User> users,
   ) async {
     try {
       List<Map<String, dynamic>> members = [];
-      for (var id in userIds) {
-        members.add({'user_id': id, 'nickname': 'Nickname'});
+      for (var user in users) {
+        members.add({'user_id': user.id, 'nickname': user.name});
       }
       final response = await _api.post(
         '/groups/$groupId/members/add',

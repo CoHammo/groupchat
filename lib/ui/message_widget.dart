@@ -36,10 +36,10 @@ class MessageWidget extends StatelessWidget {
       return Padding(
         padding: margin,
         child: Material(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
           color: Color(0xFFB0D3FF),
           child: InkWell(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             onTap: () {},
             child: Padding(
               padding: EdgeInsets.fromLTRB(12, 6, 12, 6),

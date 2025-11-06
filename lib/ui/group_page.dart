@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:signals/signals_flutter.dart';
 import '../chat_controller.dart';
 import '../classes/classes.dart';
-import 'message_ui.dart';
+import 'message_widget.dart';
 
 class GroupPage extends StatelessWidget {
   const GroupPage(this.chatCon, this.group, {super.key});

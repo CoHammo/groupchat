@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:signals/signals_flutter.dart';
 
 import 'message.dart';
@@ -6,19 +5,18 @@ import 'user.dart';
 
 class Group {
   static final List<String> columns = [];
-  final List _row;
   final ListSignal<Message> messages = listSignal([]);
   final ListSignal<Member> members = listSignal([]);
 
   String id;
   String name;
-  String type = 'private';
+  String type;
   String? description;
   String? imageUrl;
-  String? creatorUserId;
-  int? createdAt;
-  int? updatedAt;
-  int? messageCount;
+  String creatorUserId;
+  int createdAt;
+  int updatedAt;
+  int messageCount;
   String? lastMessageId;
   int? lastMessageCreatedAt;
   int? lastMessageUpdatedAt;
@@ -32,34 +30,84 @@ class Group {
   bool membersSaved = false;
   bool messagesSaved = false;
 
-  Group(this.id, this.name) : _row = [];
+  Group({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.description,
+    required this.imageUrl,
+    required this.creatorUserId,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.messageCount,
+    required this.lastMessageId,
+    required this.lastMessageCreatedAt,
+    required this.lastMessageUpdatedAt,
+    required this.themeName,
+    required this.requiresApproval,
+    required this.showJoinQuestion,
+    required this.joinQuestion,
+    required this.messageDeletionMode,
+    required this.shareUrl,
+    required this.shareQrCodeUrl,
+    required this.membersSaved,
+    required this.messagesSaved,
+  });
 
-  Group.fromRow(this._row)
-    : id = _row[0],
-      name = _row[1],
-      type = _row[2],
-      description = _row[3],
-      imageUrl = _row[4],
-      creatorUserId = _row[5],
-      createdAt = _row[6],
-      updatedAt = _row[7],
-      messageCount = _row[8],
-      lastMessageId = _row[9],
-      lastMessageCreatedAt = _row[10],
-      lastMessageUpdatedAt = _row[11],
-      themeName = _row[12],
-      requiresApproval = _row[13],
-      showJoinQuestion = _row[14],
-      joinQuestion = _row[15],
-      messageDeletionMode = (_row[16] as List).cast<String>(),
-      shareUrl = _row[17],
-      shareQrCodeUrl = _row[18],
-      membersSaved = _row[19],
-      messagesSaved = _row[20];
+  factory Group.fromMap(Map<String, dynamic> map) {
+    return Group(
+      id: map['id'],
+      name: map['name'],
+      type: map['type'],
+      description: map['description'],
+      imageUrl: map['image_url'],
+      creatorUserId: map['creator_user_id'],
+      createdAt: map['created_at'],
+      updatedAt: map['updated_at'],
+      messageCount: map['messages']['count'],
+      lastMessageId: map['messages']['last_message_id'],
+      lastMessageCreatedAt: map['messages']['last_message_created_at'],
+      lastMessageUpdatedAt: map['messages']['last_message_updated_at'],
+      themeName: map['theme_name'],
+      requiresApproval: map['requires_approval'],
+      showJoinQuestion: map['show_join_question'],
+      joinQuestion: map['join_question']?['text'],
+      messageDeletionMode: map['message_deletion_mode'],
+      shareUrl: map['share_url'],
+      shareQrCodeUrl: map['share_qr_code_url'],
+      membersSaved: false,
+      messagesSaved: false,
+    );
+  }
+
+  factory Group.fromRow(List row) {
+    return Group(
+      id: row[0],
+      name: row[1],
+      type: row[2],
+      description: row[3],
+      imageUrl: row[4],
+      creatorUserId: row[5],
+      createdAt: row[6],
+      updatedAt: row[7],
+      messageCount: row[8],
+      lastMessageId: row[9],
+      lastMessageCreatedAt: row[10],
+      lastMessageUpdatedAt: row[11],
+      themeName: row[12],
+      requiresApproval: row[13],
+      showJoinQuestion: row[14],
+      joinQuestion: row[15],
+      messageDeletionMode: (row[16] as List).cast<String>(),
+      shareUrl: row[17],
+      shareQrCodeUrl: row[18],
+      membersSaved: row[19],
+      messagesSaved: row[20],
+    );
+  }
 
   @override
   String toString() {
-    var message = Map.fromIterables(columns, _row);
-    return JsonEncoder.withIndent('  ').convert(message);
+    return 'Group($id, $name)';
   }
 }

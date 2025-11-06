@@ -5,7 +5,7 @@ import 'package:groupchat/api.dart';
 
 void main() async {
   var token = await File('token').readAsString();
-  Api.setToken(token);
+  Api.init(token);
 
   group('Api', () {
     test('getMe returns user data', () async {
