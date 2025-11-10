@@ -44,6 +44,10 @@ impl std::fmt::Debug for ChatError {
     }
 }
 
+// pub trait Id {
+//     fn id(&self) -> &String;
+// }
+
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 #[serde(default)]
 pub struct Me {
@@ -61,6 +65,12 @@ pub struct Me {
     pub share_url: String,
     pub share_qr_code_url: String,
 }
+
+// impl Id for Me {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
 
 impl TryFrom<&Value> for Me {
     type Error = ChatError;
@@ -89,6 +99,12 @@ pub struct User {
     pub photo_urls: Option<Vec<String>>,
     pub shared_groups: Vec<String>,
 }
+
+// impl Id for User {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
 
 impl TryFrom<&Value> for User {
     type Error = ChatError;
@@ -122,6 +138,12 @@ fn member_roles() -> Vec<String> {
     return vec!["user".to_string()];
 }
 
+// impl Id for Member {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
+
 impl TryFrom<&Value> for Member {
     type Error = ChatError;
 
@@ -147,6 +169,12 @@ pub struct Chat {
     pub messages_count: i64,
     pub last_message_id: Option<String>,
 }
+
+// impl Id for Chat {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
 
 impl TryFrom<&Value> for Chat {
     type Error = ChatError;
@@ -199,6 +227,12 @@ pub struct Group {
     pub members_saved: bool,
     pub messages_saved: bool,
 }
+
+// impl Id for Group {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
 
 impl TryFrom<&Value> for Group {
     type Error = ChatError;
@@ -257,6 +291,12 @@ impl Message {
         };
     }
 }
+
+// impl Id for Message {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
 
 impl TryFrom<&Value> for Message {
     type Error = ChatError;
@@ -362,6 +402,12 @@ impl Poll {
     }
 }
 
+// impl Id for Poll {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
+
 impl TryFrom<&Value> for Poll {
     type Error = ChatError;
 
@@ -433,7 +479,7 @@ pub struct Event {
     pub creator_id: String,
     pub name: String,
     pub description: String,
-    pub location: Option<Location>,
+    pub location: Option<EventLocation>,
     pub start_at: String,
     pub end_at: String,
     pub is_all_day: bool,
@@ -455,7 +501,7 @@ impl Event {
         end_at: &str,
         timezone: &str,
         is_all_day: bool,
-        location: Option<Location>,
+        location: Option<EventLocation>,
         reminders: Vec<i32>,
     ) -> Event {
         return Event {
@@ -472,9 +518,15 @@ impl Event {
     }
 }
 
+// impl Id for Event {
+//     fn id(&self) -> &String {
+//         return &self.id;
+//     }
+// }
+
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(default)]
-pub struct Location {
+pub struct EventLocation {
     pub name: String,
     pub address: String,
     pub lat: f64,

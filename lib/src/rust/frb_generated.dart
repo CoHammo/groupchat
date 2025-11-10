@@ -66,7 +66,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => 179107941;
+  int get rustContentHash => -1621393934;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -228,7 +228,80 @@ abstract class RustLibApi extends BaseApi {
     required List<String> votes,
   });
 
-  Future<Db> crateApiDatabaseDbOpen({required String path});
+  Future<List<Chat>> crateApiDatabaseDbGetChats({required Db that});
+
+  Future<void> crateApiDatabaseDbGetEvent({
+    required Db that,
+    required String id,
+  });
+
+  Future<List<Group>> crateApiDatabaseDbGetGroups({required Db that});
+
+  Future<Me?> crateApiDatabaseDbGetMe({required Db that});
+
+  Future<List<Member>> crateApiDatabaseDbGetMembers({
+    required Db that,
+    required List<String> ids,
+  });
+
+  Future<List<Message>> crateApiDatabaseDbGetMessages({
+    required Db that,
+    required List<String> ids,
+  });
+
+  Future<void> crateApiDatabaseDbGetPoll({
+    required Db that,
+    required String id,
+  });
+
+  Future<User?> crateApiDatabaseDbGetUser({
+    required Db that,
+    required String id,
+  });
+
+  Future<List<User>> crateApiDatabaseDbGetUsers({
+    required Db that,
+    required String search,
+  });
+
+  Future<Db> crateApiDatabaseDbOpen({required String folder});
+
+  Future<void> crateApiDatabaseDbSaveChats({
+    required Db that,
+    required List<Chat> chats,
+  });
+
+  Future<void> crateApiDatabaseDbSaveEvent({
+    required Db that,
+    required Event event,
+  });
+
+  Future<void> crateApiDatabaseDbSaveGroups({
+    required Db that,
+    required List<Group> groups,
+  });
+
+  Future<void> crateApiDatabaseDbSaveMe({required Db that, required Me me});
+
+  Future<void> crateApiDatabaseDbSaveMembers({
+    required Db that,
+    required List<Member> members,
+  });
+
+  Future<void> crateApiDatabaseDbSaveMessages({
+    required Db that,
+    required List<Message> messages,
+  });
+
+  Future<void> crateApiDatabaseDbSavePoll({
+    required Db that,
+    required Poll poll,
+  });
+
+  Future<void> crateApiDatabaseDbSaveUsers({
+    required Db that,
+    required List<User> users,
+  });
 
   Future<Chat> crateApiTypesChatDefault();
 
@@ -241,6 +314,8 @@ abstract class RustLibApi extends BaseApi {
 
   Future<Event> crateApiTypesEventDefault();
 
+  Future<EventLocation> crateApiTypesEventLocationDefault();
+
   Future<Event> crateApiTypesEventNew({
     required String name,
     required String description,
@@ -248,13 +323,11 @@ abstract class RustLibApi extends BaseApi {
     required String endAt,
     required String timezone,
     required bool isAllDay,
-    Location? location,
+    EventLocation? location,
     required List<int> reminders,
   });
 
   Future<Group> crateApiTypesGroupDefault();
-
-  Future<Location> crateApiTypesLocationDefault();
 
   Future<Me> crateApiTypesMeDefault();
 
@@ -1379,16 +1452,327 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   );
 
   @override
-  Future<Db> crateApiDatabaseDbOpen({required String path}) {
+  Future<List<Chat>> crateApiDatabaseDbGetChats({required Db that}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_String(path, serializer);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
             funcId: 28,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_chat,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetChatsConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetChatsConstMeta =>
+      const TaskConstMeta(debugName: "Db_get_chats", argNames: ["that"]);
+
+  @override
+  Future<void> crateApiDatabaseDbGetEvent({
+    required Db that,
+    required String id,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_String(id, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 29,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetEventConstMeta,
+        argValues: [that, id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetEventConstMeta =>
+      const TaskConstMeta(debugName: "Db_get_event", argNames: ["that", "id"]);
+
+  @override
+  Future<List<Group>> crateApiDatabaseDbGetGroups({required Db that}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 30,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_group,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetGroupsConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetGroupsConstMeta =>
+      const TaskConstMeta(debugName: "Db_get_groups", argNames: ["that"]);
+
+  @override
+  Future<Me?> crateApiDatabaseDbGetMe({required Db that}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 31,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_box_autoadd_me,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetMeConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetMeConstMeta =>
+      const TaskConstMeta(debugName: "Db_get_me", argNames: ["that"]);
+
+  @override
+  Future<List<Member>> crateApiDatabaseDbGetMembers({
+    required Db that,
+    required List<String> ids,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_list_String(ids, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 32,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_member,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetMembersConstMeta,
+        argValues: [that, ids],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetMembersConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_get_members",
+        argNames: ["that", "ids"],
+      );
+
+  @override
+  Future<List<Message>> crateApiDatabaseDbGetMessages({
+    required Db that,
+    required List<String> ids,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_list_String(ids, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 33,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_message,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetMessagesConstMeta,
+        argValues: [that, ids],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetMessagesConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_get_messages",
+        argNames: ["that", "ids"],
+      );
+
+  @override
+  Future<void> crateApiDatabaseDbGetPoll({
+    required Db that,
+    required String id,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_String(id, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 34,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetPollConstMeta,
+        argValues: [that, id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetPollConstMeta =>
+      const TaskConstMeta(debugName: "Db_get_poll", argNames: ["that", "id"]);
+
+  @override
+  Future<User?> crateApiDatabaseDbGetUser({
+    required Db that,
+    required String id,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_String(id, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 35,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_box_autoadd_user,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetUserConstMeta,
+        argValues: [that, id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetUserConstMeta =>
+      const TaskConstMeta(debugName: "Db_get_user", argNames: ["that", "id"]);
+
+  @override
+  Future<List<User>> crateApiDatabaseDbGetUsers({
+    required Db that,
+    required String search,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_String(search, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 36,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_list_user,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbGetUsersConstMeta,
+        argValues: [that, search],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbGetUsersConstMeta => const TaskConstMeta(
+    debugName: "Db_get_users",
+    argNames: ["that", "search"],
+  );
+
+  @override
+  Future<Db> crateApiDatabaseDbOpen({required String folder}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(folder, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 37,
             port: port_,
           );
         },
@@ -1398,14 +1782,311 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_chat_error,
         ),
         constMeta: kCrateApiDatabaseDbOpenConstMeta,
-        argValues: [path],
+        argValues: [folder],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiDatabaseDbOpenConstMeta =>
-      const TaskConstMeta(debugName: "Db_open", argNames: ["path"]);
+      const TaskConstMeta(debugName: "Db_open", argNames: ["folder"]);
+
+  @override
+  Future<void> crateApiDatabaseDbSaveChats({
+    required Db that,
+    required List<Chat> chats,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_list_chat(chats, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 38,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSaveChatsConstMeta,
+        argValues: [that, chats],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSaveChatsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_save_chats",
+        argNames: ["that", "chats"],
+      );
+
+  @override
+  Future<void> crateApiDatabaseDbSaveEvent({
+    required Db that,
+    required Event event,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_box_autoadd_event(event, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 39,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSaveEventConstMeta,
+        argValues: [that, event],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSaveEventConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_save_event",
+        argNames: ["that", "event"],
+      );
+
+  @override
+  Future<void> crateApiDatabaseDbSaveGroups({
+    required Db that,
+    required List<Group> groups,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_list_group(groups, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 40,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSaveGroupsConstMeta,
+        argValues: [that, groups],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSaveGroupsConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_save_groups",
+        argNames: ["that", "groups"],
+      );
+
+  @override
+  Future<void> crateApiDatabaseDbSaveMe({required Db that, required Me me}) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_box_autoadd_me(me, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 41,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSaveMeConstMeta,
+        argValues: [that, me],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSaveMeConstMeta =>
+      const TaskConstMeta(debugName: "Db_save_me", argNames: ["that", "me"]);
+
+  @override
+  Future<void> crateApiDatabaseDbSaveMembers({
+    required Db that,
+    required List<Member> members,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_list_member(members, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 42,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSaveMembersConstMeta,
+        argValues: [that, members],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSaveMembersConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_save_members",
+        argNames: ["that", "members"],
+      );
+
+  @override
+  Future<void> crateApiDatabaseDbSaveMessages({
+    required Db that,
+    required List<Message> messages,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_list_message(messages, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 43,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSaveMessagesConstMeta,
+        argValues: [that, messages],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSaveMessagesConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_save_messages",
+        argNames: ["that", "messages"],
+      );
+
+  @override
+  Future<void> crateApiDatabaseDbSavePoll({
+    required Db that,
+    required Poll poll,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_box_autoadd_poll(poll, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 44,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSavePollConstMeta,
+        argValues: [that, poll],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSavePollConstMeta => const TaskConstMeta(
+    debugName: "Db_save_poll",
+    argNames: ["that", "poll"],
+  );
+
+  @override
+  Future<void> crateApiDatabaseDbSaveUsers({
+    required Db that,
+    required List<User> users,
+  }) {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+            that,
+            serializer,
+          );
+          sse_encode_list_user(users, serializer);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 45,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: sse_decode_chat_error,
+        ),
+        constMeta: kCrateApiDatabaseDbSaveUsersConstMeta,
+        argValues: [that, users],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiDatabaseDbSaveUsersConstMeta =>
+      const TaskConstMeta(
+        debugName: "Db_save_users",
+        argNames: ["that", "users"],
+      );
 
   @override
   Future<Chat> crateApiTypesChatDefault() {
@@ -1416,7 +2097,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 29,
+            funcId: 46,
             port: port_,
           );
         },
@@ -1448,7 +2129,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 30,
+            funcId: 47,
             port: port_,
           );
         },
@@ -1477,7 +2158,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 31,
+            funcId: 48,
             port: port_,
           );
         },
@@ -1504,7 +2185,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 32,
+            funcId: 49,
             port: port_,
           );
         },
@@ -1523,6 +2204,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "event_default", argNames: []);
 
   @override
+  Future<EventLocation> crateApiTypesEventLocationDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 50,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_event_location,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesEventLocationDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesEventLocationDefaultConstMeta =>
+      const TaskConstMeta(debugName: "event_location_default", argNames: []);
+
+  @override
   Future<Event> crateApiTypesEventNew({
     required String name,
     required String description,
@@ -1530,7 +2238,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required String endAt,
     required String timezone,
     required bool isAllDay,
-    Location? location,
+    EventLocation? location,
     required List<int> reminders,
   }) {
     return handler.executeNormal(
@@ -1543,12 +2251,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_String(endAt, serializer);
           sse_encode_String(timezone, serializer);
           sse_encode_bool(isAllDay, serializer);
-          sse_encode_opt_box_autoadd_location(location, serializer);
+          sse_encode_opt_box_autoadd_event_location(location, serializer);
           sse_encode_list_prim_i_32_loose(reminders, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 33,
+            funcId: 51,
             port: port_,
           );
         },
@@ -1595,7 +2303,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 34,
+            funcId: 52,
             port: port_,
           );
         },
@@ -1614,33 +2322,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "group_default", argNames: []);
 
   @override
-  Future<Location> crateApiTypesLocationDefault() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 35,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_location,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiTypesLocationDefaultConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiTypesLocationDefaultConstMeta =>
-      const TaskConstMeta(debugName: "location_default", argNames: []);
-
-  @override
   Future<Me> crateApiTypesMeDefault() {
     return handler.executeNormal(
       NormalTask(
@@ -1649,7 +2330,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 36,
+            funcId: 53,
             port: port_,
           );
         },
@@ -1676,7 +2357,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 37,
+            funcId: 54,
             port: port_,
           );
         },
@@ -1703,7 +2384,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 38,
+            funcId: 55,
             port: port_,
           );
         },
@@ -1740,7 +2421,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 39,
+            funcId: 56,
             port: port_,
           );
         },
@@ -1769,7 +2450,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 40,
+            funcId: 57,
             port: port_,
           );
         },
@@ -1807,7 +2488,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 41,
+            funcId: 58,
             port: port_,
           );
         },
@@ -1836,7 +2517,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 42,
+            funcId: 59,
             port: port_,
           );
         },
@@ -1868,7 +2549,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 43,
+            funcId: 60,
             port: port_,
           );
         },
@@ -1897,7 +2578,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 44,
+            funcId: 61,
             port: port_,
           );
         },
@@ -1924,7 +2605,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 45,
+            funcId: 62,
             port: port_,
           );
         },
@@ -1951,7 +2632,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 46,
+            funcId: 63,
             port: port_,
           );
         },
@@ -1978,7 +2659,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 47,
+            funcId: 64,
             port: port_,
           );
         },
@@ -2057,6 +2738,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Db
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return DbImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
   Api
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
     dynamic raw,
@@ -2102,15 +2792,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw) {
+  EventLocation dco_decode_box_autoadd_event_location(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_i_64(raw);
+    return dco_decode_event_location(raw);
   }
 
   @protected
-  Location dco_decode_box_autoadd_location(dynamic raw) {
+  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_location(raw);
+    return dco_decode_i_64(raw);
   }
 
   @protected
@@ -2129,6 +2819,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Poll dco_decode_box_autoadd_poll(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_poll(raw);
+  }
+
+  @protected
+  User dco_decode_box_autoadd_user(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_user(raw);
   }
 
   @protected
@@ -2171,7 +2867,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       creatorId: dco_decode_String(arr[2]),
       name: dco_decode_String(arr[3]),
       description: dco_decode_String(arr[4]),
-      location: dco_decode_opt_box_autoadd_location(arr[5]),
+      location: dco_decode_opt_box_autoadd_event_location(arr[5]),
       startAt: dco_decode_String(arr[6]),
       endAt: dco_decode_String(arr[7]),
       isAllDay: dco_decode_bool(arr[8]),
@@ -2183,6 +2879,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       updatedAt: dco_decode_String(arr[14]),
       shareUrl: dco_decode_String(arr[15]),
       shareQrCode: dco_decode_String(arr[16]),
+    );
+  }
+
+  @protected
+  EventLocation dco_decode_event_location(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return EventLocation(
+      name: dco_decode_String(arr[0]),
+      address: dco_decode_String(arr[1]),
+      lat: dco_decode_f_64(arr[2]),
+      lng: dco_decode_f_64(arr[3]),
     );
   }
 
@@ -2333,20 +3043,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Location dco_decode_location(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 4)
-      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
-    return Location(
-      name: dco_decode_String(arr[0]),
-      address: dco_decode_String(arr[1]),
-      lat: dco_decode_f_64(arr[2]),
-      lng: dco_decode_f_64(arr[3]),
-    );
-  }
-
-  @protected
   Me dco_decode_me(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -2417,15 +3113,27 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  EventLocation? dco_decode_opt_box_autoadd_event_location(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_event_location(raw);
+  }
+
+  @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_i_64(raw);
   }
 
   @protected
-  Location? dco_decode_opt_box_autoadd_location(dynamic raw) {
+  Me? dco_decode_opt_box_autoadd_me(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_location(raw);
+    return raw == null ? null : dco_decode_box_autoadd_me(raw);
+  }
+
+  @protected
+  User? dco_decode_opt_box_autoadd_user(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_user(raw);
   }
 
   @protected
@@ -2611,6 +3319,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Db
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return DbImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
   Api
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
     SseDeserializer deserializer,
@@ -2666,15 +3386,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer) {
+  EventLocation sse_decode_box_autoadd_event_location(
+    SseDeserializer deserializer,
+  ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_i_64(deserializer));
+    return (sse_decode_event_location(deserializer));
   }
 
   @protected
-  Location sse_decode_box_autoadd_location(SseDeserializer deserializer) {
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_location(deserializer));
+    return (sse_decode_i_64(deserializer));
   }
 
   @protected
@@ -2693,6 +3415,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Poll sse_decode_box_autoadd_poll(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_poll(deserializer));
+  }
+
+  @protected
+  User sse_decode_box_autoadd_user(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_user(deserializer));
   }
 
   @protected
@@ -2730,7 +3458,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_creatorId = sse_decode_String(deserializer);
     var var_name = sse_decode_String(deserializer);
     var var_description = sse_decode_String(deserializer);
-    var var_location = sse_decode_opt_box_autoadd_location(deserializer);
+    var var_location = sse_decode_opt_box_autoadd_event_location(deserializer);
     var var_startAt = sse_decode_String(deserializer);
     var var_endAt = sse_decode_String(deserializer);
     var var_isAllDay = sse_decode_bool(deserializer);
@@ -2760,6 +3488,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       updatedAt: var_updatedAt,
       shareUrl: var_shareUrl,
       shareQrCode: var_shareQrCode,
+    );
+  }
+
+  @protected
+  EventLocation sse_decode_event_location(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_name = sse_decode_String(deserializer);
+    var var_address = sse_decode_String(deserializer);
+    var var_lat = sse_decode_f_64(deserializer);
+    var var_lng = sse_decode_f_64(deserializer);
+    return EventLocation(
+      name: var_name,
+      address: var_address,
+      lat: var_lat,
+      lng: var_lng,
     );
   }
 
@@ -2998,21 +3741,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Location sse_decode_location(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_name = sse_decode_String(deserializer);
-    var var_address = sse_decode_String(deserializer);
-    var var_lat = sse_decode_f_64(deserializer);
-    var var_lng = sse_decode_f_64(deserializer);
-    return Location(
-      name: var_name,
-      address: var_address,
-      lat: var_lat,
-      lng: var_lng,
-    );
-  }
-
-  @protected
   Me sse_decode_me(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_String(deserializer);
@@ -3110,6 +3838,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  EventLocation? sse_decode_opt_box_autoadd_event_location(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_event_location(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -3121,11 +3862,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Location? sse_decode_opt_box_autoadd_location(SseDeserializer deserializer) {
+  Me? sse_decode_opt_box_autoadd_me(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_location(deserializer));
+      return (sse_decode_box_autoadd_me(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  User? sse_decode_opt_box_autoadd_user(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_user(deserializer));
     } else {
       return null;
     }
@@ -3336,6 +4088,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+    Db self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as DbImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
     Api self,
     SseSerializer serializer,
@@ -3392,21 +4157,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_event_location(
+    EventLocation self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_event_location(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_i_64(
     PlatformInt64 self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_64(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_location(
-    Location self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_location(self, serializer);
   }
 
   @protected
@@ -3425,6 +4190,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_box_autoadd_poll(Poll self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_poll(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_user(User self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_user(self, serializer);
   }
 
   @protected
@@ -3453,7 +4224,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.creatorId, serializer);
     sse_encode_String(self.name, serializer);
     sse_encode_String(self.description, serializer);
-    sse_encode_opt_box_autoadd_location(self.location, serializer);
+    sse_encode_opt_box_autoadd_event_location(self.location, serializer);
     sse_encode_String(self.startAt, serializer);
     sse_encode_String(self.endAt, serializer);
     sse_encode_bool(self.isAllDay, serializer);
@@ -3465,6 +4236,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.updatedAt, serializer);
     sse_encode_String(self.shareUrl, serializer);
     sse_encode_String(self.shareQrCode, serializer);
+  }
+
+  @protected
+  void sse_encode_event_location(EventLocation self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.name, serializer);
+    sse_encode_String(self.address, serializer);
+    sse_encode_f_64(self.lat, serializer);
+    sse_encode_f_64(self.lng, serializer);
   }
 
   @protected
@@ -3665,15 +4445,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_location(Location self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.name, serializer);
-    sse_encode_String(self.address, serializer);
-    sse_encode_f_64(self.lat, serializer);
-    sse_encode_f_64(self.lng, serializer);
-  }
-
-  @protected
   void sse_encode_me(Me self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.id, serializer);
@@ -3733,6 +4504,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_opt_box_autoadd_event_location(
+    EventLocation? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_event_location(self, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_opt_box_autoadd_i_64(
     PlatformInt64? self,
     SseSerializer serializer,
@@ -3746,15 +4530,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_opt_box_autoadd_location(
-    Location? self,
-    SseSerializer serializer,
-  ) {
+  void sse_encode_opt_box_autoadd_me(Me? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
-      sse_encode_box_autoadd_location(self, serializer);
+      sse_encode_box_autoadd_me(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_user(User? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_user(self, serializer);
     }
   }
 
@@ -4141,4 +4932,59 @@ class DbImpl extends RustOpaque implements Db {
     rustArcDecrementStrongCountPtr:
         RustLib.instance.api.rust_arc_decrement_strong_count_DbPtr,
   );
+
+  Future<List<Chat>> getChats() =>
+      RustLib.instance.api.crateApiDatabaseDbGetChats(that: this);
+
+  Future<void> getEvent({required String id}) =>
+      RustLib.instance.api.crateApiDatabaseDbGetEvent(that: this, id: id);
+
+  Future<List<Group>> getGroups() =>
+      RustLib.instance.api.crateApiDatabaseDbGetGroups(that: this);
+
+  Future<Me?> getMe() =>
+      RustLib.instance.api.crateApiDatabaseDbGetMe(that: this);
+
+  Future<List<Member>> getMembers({required List<String> ids}) =>
+      RustLib.instance.api.crateApiDatabaseDbGetMembers(that: this, ids: ids);
+
+  Future<List<Message>> getMessages({required List<String> ids}) =>
+      RustLib.instance.api.crateApiDatabaseDbGetMessages(that: this, ids: ids);
+
+  Future<void> getPoll({required String id}) =>
+      RustLib.instance.api.crateApiDatabaseDbGetPoll(that: this, id: id);
+
+  Future<User?> getUser({required String id}) =>
+      RustLib.instance.api.crateApiDatabaseDbGetUser(that: this, id: id);
+
+  Future<List<User>> getUsers({required String search}) => RustLib.instance.api
+      .crateApiDatabaseDbGetUsers(that: this, search: search);
+
+  Future<void> saveChats({required List<Chat> chats}) => RustLib.instance.api
+      .crateApiDatabaseDbSaveChats(that: this, chats: chats);
+
+  Future<void> saveEvent({required Event event}) => RustLib.instance.api
+      .crateApiDatabaseDbSaveEvent(that: this, event: event);
+
+  Future<void> saveGroups({required List<Group> groups}) => RustLib.instance.api
+      .crateApiDatabaseDbSaveGroups(that: this, groups: groups);
+
+  Future<void> saveMe({required Me me}) =>
+      RustLib.instance.api.crateApiDatabaseDbSaveMe(that: this, me: me);
+
+  Future<void> saveMembers({required List<Member> members}) => RustLib
+      .instance
+      .api
+      .crateApiDatabaseDbSaveMembers(that: this, members: members);
+
+  Future<void> saveMessages({required List<Message> messages}) => RustLib
+      .instance
+      .api
+      .crateApiDatabaseDbSaveMessages(that: this, messages: messages);
+
+  Future<void> savePoll({required Poll poll}) =>
+      RustLib.instance.api.crateApiDatabaseDbSavePoll(that: this, poll: poll);
+
+  Future<void> saveUsers({required List<User> users}) => RustLib.instance.api
+      .crateApiDatabaseDbSaveUsers(that: this, users: users);
 }

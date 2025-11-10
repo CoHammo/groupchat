@@ -57,6 +57,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  Db
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+    dynamic raw,
+  );
+
+  @protected
   Api
   dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
     dynamic raw,
@@ -84,10 +90,10 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Event dco_decode_box_autoadd_event(dynamic raw);
 
   @protected
-  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw);
+  EventLocation dco_decode_box_autoadd_event_location(dynamic raw);
 
   @protected
-  Location dco_decode_box_autoadd_location(dynamic raw);
+  PlatformInt64 dco_decode_box_autoadd_i_64(dynamic raw);
 
   @protected
   Me dco_decode_box_autoadd_me(dynamic raw);
@@ -99,6 +105,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Poll dco_decode_box_autoadd_poll(dynamic raw);
 
   @protected
+  User dco_decode_box_autoadd_user(dynamic raw);
+
+  @protected
   Chat dco_decode_chat(dynamic raw);
 
   @protected
@@ -106,6 +115,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Event dco_decode_event(dynamic raw);
+
+  @protected
+  EventLocation dco_decode_event_location(dynamic raw);
 
   @protected
   double dco_decode_f_64(dynamic raw);
@@ -168,9 +180,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<User> dco_decode_list_user(dynamic raw);
 
   @protected
-  Location dco_decode_location(dynamic raw);
-
-  @protected
   Me dco_decode_me(dynamic raw);
 
   @protected
@@ -183,10 +192,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? dco_decode_opt_String(dynamic raw);
 
   @protected
+  EventLocation? dco_decode_opt_box_autoadd_event_location(dynamic raw);
+
+  @protected
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw);
 
   @protected
-  Location? dco_decode_opt_box_autoadd_location(dynamic raw);
+  Me? dco_decode_opt_box_autoadd_me(dynamic raw);
+
+  @protected
+  User? dco_decode_opt_box_autoadd_user(dynamic raw);
 
   @protected
   List<Attachment>?
@@ -255,6 +270,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   );
 
   @protected
+  Db
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   Api
   sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
     SseDeserializer deserializer,
@@ -282,10 +303,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Event sse_decode_box_autoadd_event(SseDeserializer deserializer);
 
   @protected
-  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
+  EventLocation sse_decode_box_autoadd_event_location(
+    SseDeserializer deserializer,
+  );
 
   @protected
-  Location sse_decode_box_autoadd_location(SseDeserializer deserializer);
+  PlatformInt64 sse_decode_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
   Me sse_decode_box_autoadd_me(SseDeserializer deserializer);
@@ -297,6 +320,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Poll sse_decode_box_autoadd_poll(SseDeserializer deserializer);
 
   @protected
+  User sse_decode_box_autoadd_user(SseDeserializer deserializer);
+
+  @protected
   Chat sse_decode_chat(SseDeserializer deserializer);
 
   @protected
@@ -304,6 +330,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Event sse_decode_event(SseDeserializer deserializer);
+
+  @protected
+  EventLocation sse_decode_event_location(SseDeserializer deserializer);
 
   @protected
   double sse_decode_f_64(SseDeserializer deserializer);
@@ -366,9 +395,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   List<User> sse_decode_list_user(SseDeserializer deserializer);
 
   @protected
-  Location sse_decode_location(SseDeserializer deserializer);
-
-  @protected
   Me sse_decode_me(SseDeserializer deserializer);
 
   @protected
@@ -381,10 +407,18 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   String? sse_decode_opt_String(SseDeserializer deserializer);
 
   @protected
+  EventLocation? sse_decode_opt_box_autoadd_event_location(
+    SseDeserializer deserializer,
+  );
+
+  @protected
   PlatformInt64? sse_decode_opt_box_autoadd_i_64(SseDeserializer deserializer);
 
   @protected
-  Location? sse_decode_opt_box_autoadd_location(SseDeserializer deserializer);
+  Me? sse_decode_opt_box_autoadd_me(SseDeserializer deserializer);
+
+  @protected
+  User? sse_decode_opt_box_autoadd_user(SseDeserializer deserializer);
 
   @protected
   List<Attachment>?
@@ -460,6 +494,13 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+    Db self,
+    SseSerializer serializer,
+  );
+
+  @protected
+  void
   sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
     Api self,
     SseSerializer serializer,
@@ -489,13 +530,16 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_event(Event self, SseSerializer serializer);
 
   @protected
-  void sse_encode_box_autoadd_i_64(
-    PlatformInt64 self,
+  void sse_encode_box_autoadd_event_location(
+    EventLocation self,
     SseSerializer serializer,
   );
 
   @protected
-  void sse_encode_box_autoadd_location(Location self, SseSerializer serializer);
+  void sse_encode_box_autoadd_i_64(
+    PlatformInt64 self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_box_autoadd_me(Me self, SseSerializer serializer);
@@ -507,6 +551,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_box_autoadd_poll(Poll self, SseSerializer serializer);
 
   @protected
+  void sse_encode_box_autoadd_user(User self, SseSerializer serializer);
+
+  @protected
   void sse_encode_chat(Chat self, SseSerializer serializer);
 
   @protected
@@ -514,6 +561,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_event(Event self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_event_location(EventLocation self, SseSerializer serializer);
 
   @protected
   void sse_encode_f_64(double self, SseSerializer serializer);
@@ -589,9 +639,6 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_list_user(List<User> self, SseSerializer serializer);
 
   @protected
-  void sse_encode_location(Location self, SseSerializer serializer);
-
-  @protected
   void sse_encode_me(Me self, SseSerializer serializer);
 
   @protected
@@ -604,16 +651,22 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_opt_String(String? self, SseSerializer serializer);
 
   @protected
+  void sse_encode_opt_box_autoadd_event_location(
+    EventLocation? self,
+    SseSerializer serializer,
+  );
+
+  @protected
   void sse_encode_opt_box_autoadd_i_64(
     PlatformInt64? self,
     SseSerializer serializer,
   );
 
   @protected
-  void sse_encode_opt_box_autoadd_location(
-    Location? self,
-    SseSerializer serializer,
-  );
+  void sse_encode_opt_box_autoadd_me(Me? self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_opt_box_autoadd_user(User? self, SseSerializer serializer);
 
   @protected
   void

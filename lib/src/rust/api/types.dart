@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `member_roles`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DbItem`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `bytes_decode`, `bytes_encode`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `to_string`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `bytes_decode`, `bytes_encode`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
 
 Future<String> emptyUnicode() =>
     RustLib.instance.api.crateApiTypesEmptyUnicode();
@@ -91,7 +91,7 @@ class Event {
   final String creatorId;
   final String name;
   final String description;
-  final Location? location;
+  final EventLocation? location;
   final String startAt;
   final String endAt;
   final bool isAllDay;
@@ -135,7 +135,7 @@ class Event {
     required String endAt,
     required String timezone,
     required bool isAllDay,
-    Location? location,
+    EventLocation? location,
     required List<int> reminders,
   }) => RustLib.instance.api.crateApiTypesEventNew(
     name: name,
@@ -190,6 +190,37 @@ class Event {
           updatedAt == other.updatedAt &&
           shareUrl == other.shareUrl &&
           shareQrCode == other.shareQrCode;
+}
+
+class EventLocation {
+  final String name;
+  final String address;
+  final double lat;
+  final double lng;
+
+  const EventLocation({
+    required this.name,
+    required this.address,
+    required this.lat,
+    required this.lng,
+  });
+
+  static Future<EventLocation> default_() =>
+      RustLib.instance.api.crateApiTypesEventLocationDefault();
+
+  @override
+  int get hashCode =>
+      name.hashCode ^ address.hashCode ^ lat.hashCode ^ lng.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is EventLocation &&
+          runtimeType == other.runtimeType &&
+          name == other.name &&
+          address == other.address &&
+          lat == other.lat &&
+          lng == other.lng;
 }
 
 class Group {
@@ -292,37 +323,6 @@ class Group {
           shareQrCodeUrl == other.shareQrCodeUrl &&
           membersSaved == other.membersSaved &&
           messagesSaved == other.messagesSaved;
-}
-
-class Location {
-  final String name;
-  final String address;
-  final double lat;
-  final double lng;
-
-  const Location({
-    required this.name,
-    required this.address,
-    required this.lat,
-    required this.lng,
-  });
-
-  static Future<Location> default_() =>
-      RustLib.instance.api.crateApiTypesLocationDefault();
-
-  @override
-  int get hashCode =>
-      name.hashCode ^ address.hashCode ^ lat.hashCode ^ lng.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Location &&
-          runtimeType == other.runtimeType &&
-          name == other.name &&
-          address == other.address &&
-          lat == other.lat &&
-          lng == other.lng;
 }
 
 class Me {

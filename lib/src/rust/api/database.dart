@@ -9,6 +9,40 @@ import 'types.dart';
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Db>>
 abstract class Db implements RustOpaqueInterface {
-  static Future<Db> open({required String path}) =>
-      RustLib.instance.api.crateApiDatabaseDbOpen(path: path);
+  Future<List<Chat>> getChats();
+
+  Future<void> getEvent({required String id});
+
+  Future<List<Group>> getGroups();
+
+  Future<Me?> getMe();
+
+  Future<List<Member>> getMembers({required List<String> ids});
+
+  Future<List<Message>> getMessages({required List<String> ids});
+
+  Future<void> getPoll({required String id});
+
+  Future<User?> getUser({required String id});
+
+  Future<List<User>> getUsers({required String search});
+
+  static Future<Db> open({required String folder}) =>
+      RustLib.instance.api.crateApiDatabaseDbOpen(folder: folder);
+
+  Future<void> saveChats({required List<Chat> chats});
+
+  Future<void> saveEvent({required Event event});
+
+  Future<void> saveGroups({required List<Group> groups});
+
+  Future<void> saveMe({required Me me});
+
+  Future<void> saveMembers({required List<Member> members});
+
+  Future<void> saveMessages({required List<Message> messages});
+
+  Future<void> savePoll({required Poll poll});
+
+  Future<void> saveUsers({required List<User> users});
 }
