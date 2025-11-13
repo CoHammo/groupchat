@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::api::types::*;
 use flutter_rust_bridge::frb;
 use jiff::Timestamp;
@@ -9,9 +7,10 @@ use reqwest::{
 };
 use serde::Deserialize;
 use serde_json::{json, Value};
+use std::collections::HashMap;
 
 #[derive(Debug)]
-#[frb(opaque)]
+#[frb(ignore)]
 pub struct Api {
     #[frb(ignore)]
     pub api: Client,
@@ -20,16 +19,27 @@ pub struct Api {
     url: &'static str,
 }
 
+#[frb(ignore)]
 impl Api {
-    pub fn init(token: &str) -> Result<Api, ChatError> {
+    pub fn new(token: Option<&str>) -> Result<Api, ChatError> {
         let mut headers = HeaderMap::new();
-        headers.insert("X-Access-Token", HeaderValue::from_str(&token)?);
+        if let Some(tok) = token {
+            headers.insert("X-Access-Token", HeaderValue::from_str(&tok)?);
+        }
         let cb = Client::builder().default_headers(headers);
 
         Ok(Api {
             api: cb.build()?,
             url: "https://api.groupme.com/v3",
         })
+    }
+
+    pub fn login(&mut self, token: &str) -> Result<(), ChatError> {
+        let mut headers = HeaderMap::new();
+        headers.insert("X-Access-Token", HeaderValue::from_str(token)?);
+        let cb = Client::builder().default_headers(headers);
+        self.api = cb.build()?;
+        Ok(())
     }
 
     pub async fn get_me(&self) -> Result<Me, ChatError> {
@@ -123,6 +133,86 @@ impl Api {
         }
     }
 
+    pub async fn create_group(
+        &self,
+        name: &str,
+        description: Option<String>,
+        share: bool,
+        group_type: &str,
+    ) -> Result<Group, ChatError> {
+        let res = self
+            .api
+            .post(format!("{}/groups", self.url))
+            .json(&json!({
+                "name": name, "description": description, "share": share, "type": group_type
+            }))
+            .send()
+            .await?;
+
+        if res.status() == 201 {
+            let json = &res.json::<Value>().await?["response"];
+            Ok(Group::try_from(json)?)
+        } else {
+            Err(ChatError::new(
+                &format!("API create_group: {}", res.status()),
+                res.text().await?,
+            ))
+        }
+    }
+
+    pub async fn delete_group(&self, group_id: &str) -> Result<(), ChatError> {
+        let res = self
+            .api
+            .post(format!("{}/groups/{group_id}/destroy", self.url))
+            .send()
+            .await?;
+
+        if res.status() == 200 {
+            Ok(())
+        } else {
+            Err(ChatError::new(
+                &format!("API delete_group: {}", res.status()),
+                res.text().await?,
+            ))
+        }
+    }
+
+    pub async fn join_group(&self, group_id: &str, share_token: &str) -> Result<Group, ChatError> {
+        let res = self
+            .api
+            .get(format!("{}/groups/{group_id}/join/{share_token}", self.url))
+            .send()
+            .await?;
+
+        if res.status() == 200 {
+            let json = &res.json::<Value>().await?["group"];
+            Ok(Group::try_from(json)?)
+        } else {
+            Err(ChatError::new(
+                &format!("API join_group: {}", res.status()),
+                res.text().await?,
+            ))
+        }
+    }
+
+    pub async fn rejoin_group(&self, group_id: &str) -> Result<Group, ChatError> {
+        let res = self
+            .api
+            .get(format!("{}/groups/{group_id}/join", self.url))
+            .send()
+            .await?;
+
+        if res.status() == 200 {
+            let json = &res.json::<Value>().await?;
+            Ok(Group::try_from(json)?)
+        } else {
+            Err(ChatError::new(
+                &format!("API rejoin_group: {}", res.status()),
+                res.text().await?,
+            ))
+        }
+    }
+
     pub async fn get_group(&self, group_id: &str) -> Result<Group, ChatError> {
         let res = self
             .api
@@ -131,8 +221,8 @@ impl Api {
             .await?;
 
         if res.status() == 200 {
-            let group = Group::deserialize(&res.json::<Value>().await?["response"])?;
-            Ok(group)
+            let json = &res.json::<Value>().await?["response"];
+            Ok(Group::try_from(json)?)
         } else {
             Err(ChatError::new(
                 &format!("API get_group: {}", res.status()),

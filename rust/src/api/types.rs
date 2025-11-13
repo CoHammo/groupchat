@@ -1,3 +1,4 @@
+use flutter_rust_bridge::frb;
 use heed::{BytesDecode, BytesEncode};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -50,6 +51,7 @@ impl std::fmt::Debug for ChatError {
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 #[serde(default)]
+#[frb(opaque)]
 pub struct Me {
     pub id: String,
     pub name: String,
@@ -64,6 +66,7 @@ pub struct Me {
     pub updated_at: i64,
     pub share_url: String,
     pub share_qr_code_url: String,
+    pub access_token: String,
 }
 
 // impl Id for Me {
@@ -166,6 +169,7 @@ pub struct Chat {
     pub created_at: i64,
     pub updated_at: i64,
     pub other_user_id: String,
+    pub message_ids: Vec<String>,
     pub messages_count: i64,
     pub last_message_id: Option<String>,
 }
@@ -213,6 +217,7 @@ pub struct Group {
     pub creator_user_id: String,
     pub created_at: i64,
     pub updated_at: i64,
+    pub message_ids: Vec<String>,
     pub messages_count: i64,
     pub last_message_id: Option<String>,
     pub last_message_created_at: i64,
@@ -533,8 +538,10 @@ pub struct EventLocation {
     pub lng: f64,
 }
 
+#[frb(ignore)]
 pub struct DbItem<T>(T);
 
+#[frb(ignore)]
 impl<'a, T: Serialize + 'a> BytesEncode<'a> for DbItem<T> {
     type EItem = T;
 
@@ -544,6 +551,7 @@ impl<'a, T: Serialize + 'a> BytesEncode<'a> for DbItem<T> {
     }
 }
 
+#[frb(ignore)]
 impl<'a, T: Deserialize<'a> + 'a> BytesDecode<'a> for DbItem<T> {
     type DItem = T;
 

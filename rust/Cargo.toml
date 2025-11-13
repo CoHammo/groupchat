@@ -22,6 +22,7 @@ uuid = { version = "1.18.1", features = ["serde", "v4"] }
 jiff = "0.2.15"
 fory = "0.13.1"
 fory-core = "0.13.1"
+warp = { version = "0.4", features = ["server"] }
 
 [dev-dependencies]
 tokio = { version = "1.48.0", features = ["macros"] }

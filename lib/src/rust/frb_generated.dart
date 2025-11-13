@@ -3,8 +3,7 @@
 
 // ignore_for_file: unused_import, unused_element, unnecessary_import, duplicate_ignore, invalid_use_of_internal_member, annotate_overrides, non_constant_identifier_names, curly_braces_in_flow_control_structures, prefer_const_literals_to_create_immutables, unused_field
 
-import 'api/chat_api.dart';
-import 'api/database.dart';
+import 'api/chat_controller.dart';
 import 'api/types.dart';
 import 'dart:async';
 import 'dart:convert';
@@ -66,7 +65,7 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
   String get codegenVersion => '2.11.1';
 
   @override
-  int get rustContentHash => -1621393934;
+  int get rustContentHash => -1553462927;
 
   static const kDefaultExternalLibraryLoaderConfig =
       ExternalLibraryLoaderConfig(
@@ -77,231 +76,115 @@ class RustLib extends BaseEntrypoint<RustLibApi, RustLibApiImpl, RustLibWire> {
 }
 
 abstract class RustLibApi extends BaseApi {
-  Future<List<Member>> crateApiChatApiApiAddMembers({
-    required Api that,
-    required String groupId,
-    required List<User> users,
+  Me? crateApiChatControllerChatControllerAutoAccessorGetMe({
+    required ChatController that,
   });
 
-  Future<(Event, Message)> crateApiChatApiApiCreateEvent({
-    required Api that,
-    required String groupId,
-    required Event event,
+  bool crateApiChatControllerChatControllerAutoAccessorGetNeedsLogin({
+    required ChatController that,
   });
 
-  Future<(Poll, Message)> crateApiChatApiApiCreatePoll({
-    required Api that,
-    required String groupId,
-    required Poll poll,
+  void crateApiChatControllerChatControllerAutoAccessorSetMe({
+    required ChatController that,
+    Me? me,
   });
 
-  Future<bool> crateApiChatApiApiDeleteMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
+  void crateApiChatControllerChatControllerAutoAccessorSetNeedsLogin({
+    required ChatController that,
+    required bool needsLogin,
   });
 
-  Future<Message> crateApiChatApiApiEditMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-    required String text,
+  Future<void> crateApiChatControllerChatControllerLogin({
+    required ChatController that,
   });
 
-  Future<List<Chat>> crateApiChatApiApiGetChats({
-    required Api that,
-    required PlatformInt64 page,
-    required PlatformInt64 pageSize,
+  Future<ChatController> crateApiChatControllerChatControllerNew({
+    required String folder,
   });
 
-  Future<Event> crateApiChatApiApiGetEvent({
-    required Api that,
-    required String groupId,
-    required String eventId,
+  String crateApiTypesMeAutoAccessorGetAccessToken({required Me that});
+
+  String? crateApiTypesMeAutoAccessorGetBio({required Me that});
+
+  PlatformInt64 crateApiTypesMeAutoAccessorGetCreatedAt({required Me that});
+
+  String? crateApiTypesMeAutoAccessorGetEmail({required Me that});
+
+  String crateApiTypesMeAutoAccessorGetId({required Me that});
+
+  String? crateApiTypesMeAutoAccessorGetImageUrl({required Me that});
+
+  String crateApiTypesMeAutoAccessorGetLocale({required Me that});
+
+  String crateApiTypesMeAutoAccessorGetName({required Me that});
+
+  String crateApiTypesMeAutoAccessorGetPhoneNumber({required Me that});
+
+  String crateApiTypesMeAutoAccessorGetShareQrCodeUrl({required Me that});
+
+  String crateApiTypesMeAutoAccessorGetShareUrl({required Me that});
+
+  String? crateApiTypesMeAutoAccessorGetSongUrl({required Me that});
+
+  PlatformInt64 crateApiTypesMeAutoAccessorGetUpdatedAt({required Me that});
+
+  void crateApiTypesMeAutoAccessorSetAccessToken({
+    required Me that,
+    required String accessToken,
   });
 
-  Future<List<Event>> crateApiChatApiApiGetEvents({
-    required Api that,
-    required String groupId,
+  void crateApiTypesMeAutoAccessorSetBio({required Me that, String? bio});
+
+  void crateApiTypesMeAutoAccessorSetCreatedAt({
+    required Me that,
+    required PlatformInt64 createdAt,
   });
 
-  Future<Group> crateApiChatApiApiGetGroup({
-    required Api that,
-    required String groupId,
+  void crateApiTypesMeAutoAccessorSetEmail({required Me that, String? email});
+
+  void crateApiTypesMeAutoAccessorSetId({required Me that, required String id});
+
+  void crateApiTypesMeAutoAccessorSetImageUrl({
+    required Me that,
+    String? imageUrl,
   });
 
-  Future<List<Group>> crateApiChatApiApiGetGroups({
-    required Api that,
-    required PlatformInt64 page,
-    required PlatformInt64 pageSize,
+  void crateApiTypesMeAutoAccessorSetLocale({
+    required Me that,
+    required String locale,
   });
 
-  Future<Me> crateApiChatApiApiGetMe({required Api that});
-
-  Future<List<Member>> crateApiChatApiApiGetMembers({
-    required Api that,
-    required String groupId,
+  void crateApiTypesMeAutoAccessorSetName({
+    required Me that,
+    required String name,
   });
 
-  Future<List<Message>> crateApiChatApiApiGetMessages({
-    required Api that,
-    required String groupId,
-    required PlatformInt64 limit,
-    String? beforeId,
-    String? afterId,
-    String? sinceId,
+  void crateApiTypesMeAutoAccessorSetPhoneNumber({
+    required Me that,
+    required String phoneNumber,
   });
 
-  Future<Poll> crateApiChatApiApiGetPoll({
-    required Api that,
-    required String groupId,
-    required String pollId,
+  void crateApiTypesMeAutoAccessorSetShareQrCodeUrl({
+    required Me that,
+    required String shareQrCodeUrl,
   });
 
-  Future<List<Poll>> crateApiChatApiApiGetPolls({
-    required Api that,
-    required String groupId,
+  void crateApiTypesMeAutoAccessorSetShareUrl({
+    required Me that,
+    required String shareUrl,
   });
 
-  Future<User> crateApiChatApiApiGetUser({
-    required Api that,
-    required String userId,
+  void crateApiTypesMeAutoAccessorSetSongUrl({
+    required Me that,
+    String? songUrl,
   });
 
-  Future<Api> crateApiChatApiApiInit({required String token});
-
-  Future<List<Reaction>> crateApiChatApiApiLikeMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-    required String unicode,
+  void crateApiTypesMeAutoAccessorSetUpdatedAt({
+    required Me that,
+    required PlatformInt64 updatedAt,
   });
 
-  Future<bool> crateApiChatApiApiPinMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-  });
-
-  Future<bool> crateApiChatApiApiRemoveMember({
-    required Api that,
-    required String groupId,
-    required String memberId,
-  });
-
-  Future<Message> crateApiChatApiApiSendMessage({
-    required Api that,
-    required Message message,
-  });
-
-  Future<List<Reaction>> crateApiChatApiApiUnlikeMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-  });
-
-  Future<bool> crateApiChatApiApiUnpinMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-  });
-
-  Future<Me> crateApiChatApiApiUpdateMe({required Api that, required Me me});
-
-  Future<Attachment> crateApiChatApiApiUploadFile({
-    required Api that,
-    required String groupId,
-    required String filename,
-    required List<int> file,
-  });
-
-  Future<Attachment> crateApiChatApiApiUploadImage({
-    required Api that,
-    required List<int> image,
-  });
-
-  Future<Poll> crateApiChatApiApiVotePoll({
-    required Api that,
-    required String groupId,
-    required String pollId,
-    required VotingType votingType,
-    required List<String> votes,
-  });
-
-  Future<List<Chat>> crateApiDatabaseDbGetChats({required Db that});
-
-  Future<void> crateApiDatabaseDbGetEvent({
-    required Db that,
-    required String id,
-  });
-
-  Future<List<Group>> crateApiDatabaseDbGetGroups({required Db that});
-
-  Future<Me?> crateApiDatabaseDbGetMe({required Db that});
-
-  Future<List<Member>> crateApiDatabaseDbGetMembers({
-    required Db that,
-    required List<String> ids,
-  });
-
-  Future<List<Message>> crateApiDatabaseDbGetMessages({
-    required Db that,
-    required List<String> ids,
-  });
-
-  Future<void> crateApiDatabaseDbGetPoll({
-    required Db that,
-    required String id,
-  });
-
-  Future<User?> crateApiDatabaseDbGetUser({
-    required Db that,
-    required String id,
-  });
-
-  Future<List<User>> crateApiDatabaseDbGetUsers({
-    required Db that,
-    required String search,
-  });
-
-  Future<Db> crateApiDatabaseDbOpen({required String folder});
-
-  Future<void> crateApiDatabaseDbSaveChats({
-    required Db that,
-    required List<Chat> chats,
-  });
-
-  Future<void> crateApiDatabaseDbSaveEvent({
-    required Db that,
-    required Event event,
-  });
-
-  Future<void> crateApiDatabaseDbSaveGroups({
-    required Db that,
-    required List<Group> groups,
-  });
-
-  Future<void> crateApiDatabaseDbSaveMe({required Db that, required Me me});
-
-  Future<void> crateApiDatabaseDbSaveMembers({
-    required Db that,
-    required List<Member> members,
-  });
-
-  Future<void> crateApiDatabaseDbSaveMessages({
-    required Db that,
-    required List<Message> messages,
-  });
-
-  Future<void> crateApiDatabaseDbSavePoll({
-    required Db that,
-    required Poll poll,
-  });
-
-  Future<void> crateApiDatabaseDbSaveUsers({
-    required Db that,
-    required List<User> users,
-  });
+  Future<Me> crateApiTypesMeDefault();
 
   Future<Chat> crateApiTypesChatDefault();
 
@@ -328,8 +211,6 @@ abstract class RustLibApi extends BaseApi {
   });
 
   Future<Group> crateApiTypesGroupDefault();
-
-  Future<Me> crateApiTypesMeDefault();
 
   Future<Member> crateApiTypesMemberDefault();
 
@@ -366,12 +247,6 @@ abstract class RustLibApi extends BaseApi {
 
   Future<VotingType> crateApiTypesVotingTypeDefault();
 
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Api;
-
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Api;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_ApiPtr;
-
   RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Attachment;
 
@@ -380,11 +255,20 @@ abstract class RustLibApi extends BaseApi {
 
   CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_AttachmentPtr;
 
-  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Db;
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_ChatController;
 
-  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Db;
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_ChatController;
 
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_DbPtr;
+  CrossPlatformFinalizerArg
+  get rust_arc_decrement_strong_count_ChatControllerPtr;
+
+  RustArcIncrementStrongCountFnType get rust_arc_increment_strong_count_Me;
+
+  RustArcDecrementStrongCountFnType get rust_arc_decrement_strong_count_Me;
+
+  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_MePtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -396,183 +280,157 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   });
 
   @override
-  Future<List<Member>> crateApiChatApiApiAddMembers({
-    required Api that,
-    required String groupId,
-    required List<User> users,
+  Me? crateApiChatControllerChatControllerAutoAccessorGetMe({
+    required ChatController that,
   }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
             that,
             serializer,
           );
-          sse_encode_String(groupId, serializer);
-          sse_encode_list_user(users, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 1,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 1)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_list_member,
-          decodeErrorData: sse_decode_chat_error,
+          decodeSuccessData:
+              sse_decode_opt_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiChatApiApiAddMembersConstMeta,
-        argValues: [that, groupId, users],
+        constMeta:
+            kCrateApiChatControllerChatControllerAutoAccessorGetMeConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiChatApiApiAddMembersConstMeta =>
+  TaskConstMeta
+  get kCrateApiChatControllerChatControllerAutoAccessorGetMeConstMeta =>
       const TaskConstMeta(
-        debugName: "Api_add_members",
-        argNames: ["that", "groupId", "users"],
+        debugName: "ChatController_auto_accessor_get_me",
+        argNames: ["that"],
       );
 
   @override
-  Future<(Event, Message)> crateApiChatApiApiCreateEvent({
-    required Api that,
-    required String groupId,
-    required Event event,
+  bool crateApiChatControllerChatControllerAutoAccessorGetNeedsLogin({
+    required ChatController that,
   }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
             that,
             serializer,
           );
-          sse_encode_String(groupId, serializer);
-          sse_encode_box_autoadd_event(event, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 2,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_record_event_message,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiCreateEventConstMeta,
-        argValues: [that, groupId, event],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiCreateEventConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_create_event",
-        argNames: ["that", "groupId", "event"],
-      );
-
-  @override
-  Future<(Poll, Message)> crateApiChatApiApiCreatePoll({
-    required Api that,
-    required String groupId,
-    required Poll poll,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_box_autoadd_poll(poll, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 3,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_record_poll_message,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiCreatePollConstMeta,
-        argValues: [that, groupId, poll],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiCreatePollConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_create_poll",
-        argNames: ["that", "groupId", "poll"],
-      );
-
-  @override
-  Future<bool> crateApiChatApiApiDeleteMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(messageId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 4,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 2)!;
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_chat_error,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiChatApiApiDeleteMessageConstMeta,
-        argValues: [that, groupId, messageId],
+        constMeta:
+            kCrateApiChatControllerChatControllerAutoAccessorGetNeedsLoginConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiChatApiApiDeleteMessageConstMeta =>
+  TaskConstMeta
+  get kCrateApiChatControllerChatControllerAutoAccessorGetNeedsLoginConstMeta =>
       const TaskConstMeta(
-        debugName: "Api_delete_message",
-        argNames: ["that", "groupId", "messageId"],
+        debugName: "ChatController_auto_accessor_get_needs_login",
+        argNames: ["that"],
       );
 
   @override
-  Future<Message> crateApiChatApiApiEditMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-    required String text,
+  void crateApiChatControllerChatControllerAutoAccessorSetMe({
+    required ChatController that,
+    Me? me,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+            that,
+            serializer,
+          );
+          sse_encode_opt_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            me,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 3)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiChatControllerChatControllerAutoAccessorSetMeConstMeta,
+        argValues: [that, me],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiChatControllerChatControllerAutoAccessorSetMeConstMeta =>
+      const TaskConstMeta(
+        debugName: "ChatController_auto_accessor_set_me",
+        argNames: ["that", "me"],
+      );
+
+  @override
+  void crateApiChatControllerChatControllerAutoAccessorSetNeedsLogin({
+    required ChatController that,
+    required bool needsLogin,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+            that,
+            serializer,
+          );
+          sse_encode_bool(needsLogin, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 4)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta:
+            kCrateApiChatControllerChatControllerAutoAccessorSetNeedsLoginConstMeta,
+        argValues: [that, needsLogin],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta
+  get kCrateApiChatControllerChatControllerAutoAccessorSetNeedsLoginConstMeta =>
+      const TaskConstMeta(
+        debugName: "ChatController_auto_accessor_set_needs_login",
+        argNames: ["that", "needsLogin"],
+      );
+
+  @override
+  Future<void> crateApiChatControllerChatControllerLogin({
+    required ChatController that,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
             that,
             serializer,
           );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(messageId, serializer);
-          sse_encode_String(text, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -581,1189 +439,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_message,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiEditMessageConstMeta,
-        argValues: [that, groupId, messageId, text],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiEditMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_edit_message",
-        argNames: ["that", "groupId", "messageId", "text"],
-      );
-
-  @override
-  Future<List<Chat>> crateApiChatApiApiGetChats({
-    required Api that,
-    required PlatformInt64 page,
-    required PlatformInt64 pageSize,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_i_64(page, serializer);
-          sse_encode_i_64(pageSize, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 6,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_chat,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetChatsConstMeta,
-        argValues: [that, page, pageSize],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetChatsConstMeta => const TaskConstMeta(
-    debugName: "Api_get_chats",
-    argNames: ["that", "page", "pageSize"],
-  );
-
-  @override
-  Future<Event> crateApiChatApiApiGetEvent({
-    required Api that,
-    required String groupId,
-    required String eventId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(eventId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 7,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_event,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetEventConstMeta,
-        argValues: [that, groupId, eventId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetEventConstMeta => const TaskConstMeta(
-    debugName: "Api_get_event",
-    argNames: ["that", "groupId", "eventId"],
-  );
-
-  @override
-  Future<List<Event>> crateApiChatApiApiGetEvents({
-    required Api that,
-    required String groupId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 8,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_event,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetEventsConstMeta,
-        argValues: [that, groupId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetEventsConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_get_events",
-        argNames: ["that", "groupId"],
-      );
-
-  @override
-  Future<Group> crateApiChatApiApiGetGroup({
-    required Api that,
-    required String groupId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 9,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_group,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetGroupConstMeta,
-        argValues: [that, groupId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetGroupConstMeta => const TaskConstMeta(
-    debugName: "Api_get_group",
-    argNames: ["that", "groupId"],
-  );
-
-  @override
-  Future<List<Group>> crateApiChatApiApiGetGroups({
-    required Api that,
-    required PlatformInt64 page,
-    required PlatformInt64 pageSize,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_i_64(page, serializer);
-          sse_encode_i_64(pageSize, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 10,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_group,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetGroupsConstMeta,
-        argValues: [that, page, pageSize],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetGroupsConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_get_groups",
-        argNames: ["that", "page", "pageSize"],
-      );
-
-  @override
-  Future<Me> crateApiChatApiApiGetMe({required Api that}) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 11,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_me,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetMeConstMeta,
-        argValues: [that],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetMeConstMeta =>
-      const TaskConstMeta(debugName: "Api_get_me", argNames: ["that"]);
-
-  @override
-  Future<List<Member>> crateApiChatApiApiGetMembers({
-    required Api that,
-    required String groupId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 12,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_member,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetMembersConstMeta,
-        argValues: [that, groupId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetMembersConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_get_members",
-        argNames: ["that", "groupId"],
-      );
-
-  @override
-  Future<List<Message>> crateApiChatApiApiGetMessages({
-    required Api that,
-    required String groupId,
-    required PlatformInt64 limit,
-    String? beforeId,
-    String? afterId,
-    String? sinceId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_i_64(limit, serializer);
-          sse_encode_opt_String(beforeId, serializer);
-          sse_encode_opt_String(afterId, serializer);
-          sse_encode_opt_String(sinceId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 13,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_message,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetMessagesConstMeta,
-        argValues: [that, groupId, limit, beforeId, afterId, sinceId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetMessagesConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_get_messages",
-        argNames: [
-          "that",
-          "groupId",
-          "limit",
-          "beforeId",
-          "afterId",
-          "sinceId",
-        ],
-      );
-
-  @override
-  Future<Poll> crateApiChatApiApiGetPoll({
-    required Api that,
-    required String groupId,
-    required String pollId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(pollId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 14,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_poll,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetPollConstMeta,
-        argValues: [that, groupId, pollId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetPollConstMeta => const TaskConstMeta(
-    debugName: "Api_get_poll",
-    argNames: ["that", "groupId", "pollId"],
-  );
-
-  @override
-  Future<List<Poll>> crateApiChatApiApiGetPolls({
-    required Api that,
-    required String groupId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 15,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_poll,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetPollsConstMeta,
-        argValues: [that, groupId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetPollsConstMeta => const TaskConstMeta(
-    debugName: "Api_get_polls",
-    argNames: ["that", "groupId"],
-  );
-
-  @override
-  Future<User> crateApiChatApiApiGetUser({
-    required Api that,
-    required String userId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(userId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 16,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_user,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiGetUserConstMeta,
-        argValues: [that, userId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiGetUserConstMeta => const TaskConstMeta(
-    debugName: "Api_get_user",
-    argNames: ["that", "userId"],
-  );
-
-  @override
-  Future<Api> crateApiChatApiApiInit({required String token}) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_String(token, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 17,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiInitConstMeta,
-        argValues: [token],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiInitConstMeta =>
-      const TaskConstMeta(debugName: "Api_init", argNames: ["token"]);
-
-  @override
-  Future<List<Reaction>> crateApiChatApiApiLikeMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-    required String unicode,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(messageId, serializer);
-          sse_encode_String(unicode, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 18,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_reaction,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiLikeMessageConstMeta,
-        argValues: [that, groupId, messageId, unicode],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiLikeMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_like_message",
-        argNames: ["that", "groupId", "messageId", "unicode"],
-      );
-
-  @override
-  Future<bool> crateApiChatApiApiPinMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(messageId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 19,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiPinMessageConstMeta,
-        argValues: [that, groupId, messageId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiPinMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_pin_message",
-        argNames: ["that", "groupId", "messageId"],
-      );
-
-  @override
-  Future<bool> crateApiChatApiApiRemoveMember({
-    required Api that,
-    required String groupId,
-    required String memberId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(memberId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 20,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiRemoveMemberConstMeta,
-        argValues: [that, groupId, memberId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiRemoveMemberConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_remove_member",
-        argNames: ["that", "groupId", "memberId"],
-      );
-
-  @override
-  Future<Message> crateApiChatApiApiSendMessage({
-    required Api that,
-    required Message message,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_box_autoadd_message(message, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 21,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_message,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiSendMessageConstMeta,
-        argValues: [that, message],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiSendMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_send_message",
-        argNames: ["that", "message"],
-      );
-
-  @override
-  Future<List<Reaction>> crateApiChatApiApiUnlikeMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(messageId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 22,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_reaction,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiUnlikeMessageConstMeta,
-        argValues: [that, groupId, messageId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiUnlikeMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_unlike_message",
-        argNames: ["that", "groupId", "messageId"],
-      );
-
-  @override
-  Future<bool> crateApiChatApiApiUnpinMessage({
-    required Api that,
-    required String groupId,
-    required String messageId,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(messageId, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 23,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_bool,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiUnpinMessageConstMeta,
-        argValues: [that, groupId, messageId],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiUnpinMessageConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_unpin_message",
-        argNames: ["that", "groupId", "messageId"],
-      );
-
-  @override
-  Future<Me> crateApiChatApiApiUpdateMe({required Api that, required Me me}) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_box_autoadd_me(me, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 24,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_me,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiUpdateMeConstMeta,
-        argValues: [that, me],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiUpdateMeConstMeta =>
-      const TaskConstMeta(debugName: "Api_update_me", argNames: ["that", "me"]);
-
-  @override
-  Future<Attachment> crateApiChatApiApiUploadFile({
-    required Api that,
-    required String groupId,
-    required String filename,
-    required List<int> file,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(filename, serializer);
-          sse_encode_list_prim_u_8_loose(file, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 25,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAttachment,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiUploadFileConstMeta,
-        argValues: [that, groupId, filename, file],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiUploadFileConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_upload_file",
-        argNames: ["that", "groupId", "filename", "file"],
-      );
-
-  @override
-  Future<Attachment> crateApiChatApiApiUploadImage({
-    required Api that,
-    required List<int> image,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_list_prim_u_8_loose(image, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 26,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAttachment,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiUploadImageConstMeta,
-        argValues: [that, image],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiUploadImageConstMeta =>
-      const TaskConstMeta(
-        debugName: "Api_upload_image",
-        argNames: ["that", "image"],
-      );
-
-  @override
-  Future<Poll> crateApiChatApiApiVotePoll({
-    required Api that,
-    required String groupId,
-    required String pollId,
-    required VotingType votingType,
-    required List<String> votes,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-            that,
-            serializer,
-          );
-          sse_encode_String(groupId, serializer);
-          sse_encode_String(pollId, serializer);
-          sse_encode_voting_type(votingType, serializer);
-          sse_encode_list_String(votes, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 27,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_poll,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiChatApiApiVotePollConstMeta,
-        argValues: [that, groupId, pollId, votingType, votes],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiChatApiApiVotePollConstMeta => const TaskConstMeta(
-    debugName: "Api_vote_poll",
-    argNames: ["that", "groupId", "pollId", "votingType", "votes"],
-  );
-
-  @override
-  Future<List<Chat>> crateApiDatabaseDbGetChats({required Db that}) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 28,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_chat,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetChatsConstMeta,
-        argValues: [that],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetChatsConstMeta =>
-      const TaskConstMeta(debugName: "Db_get_chats", argNames: ["that"]);
-
-  @override
-  Future<void> crateApiDatabaseDbGetEvent({
-    required Db that,
-    required String id,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_String(id, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 29,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
           decodeErrorData: sse_decode_chat_error,
         ),
-        constMeta: kCrateApiDatabaseDbGetEventConstMeta,
-        argValues: [that, id],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetEventConstMeta =>
-      const TaskConstMeta(debugName: "Db_get_event", argNames: ["that", "id"]);
-
-  @override
-  Future<List<Group>> crateApiDatabaseDbGetGroups({required Db that}) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 30,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_group,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetGroupsConstMeta,
+        constMeta: kCrateApiChatControllerChatControllerLoginConstMeta,
         argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbGetGroupsConstMeta =>
-      const TaskConstMeta(debugName: "Db_get_groups", argNames: ["that"]);
-
-  @override
-  Future<Me?> crateApiDatabaseDbGetMe({required Db that}) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 31,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_opt_box_autoadd_me,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetMeConstMeta,
-        argValues: [that],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetMeConstMeta =>
-      const TaskConstMeta(debugName: "Db_get_me", argNames: ["that"]);
-
-  @override
-  Future<List<Member>> crateApiDatabaseDbGetMembers({
-    required Db that,
-    required List<String> ids,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_list_String(ids, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 32,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_member,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetMembersConstMeta,
-        argValues: [that, ids],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetMembersConstMeta =>
+  TaskConstMeta get kCrateApiChatControllerChatControllerLoginConstMeta =>
       const TaskConstMeta(
-        debugName: "Db_get_members",
-        argNames: ["that", "ids"],
+        debugName: "ChatController_login",
+        argNames: ["that"],
       );
 
   @override
-  Future<List<Message>> crateApiDatabaseDbGetMessages({
-    required Db that,
-    required List<String> ids,
+  Future<ChatController> crateApiChatControllerChatControllerNew({
+    required String folder,
   }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_list_String(ids, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 33,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_message,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetMessagesConstMeta,
-        argValues: [that, ids],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetMessagesConstMeta =>
-      const TaskConstMeta(
-        debugName: "Db_get_messages",
-        argNames: ["that", "ids"],
-      );
-
-  @override
-  Future<void> crateApiDatabaseDbGetPoll({
-    required Db that,
-    required String id,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_String(id, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 34,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetPollConstMeta,
-        argValues: [that, id],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetPollConstMeta =>
-      const TaskConstMeta(debugName: "Db_get_poll", argNames: ["that", "id"]);
-
-  @override
-  Future<User?> crateApiDatabaseDbGetUser({
-    required Db that,
-    required String id,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_String(id, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 35,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_opt_box_autoadd_user,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetUserConstMeta,
-        argValues: [that, id],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetUserConstMeta =>
-      const TaskConstMeta(debugName: "Db_get_user", argNames: ["that", "id"]);
-
-  @override
-  Future<List<User>> crateApiDatabaseDbGetUsers({
-    required Db that,
-    required String search,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_String(search, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 36,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_list_user,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbGetUsersConstMeta,
-        argValues: [that, search],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbGetUsersConstMeta => const TaskConstMeta(
-    debugName: "Db_get_users",
-    argNames: ["that", "search"],
-  );
-
-  @override
-  Future<Db> crateApiDatabaseDbOpen({required String folder}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
@@ -1772,321 +467,855 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 37,
+            funcId: 6,
             port: port_,
           );
         },
         codec: SseCodec(
           decodeSuccessData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb,
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController,
           decodeErrorData: sse_decode_chat_error,
         ),
-        constMeta: kCrateApiDatabaseDbOpenConstMeta,
+        constMeta: kCrateApiChatControllerChatControllerNewConstMeta,
         argValues: [folder],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbOpenConstMeta =>
-      const TaskConstMeta(debugName: "Db_open", argNames: ["folder"]);
-
-  @override
-  Future<void> crateApiDatabaseDbSaveChats({
-    required Db that,
-    required List<Chat> chats,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_list_chat(chats, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 38,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbSaveChatsConstMeta,
-        argValues: [that, chats],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbSaveChatsConstMeta =>
+  TaskConstMeta get kCrateApiChatControllerChatControllerNewConstMeta =>
       const TaskConstMeta(
-        debugName: "Db_save_chats",
-        argNames: ["that", "chats"],
+        debugName: "ChatController_new",
+        argNames: ["folder"],
       );
 
   @override
-  Future<void> crateApiDatabaseDbSaveEvent({
-    required Db that,
-    required Event event,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  String crateApiTypesMeAutoAccessorGetAccessToken({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
             that,
             serializer,
           );
-          sse_encode_box_autoadd_event(event, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 39,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 7)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiDatabaseDbSaveEventConstMeta,
-        argValues: [that, event],
+        constMeta: kCrateApiTypesMeAutoAccessorGetAccessTokenConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbSaveEventConstMeta =>
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetAccessTokenConstMeta =>
       const TaskConstMeta(
-        debugName: "Db_save_event",
-        argNames: ["that", "event"],
+        debugName: "Me_auto_accessor_get_access_token",
+        argNames: ["that"],
       );
 
   @override
-  Future<void> crateApiDatabaseDbSaveGroups({
-    required Db that,
-    required List<Group> groups,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  String? crateApiTypesMeAutoAccessorGetBio({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
             that,
             serializer,
           );
-          sse_encode_list_group(groups, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 40,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 8)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
+          decodeSuccessData: sse_decode_opt_String,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiDatabaseDbSaveGroupsConstMeta,
-        argValues: [that, groups],
+        constMeta: kCrateApiTypesMeAutoAccessorGetBioConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbSaveGroupsConstMeta =>
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetBioConstMeta =>
       const TaskConstMeta(
-        debugName: "Db_save_groups",
-        argNames: ["that", "groups"],
+        debugName: "Me_auto_accessor_get_bio",
+        argNames: ["that"],
       );
 
   @override
-  Future<void> crateApiDatabaseDbSaveMe({required Db that, required Me me}) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  PlatformInt64 crateApiTypesMeAutoAccessorGetCreatedAt({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
             that,
             serializer,
           );
-          sse_encode_box_autoadd_me(me, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 41,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
+          decodeSuccessData: sse_decode_i_64,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiDatabaseDbSaveMeConstMeta,
-        argValues: [that, me],
+        constMeta: kCrateApiTypesMeAutoAccessorGetCreatedAtConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbSaveMeConstMeta =>
-      const TaskConstMeta(debugName: "Db_save_me", argNames: ["that", "me"]);
-
-  @override
-  Future<void> crateApiDatabaseDbSaveMembers({
-    required Db that,
-    required List<Member> members,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-            that,
-            serializer,
-          );
-          sse_encode_list_member(members, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 42,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
-        ),
-        constMeta: kCrateApiDatabaseDbSaveMembersConstMeta,
-        argValues: [that, members],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiDatabaseDbSaveMembersConstMeta =>
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetCreatedAtConstMeta =>
       const TaskConstMeta(
-        debugName: "Db_save_members",
-        argNames: ["that", "members"],
+        debugName: "Me_auto_accessor_get_created_at",
+        argNames: ["that"],
       );
 
   @override
-  Future<void> crateApiDatabaseDbSaveMessages({
-    required Db that,
-    required List<Message> messages,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  String? crateApiTypesMeAutoAccessorGetEmail({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
             that,
             serializer,
           );
-          sse_encode_list_message(messages, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 43,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
+          decodeSuccessData: sse_decode_opt_String,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiDatabaseDbSaveMessagesConstMeta,
-        argValues: [that, messages],
+        constMeta: kCrateApiTypesMeAutoAccessorGetEmailConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbSaveMessagesConstMeta =>
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetEmailConstMeta =>
       const TaskConstMeta(
-        debugName: "Db_save_messages",
-        argNames: ["that", "messages"],
+        debugName: "Me_auto_accessor_get_email",
+        argNames: ["that"],
       );
 
   @override
-  Future<void> crateApiDatabaseDbSavePoll({
-    required Db that,
-    required Poll poll,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  String crateApiTypesMeAutoAccessorGetId({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
             that,
             serializer,
           );
-          sse_encode_box_autoadd_poll(poll, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 44,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 11)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiDatabaseDbSavePollConstMeta,
-        argValues: [that, poll],
+        constMeta: kCrateApiTypesMeAutoAccessorGetIdConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbSavePollConstMeta => const TaskConstMeta(
-    debugName: "Db_save_poll",
-    argNames: ["that", "poll"],
-  );
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_id",
+        argNames: ["that"],
+      );
 
   @override
-  Future<void> crateApiDatabaseDbSaveUsers({
-    required Db that,
-    required List<User> users,
-  }) {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
+  String? crateApiTypesMeAutoAccessorGetImageUrl({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
           final serializer = SseSerializer(generalizedFrbRustBinding);
-          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
             that,
             serializer,
           );
-          sse_encode_list_user(users, serializer);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 45,
-            port: port_,
-          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12)!;
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
-          decodeErrorData: sse_decode_chat_error,
+          decodeSuccessData: sse_decode_opt_String,
+          decodeErrorData: null,
         ),
-        constMeta: kCrateApiDatabaseDbSaveUsersConstMeta,
-        argValues: [that, users],
+        constMeta: kCrateApiTypesMeAutoAccessorGetImageUrlConstMeta,
+        argValues: [that],
         apiImpl: this,
       ),
     );
   }
 
-  TaskConstMeta get kCrateApiDatabaseDbSaveUsersConstMeta =>
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetImageUrlConstMeta =>
       const TaskConstMeta(
-        debugName: "Db_save_users",
-        argNames: ["that", "users"],
+        debugName: "Me_auto_accessor_get_image_url",
+        argNames: ["that"],
       );
+
+  @override
+  String crateApiTypesMeAutoAccessorGetLocale({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 13)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorGetLocaleConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetLocaleConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_locale",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiTypesMeAutoAccessorGetName({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 14)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorGetNameConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetNameConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_name",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiTypesMeAutoAccessorGetPhoneNumber({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 15)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorGetPhoneNumberConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetPhoneNumberConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_phone_number",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiTypesMeAutoAccessorGetShareQrCodeUrl({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 16)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorGetShareQrCodeUrlConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetShareQrCodeUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_share_qr_code_url",
+        argNames: ["that"],
+      );
+
+  @override
+  String crateApiTypesMeAutoAccessorGetShareUrl({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 17)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorGetShareUrlConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetShareUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_share_url",
+        argNames: ["that"],
+      );
+
+  @override
+  String? crateApiTypesMeAutoAccessorGetSongUrl({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 18)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_opt_String,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorGetSongUrlConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetSongUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_song_url",
+        argNames: ["that"],
+      );
+
+  @override
+  PlatformInt64 crateApiTypesMeAutoAccessorGetUpdatedAt({required Me that}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 19)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_i_64,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorGetUpdatedAtConstMeta,
+        argValues: [that],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorGetUpdatedAtConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_get_updated_at",
+        argNames: ["that"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetAccessToken({
+    required Me that,
+    required String accessToken,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_String(accessToken, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetAccessTokenConstMeta,
+        argValues: [that, accessToken],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetAccessTokenConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_access_token",
+        argNames: ["that", "accessToken"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetBio({required Me that, String? bio}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_opt_String(bio, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 21)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetBioConstMeta,
+        argValues: [that, bio],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetBioConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_bio",
+        argNames: ["that", "bio"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetCreatedAt({
+    required Me that,
+    required PlatformInt64 createdAt,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_i_64(createdAt, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 22)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetCreatedAtConstMeta,
+        argValues: [that, createdAt],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetCreatedAtConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_created_at",
+        argNames: ["that", "createdAt"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetEmail({required Me that, String? email}) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_opt_String(email, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 23)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetEmailConstMeta,
+        argValues: [that, email],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetEmailConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_email",
+        argNames: ["that", "email"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetId({
+    required Me that,
+    required String id,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_String(id, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 24)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetIdConstMeta,
+        argValues: [that, id],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetIdConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_id",
+        argNames: ["that", "id"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetImageUrl({
+    required Me that,
+    String? imageUrl,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_opt_String(imageUrl, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 25)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetImageUrlConstMeta,
+        argValues: [that, imageUrl],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetImageUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_image_url",
+        argNames: ["that", "imageUrl"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetLocale({
+    required Me that,
+    required String locale,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_String(locale, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 26)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetLocaleConstMeta,
+        argValues: [that, locale],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetLocaleConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_locale",
+        argNames: ["that", "locale"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetName({
+    required Me that,
+    required String name,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_String(name, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 27)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetNameConstMeta,
+        argValues: [that, name],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetNameConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_name",
+        argNames: ["that", "name"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetPhoneNumber({
+    required Me that,
+    required String phoneNumber,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_String(phoneNumber, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 28)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetPhoneNumberConstMeta,
+        argValues: [that, phoneNumber],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetPhoneNumberConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_phone_number",
+        argNames: ["that", "phoneNumber"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetShareQrCodeUrl({
+    required Me that,
+    required String shareQrCodeUrl,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_String(shareQrCodeUrl, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 29)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetShareQrCodeUrlConstMeta,
+        argValues: [that, shareQrCodeUrl],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetShareQrCodeUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_share_qr_code_url",
+        argNames: ["that", "shareQrCodeUrl"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetShareUrl({
+    required Me that,
+    required String shareUrl,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_String(shareUrl, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 30)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetShareUrlConstMeta,
+        argValues: [that, shareUrl],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetShareUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_share_url",
+        argNames: ["that", "shareUrl"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetSongUrl({
+    required Me that,
+    String? songUrl,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_opt_String(songUrl, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 31)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetSongUrlConstMeta,
+        argValues: [that, songUrl],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetSongUrlConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_song_url",
+        argNames: ["that", "songUrl"],
+      );
+
+  @override
+  void crateApiTypesMeAutoAccessorSetUpdatedAt({
+    required Me that,
+    required PlatformInt64 updatedAt,
+  }) {
+    return handler.executeSync(
+      SyncTask(
+        callFfi: () {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            that,
+            serializer,
+          );
+          sse_encode_i_64(updatedAt, serializer);
+          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 32)!;
+        },
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_unit,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeAutoAccessorSetUpdatedAtConstMeta,
+        argValues: [that, updatedAt],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeAutoAccessorSetUpdatedAtConstMeta =>
+      const TaskConstMeta(
+        debugName: "Me_auto_accessor_set_updated_at",
+        argNames: ["that", "updatedAt"],
+      );
+
+  @override
+  Future<Me> crateApiTypesMeDefault() {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
+          final serializer = SseSerializer(generalizedFrbRustBinding);
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 33,
+            port: port_,
+          );
+        },
+        codec: SseCodec(
+          decodeSuccessData:
+              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe,
+          decodeErrorData: null,
+        ),
+        constMeta: kCrateApiTypesMeDefaultConstMeta,
+        argValues: [],
+        apiImpl: this,
+      ),
+    );
+  }
+
+  TaskConstMeta get kCrateApiTypesMeDefaultConstMeta =>
+      const TaskConstMeta(debugName: "Me_default", argNames: []);
 
   @override
   Future<Chat> crateApiTypesChatDefault() {
@@ -2097,7 +1326,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 46,
+            funcId: 34,
             port: port_,
           );
         },
@@ -2129,7 +1358,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 47,
+            funcId: 35,
             port: port_,
           );
         },
@@ -2158,7 +1387,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 48,
+            funcId: 36,
             port: port_,
           );
         },
@@ -2185,7 +1414,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 49,
+            funcId: 37,
             port: port_,
           );
         },
@@ -2212,7 +1441,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 50,
+            funcId: 38,
             port: port_,
           );
         },
@@ -2256,7 +1485,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 51,
+            funcId: 39,
             port: port_,
           );
         },
@@ -2303,7 +1532,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 52,
+            funcId: 40,
             port: port_,
           );
         },
@@ -2322,33 +1551,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "group_default", argNames: []);
 
   @override
-  Future<Me> crateApiTypesMeDefault() {
-    return handler.executeNormal(
-      NormalTask(
-        callFfi: (port_) {
-          final serializer = SseSerializer(generalizedFrbRustBinding);
-          pdeCallFfi(
-            generalizedFrbRustBinding,
-            serializer,
-            funcId: 53,
-            port: port_,
-          );
-        },
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_me,
-          decodeErrorData: null,
-        ),
-        constMeta: kCrateApiTypesMeDefaultConstMeta,
-        argValues: [],
-        apiImpl: this,
-      ),
-    );
-  }
-
-  TaskConstMeta get kCrateApiTypesMeDefaultConstMeta =>
-      const TaskConstMeta(debugName: "me_default", argNames: []);
-
-  @override
   Future<Member> crateApiTypesMemberDefault() {
     return handler.executeNormal(
       NormalTask(
@@ -2357,7 +1559,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 54,
+            funcId: 41,
             port: port_,
           );
         },
@@ -2384,7 +1586,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 55,
+            funcId: 42,
             port: port_,
           );
         },
@@ -2421,7 +1623,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 56,
+            funcId: 43,
             port: port_,
           );
         },
@@ -2450,7 +1652,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 57,
+            funcId: 44,
             port: port_,
           );
         },
@@ -2488,7 +1690,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 58,
+            funcId: 45,
             port: port_,
           );
         },
@@ -2517,7 +1719,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 59,
+            funcId: 46,
             port: port_,
           );
         },
@@ -2549,7 +1751,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 60,
+            funcId: 47,
             port: port_,
           );
         },
@@ -2578,7 +1780,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 61,
+            funcId: 48,
             port: port_,
           );
         },
@@ -2605,7 +1807,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 62,
+            funcId: 49,
             port: port_,
           );
         },
@@ -2632,7 +1834,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 63,
+            funcId: 50,
             port: port_,
           );
         },
@@ -2659,7 +1861,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
-            funcId: 64,
+            funcId: 51,
             port: port_,
           );
         },
@@ -2678,14 +1880,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "voting_type_default", argNames: []);
 
   RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_Api => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_Api => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi;
-
-  RustArcIncrementStrongCountFnType
   get rust_arc_increment_strong_count_Attachment => wire
       .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAttachment;
 
@@ -2694,20 +1888,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerAttachment;
 
   RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_Db => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb;
+  get rust_arc_increment_strong_count_ChatController => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController;
 
   RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_Db => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb;
+  get rust_arc_decrement_strong_count_ChatController => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController;
+
+  RustArcIncrementStrongCountFnType
+  get rust_arc_increment_strong_count_Me => wire
+      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe;
+
+  RustArcDecrementStrongCountFnType
+  get rust_arc_decrement_strong_count_Me => wire
+      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe;
 
   @protected
-  Api
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+  Me
+  dco_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ApiImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+      raw,
+    );
   }
 
   @protected
@@ -2720,39 +1924,57 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Db
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+  ChatController
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DbImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ChatControllerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  Api
-  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+  Me
+  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ApiImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return MeImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  Db
-  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+  ChatController
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DbImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ChatControllerImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
-  Api
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+  Me
+  dco_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ApiImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return MeImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  ChatController
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return ChatControllerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Me
+  dco_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MeImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2765,12 +1987,21 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Db
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+  ChatController
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
     dynamic raw,
   ) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return DbImpl.frbInternalDcoDecode(raw as List<dynamic>);
+    return ChatControllerImpl.frbInternalDcoDecode(raw as List<dynamic>);
+  }
+
+  @protected
+  Me
+  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return MeImpl.frbInternalDcoDecode(raw as List<dynamic>);
   }
 
   @protected
@@ -2786,12 +2017,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Event dco_decode_box_autoadd_event(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_event(raw);
-  }
-
-  @protected
   EventLocation dco_decode_box_autoadd_event_location(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_event_location(raw);
@@ -2804,42 +2029,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Me dco_decode_box_autoadd_me(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_me(raw);
-  }
-
-  @protected
-  Message dco_decode_box_autoadd_message(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_message(raw);
-  }
-
-  @protected
-  Poll dco_decode_box_autoadd_poll(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_poll(raw);
-  }
-
-  @protected
-  User dco_decode_box_autoadd_user(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return dco_decode_user(raw);
-  }
-
-  @protected
   Chat dco_decode_chat(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 6)
-      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
+    if (arr.length != 7)
+      throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
     return Chat(
       id: dco_decode_String(arr[0]),
       createdAt: dco_decode_i_64(arr[1]),
       updatedAt: dco_decode_i_64(arr[2]),
       otherUserId: dco_decode_String(arr[3]),
-      messagesCount: dco_decode_i_64(arr[4]),
-      lastMessageId: dco_decode_opt_String(arr[5]),
+      messageIds: dco_decode_list_String(arr[4]),
+      messagesCount: dco_decode_i_64(arr[5]),
+      lastMessageId: dco_decode_opt_String(arr[6]),
     );
   }
 
@@ -2906,8 +2108,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   Group dco_decode_group(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 21)
-      throw Exception('unexpected arr length: expect 21 but see ${arr.length}');
+    if (arr.length != 22)
+      throw Exception('unexpected arr length: expect 22 but see ${arr.length}');
     return Group(
       id: dco_decode_String(arr[0]),
       name: dco_decode_String(arr[1]),
@@ -2917,19 +2119,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       creatorUserId: dco_decode_String(arr[5]),
       createdAt: dco_decode_i_64(arr[6]),
       updatedAt: dco_decode_i_64(arr[7]),
-      messagesCount: dco_decode_i_64(arr[8]),
-      lastMessageId: dco_decode_opt_String(arr[9]),
-      lastMessageCreatedAt: dco_decode_i_64(arr[10]),
-      lastMessageUpdatedAt: dco_decode_i_64(arr[11]),
-      themeName: dco_decode_opt_String(arr[12]),
-      requiresApproval: dco_decode_bool(arr[13]),
-      showJoinQuestion: dco_decode_bool(arr[14]),
-      theJoinQuestion: dco_decode_opt_String(arr[15]),
-      messageDeletionMode: dco_decode_list_String(arr[16]),
-      shareUrl: dco_decode_opt_String(arr[17]),
-      shareQrCodeUrl: dco_decode_opt_String(arr[18]),
-      membersSaved: dco_decode_bool(arr[19]),
-      messagesSaved: dco_decode_bool(arr[20]),
+      messageIds: dco_decode_list_String(arr[8]),
+      messagesCount: dco_decode_i_64(arr[9]),
+      lastMessageId: dco_decode_opt_String(arr[10]),
+      lastMessageCreatedAt: dco_decode_i_64(arr[11]),
+      lastMessageUpdatedAt: dco_decode_i_64(arr[12]),
+      themeName: dco_decode_opt_String(arr[13]),
+      requiresApproval: dco_decode_bool(arr[14]),
+      showJoinQuestion: dco_decode_bool(arr[15]),
+      theJoinQuestion: dco_decode_opt_String(arr[16]),
+      messageDeletionMode: dco_decode_list_String(arr[17]),
+      shareUrl: dco_decode_opt_String(arr[18]),
+      shareQrCodeUrl: dco_decode_opt_String(arr[19]),
+      membersSaved: dco_decode_bool(arr[20]),
+      messagesSaved: dco_decode_bool(arr[21]),
     );
   }
 
@@ -2965,42 +2168,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<Chat> dco_decode_list_chat(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_chat).toList();
-  }
-
-  @protected
-  List<Event> dco_decode_list_event(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_event).toList();
-  }
-
-  @protected
-  List<Group> dco_decode_list_group(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_group).toList();
-  }
-
-  @protected
-  List<Member> dco_decode_list_member(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_member).toList();
-  }
-
-  @protected
-  List<Message> dco_decode_list_message(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_message).toList();
-  }
-
-  @protected
-  List<Poll> dco_decode_list_poll(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_poll).toList();
-  }
-
-  @protected
   List<PollOption> dco_decode_list_poll_option(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_poll_option).toList();
@@ -3019,12 +2186,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<int> dco_decode_list_prim_u_8_loose(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw as List<int>;
-  }
-
-  @protected
   Uint8List dco_decode_list_prim_u_8_strict(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as Uint8List;
@@ -3034,34 +2195,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<Reaction> dco_decode_list_reaction(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_reaction).toList();
-  }
-
-  @protected
-  List<User> dco_decode_list_user(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return (raw as List<dynamic>).map(dco_decode_user).toList();
-  }
-
-  @protected
-  Me dco_decode_me(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 12)
-      throw Exception('unexpected arr length: expect 12 but see ${arr.length}');
-    return Me(
-      id: dco_decode_String(arr[0]),
-      name: dco_decode_String(arr[1]),
-      imageUrl: dco_decode_opt_String(arr[2]),
-      phoneNumber: dco_decode_String(arr[3]),
-      email: dco_decode_opt_String(arr[4]),
-      bio: dco_decode_opt_String(arr[5]),
-      songUrl: dco_decode_opt_String(arr[6]),
-      locale: dco_decode_String(arr[7]),
-      createdAt: dco_decode_i_64(arr[8]),
-      updatedAt: dco_decode_i_64(arr[9]),
-      shareUrl: dco_decode_String(arr[10]),
-      shareQrCodeUrl: dco_decode_String(arr[11]),
-    );
   }
 
   @protected
@@ -3107,6 +2240,19 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Me?
+  dco_decode_opt_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    dynamic raw,
+  ) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null
+        ? null
+        : dco_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+            raw,
+          );
+  }
+
+  @protected
   String? dco_decode_opt_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_String(raw);
@@ -3122,18 +2268,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   PlatformInt64? dco_decode_opt_box_autoadd_i_64(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_i_64(raw);
-  }
-
-  @protected
-  Me? dco_decode_opt_box_autoadd_me(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_me(raw);
-  }
-
-  @protected
-  User? dco_decode_opt_box_autoadd_user(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_user(raw);
   }
 
   @protected
@@ -3204,26 +2338,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  (Event, Message) dco_decode_record_event_message(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2) {
-      throw Exception('Expected 2 elements, got ${arr.length}');
-    }
-    return (dco_decode_event(arr[0]), dco_decode_message(arr[1]));
-  }
-
-  @protected
-  (Poll, Message) dco_decode_record_poll_message(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    final arr = raw as List<dynamic>;
-    if (arr.length != 2) {
-      throw Exception('Expected 2 elements, got ${arr.length}');
-    }
-    return (dco_decode_poll(arr[0]), dco_decode_message(arr[1]));
-  }
-
-  @protected
   int dco_decode_u_8(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
@@ -3271,15 +2385,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Api
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+  Me
+  sse_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return ApiImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
+    var inner =
+        sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+          deserializer,
+        );
+    return inner;
   }
 
   @protected
@@ -3295,48 +2410,72 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Db
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+  ChatController
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DbImpl.frbInternalSseDecode(
+    return ChatControllerImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
   }
 
   @protected
-  Api
-  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+  Me
+  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return ApiImpl.frbInternalSseDecode(
+    return MeImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
   }
 
   @protected
-  Db
-  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+  ChatController
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DbImpl.frbInternalSseDecode(
+    return ChatControllerImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
   }
 
   @protected
-  Api
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
+  Me
+  sse_decode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return ApiImpl.frbInternalSseDecode(
+    return MeImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  ChatController
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return ChatControllerImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  Me
+  sse_decode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return MeImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -3355,12 +2494,24 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Db
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
+  ChatController
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
     SseDeserializer deserializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    return DbImpl.frbInternalSseDecode(
+    return ChatControllerImpl.frbInternalSseDecode(
+      sse_decode_usize(deserializer),
+      sse_decode_i_32(deserializer),
+    );
+  }
+
+  @protected
+  Me
+  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return MeImpl.frbInternalSseDecode(
       sse_decode_usize(deserializer),
       sse_decode_i_32(deserializer),
     );
@@ -3380,12 +2531,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Event sse_decode_box_autoadd_event(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_event(deserializer));
-  }
-
-  @protected
   EventLocation sse_decode_box_autoadd_event_location(
     SseDeserializer deserializer,
   ) {
@@ -3400,36 +2545,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  Me sse_decode_box_autoadd_me(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_me(deserializer));
-  }
-
-  @protected
-  Message sse_decode_box_autoadd_message(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_message(deserializer));
-  }
-
-  @protected
-  Poll sse_decode_box_autoadd_poll(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_poll(deserializer));
-  }
-
-  @protected
-  User sse_decode_box_autoadd_user(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return (sse_decode_user(deserializer));
-  }
-
-  @protected
   Chat sse_decode_chat(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_id = sse_decode_String(deserializer);
     var var_createdAt = sse_decode_i_64(deserializer);
     var var_updatedAt = sse_decode_i_64(deserializer);
     var var_otherUserId = sse_decode_String(deserializer);
+    var var_messageIds = sse_decode_list_String(deserializer);
     var var_messagesCount = sse_decode_i_64(deserializer);
     var var_lastMessageId = sse_decode_opt_String(deserializer);
     return Chat(
@@ -3437,6 +2559,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       createdAt: var_createdAt,
       updatedAt: var_updatedAt,
       otherUserId: var_otherUserId,
+      messageIds: var_messageIds,
       messagesCount: var_messagesCount,
       lastMessageId: var_lastMessageId,
     );
@@ -3523,6 +2646,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_creatorUserId = sse_decode_String(deserializer);
     var var_createdAt = sse_decode_i_64(deserializer);
     var var_updatedAt = sse_decode_i_64(deserializer);
+    var var_messageIds = sse_decode_list_String(deserializer);
     var var_messagesCount = sse_decode_i_64(deserializer);
     var var_lastMessageId = sse_decode_opt_String(deserializer);
     var var_lastMessageCreatedAt = sse_decode_i_64(deserializer);
@@ -3545,6 +2669,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       creatorUserId: var_creatorUserId,
       createdAt: var_createdAt,
       updatedAt: var_updatedAt,
+      messageIds: var_messageIds,
       messagesCount: var_messagesCount,
       lastMessageId: var_lastMessageId,
       lastMessageCreatedAt: var_lastMessageCreatedAt,
@@ -3605,78 +2730,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<Chat> sse_decode_list_chat(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Chat>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_chat(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  List<Event> sse_decode_list_event(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Event>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_event(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  List<Group> sse_decode_list_group(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Group>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_group(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  List<Member> sse_decode_list_member(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Member>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_member(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  List<Message> sse_decode_list_message(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Message>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_message(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  List<Poll> sse_decode_list_poll(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <Poll>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_poll(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
   List<PollOption> sse_decode_list_poll_option(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -3703,13 +2756,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  List<int> sse_decode_list_prim_u_8_loose(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var len_ = sse_decode_i_32(deserializer);
-    return deserializer.buffer.getUint8List(len_);
-  }
-
-  @protected
   Uint8List sse_decode_list_prim_u_8_strict(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var len_ = sse_decode_i_32(deserializer);
@@ -3726,49 +2772,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       ans_.add(sse_decode_reaction(deserializer));
     }
     return ans_;
-  }
-
-  @protected
-  List<User> sse_decode_list_user(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    var len_ = sse_decode_i_32(deserializer);
-    var ans_ = <User>[];
-    for (var idx_ = 0; idx_ < len_; ++idx_) {
-      ans_.add(sse_decode_user(deserializer));
-    }
-    return ans_;
-  }
-
-  @protected
-  Me sse_decode_me(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_id = sse_decode_String(deserializer);
-    var var_name = sse_decode_String(deserializer);
-    var var_imageUrl = sse_decode_opt_String(deserializer);
-    var var_phoneNumber = sse_decode_String(deserializer);
-    var var_email = sse_decode_opt_String(deserializer);
-    var var_bio = sse_decode_opt_String(deserializer);
-    var var_songUrl = sse_decode_opt_String(deserializer);
-    var var_locale = sse_decode_String(deserializer);
-    var var_createdAt = sse_decode_i_64(deserializer);
-    var var_updatedAt = sse_decode_i_64(deserializer);
-    var var_shareUrl = sse_decode_String(deserializer);
-    var var_shareQrCodeUrl = sse_decode_String(deserializer);
-    return Me(
-      id: var_id,
-      name: var_name,
-      imageUrl: var_imageUrl,
-      phoneNumber: var_phoneNumber,
-      email: var_email,
-      bio: var_bio,
-      songUrl: var_songUrl,
-      locale: var_locale,
-      createdAt: var_createdAt,
-      updatedAt: var_updatedAt,
-      shareUrl: var_shareUrl,
-      shareQrCodeUrl: var_shareQrCodeUrl,
-    );
   }
 
   @protected
@@ -3827,6 +2830,22 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  Me?
+  sse_decode_opt_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+        deserializer,
+      ));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
   String? sse_decode_opt_String(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -3856,28 +2875,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_i_64(deserializer));
-    } else {
-      return null;
-    }
-  }
-
-  @protected
-  Me? sse_decode_opt_box_autoadd_me(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_me(deserializer));
-    } else {
-      return null;
-    }
-  }
-
-  @protected
-  User? sse_decode_opt_box_autoadd_user(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_user(deserializer));
     } else {
       return null;
     }
@@ -3965,24 +2962,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  (Event, Message) sse_decode_record_event_message(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_event(deserializer);
-    var var_field1 = sse_decode_message(deserializer);
-    return (var_field0, var_field1);
-  }
-
-  @protected
-  (Poll, Message) sse_decode_record_poll_message(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var var_field0 = sse_decode_poll(deserializer);
-    var var_field1 = sse_decode_message(deserializer);
-    return (var_field0, var_field1);
-  }
-
-  @protected
   int sse_decode_u_8(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getUint8();
@@ -4036,13 +3015,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-    Api self,
+  sse_encode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    Me self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as ApiImpl).frbInternalSseEncode(move: true),
+    sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+      self,
       serializer,
     );
   }
@@ -4062,52 +3041,78 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-    Db self,
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+    ChatController self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as DbImpl).frbInternalSseEncode(move: true),
+      (self as ChatControllerImpl).frbInternalSseEncode(move: true),
       serializer,
     );
   }
 
   @protected
   void
-  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-    Api self,
+  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    Me self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as ApiImpl).frbInternalSseEncode(move: false),
+      (self as MeImpl).frbInternalSseEncode(move: true),
       serializer,
     );
   }
 
   @protected
   void
-  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-    Db self,
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+    ChatController self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as DbImpl).frbInternalSseEncode(move: false),
+      (self as ChatControllerImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
 
   @protected
   void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerApi(
-    Api self,
+  sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    Me self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as ApiImpl).frbInternalSseEncode(move: null),
+      (self as MeImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+    ChatController self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as ChatControllerImpl).frbInternalSseEncode(move: false),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    Me self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as MeImpl).frbInternalSseEncode(move: false),
       serializer,
     );
   }
@@ -4127,13 +3132,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerDb(
-    Db self,
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
+    ChatController self,
     SseSerializer serializer,
   ) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_usize(
-      (self as DbImpl).frbInternalSseEncode(move: null),
+      (self as ChatControllerImpl).frbInternalSseEncode(move: null),
+      serializer,
+    );
+  }
+
+  @protected
+  void
+  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    Me self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_usize(
+      (self as MeImpl).frbInternalSseEncode(move: null),
       serializer,
     );
   }
@@ -4148,12 +3166,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_bool(bool self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self ? 1 : 0);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_event(Event self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_event(self, serializer);
   }
 
   @protected
@@ -4175,36 +3187,13 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_box_autoadd_me(Me self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_me(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_message(Message self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_message(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_poll(Poll self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_poll(self, serializer);
-  }
-
-  @protected
-  void sse_encode_box_autoadd_user(User self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_user(self, serializer);
-  }
-
-  @protected
   void sse_encode_chat(Chat self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.id, serializer);
     sse_encode_i_64(self.createdAt, serializer);
     sse_encode_i_64(self.updatedAt, serializer);
     sse_encode_String(self.otherUserId, serializer);
+    sse_encode_list_String(self.messageIds, serializer);
     sse_encode_i_64(self.messagesCount, serializer);
     sse_encode_opt_String(self.lastMessageId, serializer);
   }
@@ -4264,6 +3253,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.creatorUserId, serializer);
     sse_encode_i_64(self.createdAt, serializer);
     sse_encode_i_64(self.updatedAt, serializer);
+    sse_encode_list_String(self.messageIds, serializer);
     sse_encode_i_64(self.messagesCount, serializer);
     sse_encode_opt_String(self.lastMessageId, serializer);
     sse_encode_i_64(self.lastMessageCreatedAt, serializer);
@@ -4317,60 +3307,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_chat(List<Chat> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_chat(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_event(List<Event> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_event(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_group(List<Group> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_group(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_member(List<Member> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_member(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_message(List<Message> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_message(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_list_poll(List<Poll> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_poll(item, serializer);
-    }
-  }
-
-  @protected
   void sse_encode_list_poll_option(
     List<PollOption> self,
     SseSerializer serializer,
@@ -4405,18 +3341,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_list_prim_u_8_loose(
-    List<int> self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    serializer.buffer.putUint8List(
-      self is Uint8List ? self : Uint8List.fromList(self),
-    );
-  }
-
-  @protected
   void sse_encode_list_prim_u_8_strict(
     Uint8List self,
     SseSerializer serializer,
@@ -4433,32 +3357,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     for (final item in self) {
       sse_encode_reaction(item, serializer);
     }
-  }
-
-  @protected
-  void sse_encode_list_user(List<User> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.length, serializer);
-    for (final item in self) {
-      sse_encode_user(item, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_me(Me self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(self.id, serializer);
-    sse_encode_String(self.name, serializer);
-    sse_encode_opt_String(self.imageUrl, serializer);
-    sse_encode_String(self.phoneNumber, serializer);
-    sse_encode_opt_String(self.email, serializer);
-    sse_encode_opt_String(self.bio, serializer);
-    sse_encode_opt_String(self.songUrl, serializer);
-    sse_encode_String(self.locale, serializer);
-    sse_encode_i_64(self.createdAt, serializer);
-    sse_encode_i_64(self.updatedAt, serializer);
-    sse_encode_String(self.shareUrl, serializer);
-    sse_encode_String(self.shareQrCodeUrl, serializer);
   }
 
   @protected
@@ -4494,6 +3392,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void
+  sse_encode_opt_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+    Me? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_AutoExplicit_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerMe(
+        self,
+        serializer,
+      );
+    }
+  }
+
+  @protected
   void sse_encode_opt_String(String? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -4526,26 +3441,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_i_64(self, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_opt_box_autoadd_me(Me? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_me(self, serializer);
-    }
-  }
-
-  @protected
-  void sse_encode_opt_box_autoadd_user(User? self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-
-    sse_encode_bool(self != null, serializer);
-    if (self != null) {
-      sse_encode_box_autoadd_user(self, serializer);
     }
   }
 
@@ -4613,26 +3508,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_record_event_message(
-    (Event, Message) self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_event(self.$1, serializer);
-    sse_encode_message(self.$2, serializer);
-  }
-
-  @protected
-  void sse_encode_record_poll_message(
-    (Poll, Message) self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_poll(self.$1, serializer);
-    sse_encode_message(self.$2, serializer);
-  }
-
-  @protected
   void sse_encode_u_8(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putUint8(self);
@@ -4675,226 +3550,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 }
 
 @sealed
-class ApiImpl extends RustOpaque implements Api {
-  // Not to be used by end users
-  ApiImpl.frbInternalDcoDecode(List<dynamic> wire)
-    : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  ApiImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Api,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Api,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_ApiPtr,
-  );
-
-  Future<List<Member>> addMembers({
-    required String groupId,
-    required List<User> users,
-  }) => RustLib.instance.api.crateApiChatApiApiAddMembers(
-    that: this,
-    groupId: groupId,
-    users: users,
-  );
-
-  Future<(Event, Message)> createEvent({
-    required String groupId,
-    required Event event,
-  }) => RustLib.instance.api.crateApiChatApiApiCreateEvent(
-    that: this,
-    groupId: groupId,
-    event: event,
-  );
-
-  Future<(Poll, Message)> createPoll({
-    required String groupId,
-    required Poll poll,
-  }) => RustLib.instance.api.crateApiChatApiApiCreatePoll(
-    that: this,
-    groupId: groupId,
-    poll: poll,
-  );
-
-  Future<bool> deleteMessage({
-    required String groupId,
-    required String messageId,
-  }) => RustLib.instance.api.crateApiChatApiApiDeleteMessage(
-    that: this,
-    groupId: groupId,
-    messageId: messageId,
-  );
-
-  Future<Message> editMessage({
-    required String groupId,
-    required String messageId,
-    required String text,
-  }) => RustLib.instance.api.crateApiChatApiApiEditMessage(
-    that: this,
-    groupId: groupId,
-    messageId: messageId,
-    text: text,
-  );
-
-  Future<List<Chat>> getChats({
-    required PlatformInt64 page,
-    required PlatformInt64 pageSize,
-  }) => RustLib.instance.api.crateApiChatApiApiGetChats(
-    that: this,
-    page: page,
-    pageSize: pageSize,
-  );
-
-  Future<Event> getEvent({required String groupId, required String eventId}) =>
-      RustLib.instance.api.crateApiChatApiApiGetEvent(
-        that: this,
-        groupId: groupId,
-        eventId: eventId,
-      );
-
-  Future<List<Event>> getEvents({required String groupId}) => RustLib
-      .instance
-      .api
-      .crateApiChatApiApiGetEvents(that: this, groupId: groupId);
-
-  Future<Group> getGroup({required String groupId}) => RustLib.instance.api
-      .crateApiChatApiApiGetGroup(that: this, groupId: groupId);
-
-  Future<List<Group>> getGroups({
-    required PlatformInt64 page,
-    required PlatformInt64 pageSize,
-  }) => RustLib.instance.api.crateApiChatApiApiGetGroups(
-    that: this,
-    page: page,
-    pageSize: pageSize,
-  );
-
-  Future<Me> getMe() =>
-      RustLib.instance.api.crateApiChatApiApiGetMe(that: this);
-
-  Future<List<Member>> getMembers({required String groupId}) => RustLib
-      .instance
-      .api
-      .crateApiChatApiApiGetMembers(that: this, groupId: groupId);
-
-  Future<List<Message>> getMessages({
-    required String groupId,
-    required PlatformInt64 limit,
-    String? beforeId,
-    String? afterId,
-    String? sinceId,
-  }) => RustLib.instance.api.crateApiChatApiApiGetMessages(
-    that: this,
-    groupId: groupId,
-    limit: limit,
-    beforeId: beforeId,
-    afterId: afterId,
-    sinceId: sinceId,
-  );
-
-  Future<Poll> getPoll({required String groupId, required String pollId}) =>
-      RustLib.instance.api.crateApiChatApiApiGetPoll(
-        that: this,
-        groupId: groupId,
-        pollId: pollId,
-      );
-
-  Future<List<Poll>> getPolls({required String groupId}) => RustLib.instance.api
-      .crateApiChatApiApiGetPolls(that: this, groupId: groupId);
-
-  Future<User> getUser({required String userId}) => RustLib.instance.api
-      .crateApiChatApiApiGetUser(that: this, userId: userId);
-
-  Future<List<Reaction>> likeMessage({
-    required String groupId,
-    required String messageId,
-    required String unicode,
-  }) => RustLib.instance.api.crateApiChatApiApiLikeMessage(
-    that: this,
-    groupId: groupId,
-    messageId: messageId,
-    unicode: unicode,
-  );
-
-  Future<bool> pinMessage({
-    required String groupId,
-    required String messageId,
-  }) => RustLib.instance.api.crateApiChatApiApiPinMessage(
-    that: this,
-    groupId: groupId,
-    messageId: messageId,
-  );
-
-  Future<bool> removeMember({
-    required String groupId,
-    required String memberId,
-  }) => RustLib.instance.api.crateApiChatApiApiRemoveMember(
-    that: this,
-    groupId: groupId,
-    memberId: memberId,
-  );
-
-  Future<Message> sendMessage({required Message message}) => RustLib
-      .instance
-      .api
-      .crateApiChatApiApiSendMessage(that: this, message: message);
-
-  Future<List<Reaction>> unlikeMessage({
-    required String groupId,
-    required String messageId,
-  }) => RustLib.instance.api.crateApiChatApiApiUnlikeMessage(
-    that: this,
-    groupId: groupId,
-    messageId: messageId,
-  );
-
-  Future<bool> unpinMessage({
-    required String groupId,
-    required String messageId,
-  }) => RustLib.instance.api.crateApiChatApiApiUnpinMessage(
-    that: this,
-    groupId: groupId,
-    messageId: messageId,
-  );
-
-  Future<Me> updateMe({required Me me}) =>
-      RustLib.instance.api.crateApiChatApiApiUpdateMe(that: this, me: me);
-
-  Future<Attachment> uploadFile({
-    required String groupId,
-    required String filename,
-    required List<int> file,
-  }) => RustLib.instance.api.crateApiChatApiApiUploadFile(
-    that: this,
-    groupId: groupId,
-    filename: filename,
-    file: file,
-  );
-
-  Future<Attachment> uploadImage({required List<int> image}) => RustLib
-      .instance
-      .api
-      .crateApiChatApiApiUploadImage(that: this, image: image);
-
-  Future<Poll> votePoll({
-    required String groupId,
-    required String pollId,
-    required VotingType votingType,
-    required List<String> votes,
-  }) => RustLib.instance.api.crateApiChatApiApiVotePoll(
-    that: this,
-    groupId: groupId,
-    pollId: pollId,
-    votingType: votingType,
-    votes: votes,
-  );
-}
-
-@sealed
 class AttachmentImpl extends RustOpaque implements Attachment {
   // Not to be used by end users
   AttachmentImpl.frbInternalDcoDecode(List<dynamic> wire)
@@ -4915,76 +3570,157 @@ class AttachmentImpl extends RustOpaque implements Attachment {
 }
 
 @sealed
-class DbImpl extends RustOpaque implements Db {
+class ChatControllerImpl extends RustOpaque implements ChatController {
   // Not to be used by end users
-  DbImpl.frbInternalDcoDecode(List<dynamic> wire)
+  ChatControllerImpl.frbInternalDcoDecode(List<dynamic> wire)
     : super.frbInternalDcoDecode(wire, _kStaticData);
 
   // Not to be used by end users
-  DbImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+  ChatControllerImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
     : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
   static final _kStaticData = RustArcStaticData(
     rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_Db,
+        RustLib.instance.api.rust_arc_increment_strong_count_ChatController,
     rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_Db,
+        RustLib.instance.api.rust_arc_decrement_strong_count_ChatController,
     rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_DbPtr,
+        RustLib.instance.api.rust_arc_decrement_strong_count_ChatControllerPtr,
   );
 
-  Future<List<Chat>> getChats() =>
-      RustLib.instance.api.crateApiDatabaseDbGetChats(that: this);
+  Me? get me => RustLib.instance.api
+      .crateApiChatControllerChatControllerAutoAccessorGetMe(that: this);
 
-  Future<void> getEvent({required String id}) =>
-      RustLib.instance.api.crateApiDatabaseDbGetEvent(that: this, id: id);
+  bool get needsLogin => RustLib.instance.api
+      .crateApiChatControllerChatControllerAutoAccessorGetNeedsLogin(
+        that: this,
+      );
 
-  Future<List<Group>> getGroups() =>
-      RustLib.instance.api.crateApiDatabaseDbGetGroups(that: this);
+  set me(Me? me) => RustLib.instance.api
+      .crateApiChatControllerChatControllerAutoAccessorSetMe(
+        that: this,
+        me: me,
+      );
 
-  Future<Me?> getMe() =>
-      RustLib.instance.api.crateApiDatabaseDbGetMe(that: this);
+  set needsLogin(bool needsLogin) => RustLib.instance.api
+      .crateApiChatControllerChatControllerAutoAccessorSetNeedsLogin(
+        that: this,
+        needsLogin: needsLogin,
+      );
 
-  Future<List<Member>> getMembers({required List<String> ids}) =>
-      RustLib.instance.api.crateApiDatabaseDbGetMembers(that: this, ids: ids);
+  Future<void> login() => RustLib.instance.api
+      .crateApiChatControllerChatControllerLogin(that: this);
+}
 
-  Future<List<Message>> getMessages({required List<String> ids}) =>
-      RustLib.instance.api.crateApiDatabaseDbGetMessages(that: this, ids: ids);
+@sealed
+class MeImpl extends RustOpaque implements Me {
+  // Not to be used by end users
+  MeImpl.frbInternalDcoDecode(List<dynamic> wire)
+    : super.frbInternalDcoDecode(wire, _kStaticData);
 
-  Future<void> getPoll({required String id}) =>
-      RustLib.instance.api.crateApiDatabaseDbGetPoll(that: this, id: id);
+  // Not to be used by end users
+  MeImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
+    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
 
-  Future<User?> getUser({required String id}) =>
-      RustLib.instance.api.crateApiDatabaseDbGetUser(that: this, id: id);
+  static final _kStaticData = RustArcStaticData(
+    rustArcIncrementStrongCount:
+        RustLib.instance.api.rust_arc_increment_strong_count_Me,
+    rustArcDecrementStrongCount:
+        RustLib.instance.api.rust_arc_decrement_strong_count_Me,
+    rustArcDecrementStrongCountPtr:
+        RustLib.instance.api.rust_arc_decrement_strong_count_MePtr,
+  );
 
-  Future<List<User>> getUsers({required String search}) => RustLib.instance.api
-      .crateApiDatabaseDbGetUsers(that: this, search: search);
+  String get accessToken => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorGetAccessToken(that: this);
 
-  Future<void> saveChats({required List<Chat> chats}) => RustLib.instance.api
-      .crateApiDatabaseDbSaveChats(that: this, chats: chats);
+  String? get bio =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetBio(that: this);
 
-  Future<void> saveEvent({required Event event}) => RustLib.instance.api
-      .crateApiDatabaseDbSaveEvent(that: this, event: event);
+  PlatformInt64 get createdAt =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetCreatedAt(that: this);
 
-  Future<void> saveGroups({required List<Group> groups}) => RustLib.instance.api
-      .crateApiDatabaseDbSaveGroups(that: this, groups: groups);
+  String? get email =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetEmail(that: this);
 
-  Future<void> saveMe({required Me me}) =>
-      RustLib.instance.api.crateApiDatabaseDbSaveMe(that: this, me: me);
+  String get id =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetId(that: this);
 
-  Future<void> saveMembers({required List<Member> members}) => RustLib
-      .instance
-      .api
-      .crateApiDatabaseDbSaveMembers(that: this, members: members);
+  String? get imageUrl =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetImageUrl(that: this);
 
-  Future<void> saveMessages({required List<Message> messages}) => RustLib
-      .instance
-      .api
-      .crateApiDatabaseDbSaveMessages(that: this, messages: messages);
+  String get locale =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetLocale(that: this);
 
-  Future<void> savePoll({required Poll poll}) =>
-      RustLib.instance.api.crateApiDatabaseDbSavePoll(that: this, poll: poll);
+  String get name =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetName(that: this);
 
-  Future<void> saveUsers({required List<User> users}) => RustLib.instance.api
-      .crateApiDatabaseDbSaveUsers(that: this, users: users);
+  String get phoneNumber => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorGetPhoneNumber(that: this);
+
+  String get shareQrCodeUrl => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorGetShareQrCodeUrl(that: this);
+
+  String get shareUrl =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetShareUrl(that: this);
+
+  String? get songUrl =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetSongUrl(that: this);
+
+  PlatformInt64 get updatedAt =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorGetUpdatedAt(that: this);
+
+  set accessToken(String accessToken) =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorSetAccessToken(
+        that: this,
+        accessToken: accessToken,
+      );
+
+  set bio(String? bio) => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorSetBio(that: this, bio: bio);
+
+  set createdAt(PlatformInt64 createdAt) =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorSetCreatedAt(
+        that: this,
+        createdAt: createdAt,
+      );
+
+  set email(String? email) => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorSetEmail(that: this, email: email);
+
+  set id(String id) =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorSetId(that: this, id: id);
+
+  set imageUrl(String? imageUrl) => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorSetImageUrl(that: this, imageUrl: imageUrl);
+
+  set locale(String locale) => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorSetLocale(that: this, locale: locale);
+
+  set name(String name) => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorSetName(that: this, name: name);
+
+  set phoneNumber(String phoneNumber) =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorSetPhoneNumber(
+        that: this,
+        phoneNumber: phoneNumber,
+      );
+
+  set shareQrCodeUrl(String shareQrCodeUrl) =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorSetShareQrCodeUrl(
+        that: this,
+        shareQrCodeUrl: shareQrCodeUrl,
+      );
+
+  set shareUrl(String shareUrl) => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorSetShareUrl(that: this, shareUrl: shareUrl);
+
+  set songUrl(String? songUrl) => RustLib.instance.api
+      .crateApiTypesMeAutoAccessorSetSongUrl(that: this, songUrl: songUrl);
+
+  set updatedAt(PlatformInt64 updatedAt) =>
+      RustLib.instance.api.crateApiTypesMeAutoAccessorSetUpdatedAt(
+        that: this,
+        updatedAt: updatedAt,
+      );
 }

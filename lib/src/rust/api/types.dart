@@ -8,7 +8,8 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `member_roles`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DbItem`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `bytes_decode`, `bytes_encode`, `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
+// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `bytes_decode`, `bytes_encode`
 
 Future<String> emptyUnicode() =>
     RustLib.instance.api.crateApiTypesEmptyUnicode();
@@ -16,11 +17,69 @@ Future<String> emptyUnicode() =>
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Attachment>>
 abstract class Attachment implements RustOpaqueInterface {}
 
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Me>>
+abstract class Me implements RustOpaqueInterface {
+  String get accessToken;
+
+  String? get bio;
+
+  PlatformInt64 get createdAt;
+
+  String? get email;
+
+  String get id;
+
+  String? get imageUrl;
+
+  String get locale;
+
+  String get name;
+
+  String get phoneNumber;
+
+  String get shareQrCodeUrl;
+
+  String get shareUrl;
+
+  String? get songUrl;
+
+  PlatformInt64 get updatedAt;
+
+  set accessToken(String accessToken);
+
+  set bio(String? bio);
+
+  set createdAt(PlatformInt64 createdAt);
+
+  set email(String? email);
+
+  set id(String id);
+
+  set imageUrl(String? imageUrl);
+
+  set locale(String locale);
+
+  set name(String name);
+
+  set phoneNumber(String phoneNumber);
+
+  set shareQrCodeUrl(String shareQrCodeUrl);
+
+  set shareUrl(String shareUrl);
+
+  set songUrl(String? songUrl);
+
+  set updatedAt(PlatformInt64 updatedAt);
+
+  static Future<Me> default_() => RustLib.instance.api.crateApiTypesMeDefault();
+}
+
 class Chat {
   final String id;
   final PlatformInt64 createdAt;
   final PlatformInt64 updatedAt;
   final String otherUserId;
+  final List<String> messageIds;
   final PlatformInt64 messagesCount;
   final String? lastMessageId;
 
@@ -29,6 +88,7 @@ class Chat {
     required this.createdAt,
     required this.updatedAt,
     required this.otherUserId,
+    required this.messageIds,
     required this.messagesCount,
     this.lastMessageId,
   });
@@ -42,6 +102,7 @@ class Chat {
       createdAt.hashCode ^
       updatedAt.hashCode ^
       otherUserId.hashCode ^
+      messageIds.hashCode ^
       messagesCount.hashCode ^
       lastMessageId.hashCode;
 
@@ -54,6 +115,7 @@ class Chat {
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt &&
           otherUserId == other.otherUserId &&
+          messageIds == other.messageIds &&
           messagesCount == other.messagesCount &&
           lastMessageId == other.lastMessageId;
 }
@@ -232,6 +294,7 @@ class Group {
   final String creatorUserId;
   final PlatformInt64 createdAt;
   final PlatformInt64 updatedAt;
+  final List<String> messageIds;
   final PlatformInt64 messagesCount;
   final String? lastMessageId;
   final PlatformInt64 lastMessageCreatedAt;
@@ -255,6 +318,7 @@ class Group {
     required this.creatorUserId,
     required this.createdAt,
     required this.updatedAt,
+    required this.messageIds,
     required this.messagesCount,
     this.lastMessageId,
     required this.lastMessageCreatedAt,
@@ -283,6 +347,7 @@ class Group {
       creatorUserId.hashCode ^
       createdAt.hashCode ^
       updatedAt.hashCode ^
+      messageIds.hashCode ^
       messagesCount.hashCode ^
       lastMessageId.hashCode ^
       lastMessageCreatedAt.hashCode ^
@@ -310,6 +375,7 @@ class Group {
           creatorUserId == other.creatorUserId &&
           createdAt == other.createdAt &&
           updatedAt == other.updatedAt &&
+          messageIds == other.messageIds &&
           messagesCount == other.messagesCount &&
           lastMessageId == other.lastMessageId &&
           lastMessageCreatedAt == other.lastMessageCreatedAt &&
@@ -323,71 +389,6 @@ class Group {
           shareQrCodeUrl == other.shareQrCodeUrl &&
           membersSaved == other.membersSaved &&
           messagesSaved == other.messagesSaved;
-}
-
-class Me {
-  final String id;
-  final String name;
-  final String? imageUrl;
-  final String phoneNumber;
-  final String? email;
-  final String? bio;
-  final String? songUrl;
-  final String locale;
-  final PlatformInt64 createdAt;
-  final PlatformInt64 updatedAt;
-  final String shareUrl;
-  final String shareQrCodeUrl;
-
-  const Me({
-    required this.id,
-    required this.name,
-    this.imageUrl,
-    required this.phoneNumber,
-    this.email,
-    this.bio,
-    this.songUrl,
-    required this.locale,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.shareUrl,
-    required this.shareQrCodeUrl,
-  });
-
-  static Future<Me> default_() => RustLib.instance.api.crateApiTypesMeDefault();
-
-  @override
-  int get hashCode =>
-      id.hashCode ^
-      name.hashCode ^
-      imageUrl.hashCode ^
-      phoneNumber.hashCode ^
-      email.hashCode ^
-      bio.hashCode ^
-      songUrl.hashCode ^
-      locale.hashCode ^
-      createdAt.hashCode ^
-      updatedAt.hashCode ^
-      shareUrl.hashCode ^
-      shareQrCodeUrl.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Me &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          name == other.name &&
-          imageUrl == other.imageUrl &&
-          phoneNumber == other.phoneNumber &&
-          email == other.email &&
-          bio == other.bio &&
-          songUrl == other.songUrl &&
-          locale == other.locale &&
-          createdAt == other.createdAt &&
-          updatedAt == other.updatedAt &&
-          shareUrl == other.shareUrl &&
-          shareQrCodeUrl == other.shareQrCodeUrl;
 }
 
 class Member {

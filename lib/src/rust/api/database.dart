@@ -5,44 +5,8 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'types.dart';
+
+// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `compact`, `get_chats`, `get_event`, `get_groups`, `get_me`, `get_members`, `get_messages`, `get_poll`, `get_user`, `get_users`, `open`, `save_chats`, `save_event`, `save_groups`, `save_me`, `save_members`, `save_messages`, `save_poll`, `save_users`
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Db>>
-abstract class Db implements RustOpaqueInterface {
-  Future<List<Chat>> getChats();
-
-  Future<void> getEvent({required String id});
-
-  Future<List<Group>> getGroups();
-
-  Future<Me?> getMe();
-
-  Future<List<Member>> getMembers({required List<String> ids});
-
-  Future<List<Message>> getMessages({required List<String> ids});
-
-  Future<void> getPoll({required String id});
-
-  Future<User?> getUser({required String id});
-
-  Future<List<User>> getUsers({required String search});
-
-  static Future<Db> open({required String folder}) =>
-      RustLib.instance.api.crateApiDatabaseDbOpen(folder: folder);
-
-  Future<void> saveChats({required List<Chat> chats});
-
-  Future<void> saveEvent({required Event event});
-
-  Future<void> saveGroups({required List<Group> groups});
-
-  Future<void> saveMe({required Me me});
-
-  Future<void> saveMembers({required List<Member> members});
-
-  Future<void> saveMessages({required List<Message> messages});
-
-  Future<void> savePoll({required Poll poll});
-
-  Future<void> saveUsers({required List<User> users});
-}
+abstract class Db implements RustOpaqueInterface {}

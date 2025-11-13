@@ -3,7 +3,7 @@ use flutter_rust_bridge::frb;
 use heed::{types::*, Database, Env, EnvOpenOptions};
 use std::fs;
 
-#[frb(opaque)]
+#[frb(ignore)]
 pub struct Db {
     #[frb(ignore)]
     pub env: Env,
@@ -16,15 +16,17 @@ pub struct Db {
     messages: Database<Str, DbItem<Message>>,
     polls: Database<Str, DbItem<Poll>>,
     events: Database<Str, DbItem<Event>>,
+    folder: String,
 }
 
+#[frb(ignore)]
 impl Db {
-    pub fn open(folder: &str) -> Result<Db, ChatError> {
-        let folder = format!("{folder}/GroupChatDb");
-        if !fs::exists(&folder)? {
-            fs::create_dir(&folder)?;
+    pub fn open(folder: String) -> Result<Db, ChatError> {
+        let path = format!("{folder}/GroupChatDb");
+        if !fs::exists(&path)? {
+            fs::create_dir(&path)?;
         }
-        let env = unsafe { EnvOpenOptions::new().max_dbs(20).open(folder)? };
+        let env = unsafe { EnvOpenOptions::new().max_dbs(20).open(path)? };
         let mut writer = env.write_txn()?;
 
         let me = env.create_database::<Str, DbItem<Me>>(&mut writer, Some("me"))?;
@@ -49,7 +51,18 @@ impl Db {
             messages,
             polls,
             events,
+            folder,
         })
+    }
+
+    pub fn compact(self) -> Result<Db, ChatError> {
+        let compact_path = format!("{}/GroupChatDbCompacted", self.folder);
+        let path = format!("{}/GroupChatDb", self.folder);
+        self.env
+            .copy_to_path(&compact_path, heed::CompactionOption::Enabled)?;
+        self.env.prepare_for_closing().wait();
+        fs::rename(&compact_path, path)?;
+        Ok(Db::open(self.folder)?)
     }
 
     pub fn save_me(&self, me: &Me) -> Result<(), ChatError> {
