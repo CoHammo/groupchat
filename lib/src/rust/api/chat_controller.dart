@@ -5,23 +5,98 @@
 
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:freezed_annotation/freezed_annotation.dart' hide protected;
 import 'types.dart';
+part 'chat_controller.freezed.dart';
+
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Changes>>
+abstract class Changes implements RustOpaqueInterface {
+  Stream<StateChange> changes({required ChangesId id});
+
+  // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
+  static Future<Changes> newInstance() =>
+      RustLib.instance.api.crateApiChatControllerChangesNew();
+
+  ChangesId nextId();
+
+  void notify({required StateChange change});
+
+  void unlisten({required ChangesId id});
+}
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ChatController>>
 abstract class ChatController implements RustOpaqueInterface {
-  Me? get me;
+  bool get groupsRefreshed;
 
-  bool get needsLogin;
+  bool get online;
 
-  set me(Me? me);
+  Changes get state;
 
-  set needsLogin(bool needsLogin);
+  set groupsRefreshed(bool groupsRefreshed);
+
+  set online(bool online);
+
+  set state(Changes state);
+
+  Future<void> createGroup();
+
+  List<Group> getGroups();
+
+  Me getMe();
+
+  Future<void> loadGroups({required bool loadAll});
+
+  Future<void> loadMe();
+
+  bool loggedIn();
 
   Future<void> login();
 
+  void logout();
+
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
-  static Future<ChatController> newInstance({required String folder}) => RustLib
-      .instance
-      .api
-      .crateApiChatControllerChatControllerNew(folder: folder);
+  static Future<ChatController> newInstance({
+    required String dataFolder,
+    required String metaFolder,
+    required bool online,
+  }) => RustLib.instance.api.crateApiChatControllerChatControllerNew(
+    dataFolder: dataFolder,
+    metaFolder: metaFolder,
+    online: online,
+  );
+
+  Future<void> refreshAll();
+
+  void shrinkDb();
+
+  Future<void> updateMe({required Me me});
+}
+
+class ChangesId {
+  final int field0;
+
+  const ChangesId({required this.field0});
+
+  @override
+  int get hashCode => field0.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ChangesId &&
+          runtimeType == other.runtimeType &&
+          field0 == other.field0;
+}
+
+@freezed
+sealed class StateChange with _$StateChange {
+  const StateChange._();
+
+  const factory StateChange.login() = StateChange_Login;
+  const factory StateChange.logout() = StateChange_Logout;
+  const factory StateChange.me() = StateChange_Me;
+  const factory StateChange.groups() = StateChange_Groups;
+  const factory StateChange.group(String field0) = StateChange_Group;
 }

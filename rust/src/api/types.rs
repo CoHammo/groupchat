@@ -50,23 +50,42 @@ impl std::fmt::Debug for ChatError {
 // }
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[frb(ignore)]
+pub struct GroupMeMeta(pub String);
+
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 #[serde(default)]
-#[frb(opaque)]
+#[frb]
 pub struct Me {
     pub id: String,
+    #[frb(non_final)]
     pub name: String,
     #[serde(alias = "avatar_url")]
     pub image_url: Option<String>,
     pub phone_number: String,
+    #[frb(non_final)]
     pub email: Option<String>,
+    #[frb(non_final)]
     pub bio: Option<String>,
     pub song_url: Option<String>,
+    pub photo_urls: Vec<String>,
     pub locale: String,
     pub created_at: i64,
     pub updated_at: i64,
     pub share_url: String,
     pub share_qr_code_url: String,
-    pub access_token: String,
+}
+
+impl Me {
+    #[frb(sync)]
+    pub fn initials(&self) -> String {
+        let split = self.name.split_once(" ").unwrap_or(("-", "-"));
+        return format!(
+            "{}{}",
+            split.0.chars().nth(0).unwrap(),
+            split.1.chars().nth(0).unwrap()
+        );
+    }
 }
 
 // impl Id for Me {
@@ -205,7 +224,7 @@ impl TryFrom<&Value> for Chat {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 #[serde(default)]
 pub struct Group {
     pub id: String,

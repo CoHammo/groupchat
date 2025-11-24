@@ -21,25 +21,15 @@ pub struct Api {
 
 #[frb(ignore)]
 impl Api {
-    pub fn new(token: Option<&str>) -> Result<Api, ChatError> {
+    pub fn new(token: &str) -> Result<Api, ChatError> {
         let mut headers = HeaderMap::new();
-        if let Some(tok) = token {
-            headers.insert("X-Access-Token", HeaderValue::from_str(&tok)?);
-        }
+        headers.insert("X-Access-Token", HeaderValue::from_str(token)?);
         let cb = Client::builder().default_headers(headers);
 
         Ok(Api {
             api: cb.build()?,
             url: "https://api.groupme.com/v3",
         })
-    }
-
-    pub fn login(&mut self, token: &str) -> Result<(), ChatError> {
-        let mut headers = HeaderMap::new();
-        headers.insert("X-Access-Token", HeaderValue::from_str(token)?);
-        let cb = Client::builder().default_headers(headers);
-        self.api = cb.build()?;
-        Ok(())
     }
 
     pub async fn get_me(&self) -> Result<Me, ChatError> {

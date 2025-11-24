@@ -7,72 +7,16 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `member_roles`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DbItem`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DbItem`, `GroupMeMeta`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `bytes_decode`, `bytes_encode`
+// These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `default`
 
 Future<String> emptyUnicode() =>
     RustLib.instance.api.crateApiTypesEmptyUnicode();
 
 // Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Attachment>>
 abstract class Attachment implements RustOpaqueInterface {}
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<Me>>
-abstract class Me implements RustOpaqueInterface {
-  String get accessToken;
-
-  String? get bio;
-
-  PlatformInt64 get createdAt;
-
-  String? get email;
-
-  String get id;
-
-  String? get imageUrl;
-
-  String get locale;
-
-  String get name;
-
-  String get phoneNumber;
-
-  String get shareQrCodeUrl;
-
-  String get shareUrl;
-
-  String? get songUrl;
-
-  PlatformInt64 get updatedAt;
-
-  set accessToken(String accessToken);
-
-  set bio(String? bio);
-
-  set createdAt(PlatformInt64 createdAt);
-
-  set email(String? email);
-
-  set id(String id);
-
-  set imageUrl(String? imageUrl);
-
-  set locale(String locale);
-
-  set name(String name);
-
-  set phoneNumber(String phoneNumber);
-
-  set shareQrCodeUrl(String shareQrCodeUrl);
-
-  set shareUrl(String shareUrl);
-
-  set songUrl(String? songUrl);
-
-  set updatedAt(PlatformInt64 updatedAt);
-
-  static Future<Me> default_() => RustLib.instance.api.crateApiTypesMeDefault();
-}
 
 class Chat {
   final String id;
@@ -389,6 +333,77 @@ class Group {
           shareQrCodeUrl == other.shareQrCodeUrl &&
           membersSaved == other.membersSaved &&
           messagesSaved == other.messagesSaved;
+}
+
+class Me {
+  final String id;
+  String name;
+  final String? imageUrl;
+  final String phoneNumber;
+  String? email;
+  String? bio;
+  final String? songUrl;
+  final List<String> photoUrls;
+  final String locale;
+  final PlatformInt64 createdAt;
+  final PlatformInt64 updatedAt;
+  final String shareUrl;
+  final String shareQrCodeUrl;
+
+  Me({
+    required this.id,
+    required this.name,
+    this.imageUrl,
+    required this.phoneNumber,
+    this.email,
+    this.bio,
+    this.songUrl,
+    required this.photoUrls,
+    required this.locale,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.shareUrl,
+    required this.shareQrCodeUrl,
+  });
+
+  static Future<Me> default_() => RustLib.instance.api.crateApiTypesMeDefault();
+
+  String initials() => RustLib.instance.api.crateApiTypesMeInitials(that: this);
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      name.hashCode ^
+      imageUrl.hashCode ^
+      phoneNumber.hashCode ^
+      email.hashCode ^
+      bio.hashCode ^
+      songUrl.hashCode ^
+      photoUrls.hashCode ^
+      locale.hashCode ^
+      createdAt.hashCode ^
+      updatedAt.hashCode ^
+      shareUrl.hashCode ^
+      shareQrCodeUrl.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Me &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          name == other.name &&
+          imageUrl == other.imageUrl &&
+          phoneNumber == other.phoneNumber &&
+          email == other.email &&
+          bio == other.bio &&
+          songUrl == other.songUrl &&
+          photoUrls == other.photoUrls &&
+          locale == other.locale &&
+          createdAt == other.createdAt &&
+          updatedAt == other.updatedAt &&
+          shareUrl == other.shareUrl &&
+          shareQrCodeUrl == other.shareQrCodeUrl;
 }
 
 class Member {
