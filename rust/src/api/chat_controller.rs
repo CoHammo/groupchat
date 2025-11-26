@@ -3,7 +3,7 @@ use crate::{
     frb_generated::{RustAutoOpaque, StreamSink},
 };
 use flutter_rust_bridge::frb;
-use std::{collections::HashMap, io::BufReader, net::Shutdown};
+use std::{collections::HashMap, fs, io::BufReader, net::Shutdown};
 use std::{
     io::{BufRead, Write},
     net::TcpListener,
@@ -128,8 +128,23 @@ impl ChatController {
         Ok(me)
     }
 
-    pub async fn update_me(&mut self, me: Me) -> Result<(), ChatError> {
+    pub async fn update_me(&mut self, mut me: Me) -> Result<(), ChatError> {
         if let Some(api) = &self.api {
+            let mut photos: Vec<String> = Vec::new();
+            for image in me.photo_urls.iter() {
+                if !image.is_empty() {
+                    if image.starts_with("https://") {
+                        photos.push(image.clone());
+                    } else {
+                        let bytes = fs::read(image)?;
+                        let new_image = api.upload_image(bytes).await?;
+                        if let Attachment::Image { url } = new_image {
+                            photos.push(url);
+                        }
+                    }
+                }
+            }
+            me.photo_urls = photos;
             let new_me = api.update_me(&me).await?;
             self.db.save_me(&new_me)?;
             self.state.read().await.notify(StateChange::Me)?;
@@ -148,7 +163,6 @@ impl ChatController {
                 let mut to_save: Vec<Group> = Vec::new();
                 while next {
                     let mut groups = api.get_groups(page, 100).await?;
-                    println!("API got {} groups", groups.len());
                     if groups.len() < 100 {
                         next = false;
                     }

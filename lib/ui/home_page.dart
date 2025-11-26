@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/ui/groups/groups_list.dart';
 import 'package:groupchat/ui/profile_page.dart';
+import 'package:groupchat/ui/toaster.dart';
 import '../src/rust/api/rust.dart';
 import 'login_page.dart';
 
@@ -49,7 +50,6 @@ class _HomePageState extends State<HomePage> {
     } else {
       return Scaffold(
         appBar: AppBar(
-          centerTitle: true,
           title: Text("GroupChat"),
           leadingWidth: 70,
           leading: Padding(
@@ -58,8 +58,21 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(widget.controller),
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        ProfilePage(widget.controller),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                          var tween = Tween(
+                            begin: Offset(-1.0, 0),
+                            end: Offset.zero,
+                          ).chain(CurveTween(curve: Curves.easeInOutQuint));
+
+                          return SlideTransition(
+                            position: animation.drive(tween),
+                            child: child,
+                          );
+                        },
                   ),
                 );
               },
@@ -73,6 +86,12 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           actions: [
+            IconButton(
+              onPressed: () {
+                Toaster.push(context, "Hello There!", seconds: 2);
+              },
+              icon: Icon(Icons.bubble_chart),
+            ),
             IconButton(
               onPressed: () {
                 widget.controller.shrinkDb();

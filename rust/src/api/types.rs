@@ -61,13 +61,17 @@ pub struct Me {
     #[frb(non_final)]
     pub name: String,
     #[serde(alias = "avatar_url")]
+    #[frb(non_final)]
     pub image_url: Option<String>,
+    #[frb(non_final)]
     pub phone_number: String,
     #[frb(non_final)]
     pub email: Option<String>,
     #[frb(non_final)]
     pub bio: Option<String>,
+    #[frb(non_final)]
     pub song_url: Option<String>,
+    #[frb(non_final)]
     pub photo_urls: Vec<String>,
     pub locale: String,
     pub created_at: i64,
@@ -85,6 +89,11 @@ impl Me {
             split.0.chars().nth(0).unwrap(),
             split.1.chars().nth(0).unwrap()
         );
+    }
+
+    #[frb(sync)]
+    pub fn equals(&self, other: &Me) -> bool {
+        self == other
     }
 }
 

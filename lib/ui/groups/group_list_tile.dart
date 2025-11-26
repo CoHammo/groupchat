@@ -18,9 +18,9 @@ class GroupListTile extends StatelessWidget {
             transitionsBuilder:
                 (context, animation, secondaryAnimation, child) {
                   var tween = Tween(
-                    begin: Offset(1.0, 0),
+                    begin: Offset(0, 1.0),
                     end: Offset.zero,
-                  ).chain(CurveTween(curve: Curves.fastEaseInToSlowEaseOut));
+                  ).chain(CurveTween(curve: Curves.easeInOutQuint));
 
                   return SlideTransition(
                     position: animation.drive(tween),

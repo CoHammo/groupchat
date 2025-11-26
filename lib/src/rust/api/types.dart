@@ -338,12 +338,12 @@ class Group {
 class Me {
   final String id;
   String name;
-  final String? imageUrl;
-  final String phoneNumber;
+  String? imageUrl;
+  String phoneNumber;
   String? email;
   String? bio;
-  final String? songUrl;
-  final List<String> photoUrls;
+  String? songUrl;
+  List<String> photoUrls;
   final String locale;
   final PlatformInt64 createdAt;
   final PlatformInt64 updatedAt;
@@ -367,6 +367,9 @@ class Me {
   });
 
   static Future<Me> default_() => RustLib.instance.api.crateApiTypesMeDefault();
+
+  bool equals({required Me other}) =>
+      RustLib.instance.api.crateApiTypesMeEquals(that: this, other: other);
 
   String initials() => RustLib.instance.api.crateApiTypesMeInitials(that: this);
 
