@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:groupchat/src/rust/frb_generated.dart';
 import 'package:groupchat/src/rust/api/rust.dart';
-import 'package:groupchat/ui/toaster.dart';
+import 'package:groupchat/ui/toast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'ui/home_page.dart';
 
@@ -24,7 +24,7 @@ void main() async {
   }
 
   PlatformDispatcher.instance.onError = (error, stack) {
-    Toaster.showError(error);
+    Toast.error(error);
     return true;
   };
 
@@ -67,9 +67,12 @@ class GroupChat extends StatelessWidget {
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
+            elevation: 0,
+            shadowColor: null,
+            padding: EdgeInsets.all(0),
             textStyle: TextStyle(fontSize: 22),
             foregroundColor: primaryColor,
-            backgroundColor: Colors.blueGrey.shade100,
+            // backgroundColor: Colors.blueGrey.shade100,
             side: BorderSide(color: primaryColor, width: 3),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(cornerRadius),
@@ -77,7 +80,7 @@ class GroupChat extends StatelessWidget {
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
-          contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           filled: true,
           fillColor: Colors.grey.shade300,
           hintStyle: TextStyle(color: Colors.grey.shade700),
@@ -115,7 +118,7 @@ class GroupChat extends StatelessWidget {
           bodyMedium: TextStyle(fontSize: 22),
         ),
       ),
-      home: HomePage(controller, key: Toaster.scaffoldKey),
+      home: HomePage(controller, key: Toast.scaffoldKey),
     );
   }
 }

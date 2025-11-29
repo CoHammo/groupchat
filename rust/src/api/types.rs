@@ -1,5 +1,6 @@
 use flutter_rust_bridge::frb;
 use heed::{BytesDecode, BytesEncode};
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::borrow::Cow;
@@ -94,6 +95,32 @@ impl Me {
     #[frb(sync)]
     pub fn equals(&self, other: &Me) -> bool {
         self == other
+    }
+
+    #[frb(sync)]
+    pub fn is_valid(&self) -> bool {
+        return self.valid_name() && self.valid_email() && self.valid_photos();
+    }
+
+    #[frb(sync)]
+    pub fn valid_name(&self) -> bool {
+        return !self.name.is_empty();
+    }
+
+    #[frb(sync)]
+    pub fn valid_email(&self) -> bool {
+        let re = Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").unwrap();
+        if let Some(email) = &self.email {
+            return re.is_match(email);
+        } else {
+            return false;
+        }
+    }
+
+    #[frb(sync)]
+    pub fn valid_photos(&self) -> bool {
+        let len = self.photo_urls.len();
+        return len == 0 || (3 <= len && len <= 6);
     }
 }
 

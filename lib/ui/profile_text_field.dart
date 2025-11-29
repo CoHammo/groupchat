@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProfileTextField extends StatefulWidget {
   const ProfileTextField(
@@ -50,6 +51,7 @@ class _ProfileTextFieldState extends State<ProfileTextField> {
       ),
       maxLines: widget.maxLines,
       maxLength: widget.maxLength,
+      maxLengthEnforcement: MaxLengthEnforcement.enforced,
       onChanged: (value) {
         if (widget.pattern != null) {
           if (widget.pattern!.hasMatch(value)) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/ui/groups/groups_list.dart';
 import 'package:groupchat/ui/profile_page.dart';
-import 'package:groupchat/ui/toaster.dart';
+import 'package:groupchat/ui/toast.dart';
 import '../src/rust/api/rust.dart';
 import 'login_page.dart';
 
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
           actions: [
             IconButton(
               onPressed: () {
-                Toaster.push(context, "Hello There!", seconds: 2);
+                Toast("Hello There!", seconds: 3);
               },
               icon: Icon(Icons.bubble_chart),
             ),

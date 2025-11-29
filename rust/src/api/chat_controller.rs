@@ -36,7 +36,7 @@ impl ChatController {
         let db = Db::open(&data_folder, &meta_folder)?;
         let mut api: Option<Api> = None;
         if let Some(token) = db.get_meta("token")? {
-            println!("GroupMe Auth Token: {token}");
+            println!("GroupMe Token: {token}");
             let a = Api::new(&token)?;
             match a.get_me().await {
                 Ok(me) => {
@@ -80,7 +80,7 @@ impl ChatController {
             .splitn(4, |c| c == ' ' || c == '=')
             .collect::<Vec<&str>>();
         let token = splits.get(2).unwrap_or(&&"");
-        println!("GroupMe Auth Token: {token}");
+        println!("GroupMe Token: {token}");
         stream.write_all(b"HTTP/1.1 200 OK\r\n\r\nThanks").ok();
         stream.flush().ok();
         stream.shutdown(Shutdown::Both).ok();

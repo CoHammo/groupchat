@@ -373,6 +373,16 @@ class Me {
 
   String initials() => RustLib.instance.api.crateApiTypesMeInitials(that: this);
 
+  bool isValid() => RustLib.instance.api.crateApiTypesMeIsValid(that: this);
+
+  bool validEmail() =>
+      RustLib.instance.api.crateApiTypesMeValidEmail(that: this);
+
+  bool validName() => RustLib.instance.api.crateApiTypesMeValidName(that: this);
+
+  bool validPhotos() =>
+      RustLib.instance.api.crateApiTypesMeValidPhotos(that: this);
+
   @override
   int get hashCode =>
       id.hashCode ^

@@ -25,6 +25,7 @@ impl Db {
         if !fs::exists(&meta_folder)? {
             fs::create_dir_all(&meta_folder)?;
         }
+
         let meta_env = unsafe {
             EnvOpenOptions::new()
                 .map_size(1024 * 1024 * 5)
@@ -47,14 +48,14 @@ impl Db {
         if !fs::exists(&full_data_folder)? {
             fs::create_dir_all(&full_data_folder)?;
         }
-        println!("{full_data_folder}");
+        println!("Database Folder: {full_data_folder}");
+
         let env = unsafe {
             EnvOpenOptions::new()
                 .map_size(1024 * 1024 * 200)
                 .max_dbs(20)
                 .open(&full_data_folder)?
         };
-
         let mut writer = env.write_txn()?;
         let me = env.create_database::<Str, DbItem<Me>>(&mut writer, Some("me"))?;
         let users = env.create_database::<Str, DbItem<User>>(&mut writer, Some("users"))?;
