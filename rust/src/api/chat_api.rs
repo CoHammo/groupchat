@@ -2,11 +2,11 @@ use crate::api::types::*;
 use flutter_rust_bridge::frb;
 use jiff::Timestamp;
 use reqwest::{
-    header::{HeaderMap, HeaderValue},
     Client,
+    header::{HeaderMap, HeaderValue},
 };
 use serde::Deserialize;
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -46,7 +46,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API get_me: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -70,7 +70,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API update_me: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -88,7 +88,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API get_user: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -112,13 +112,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     "API get_chats returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API get_chats: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -145,7 +145,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API create_group: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -162,7 +162,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API delete_group: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -180,7 +180,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API join_group: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -198,7 +198,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API rejoin_group: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -216,7 +216,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API get_group: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -240,13 +240,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     "API get_groups returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API get_groups: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -269,13 +269,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     "API get_members returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API get_members: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -316,7 +316,7 @@ impl Api {
                 } else {
                     return Err(ChatError::new(
                         &format!("API add_members results call: {}", res2.status()),
-                        res2.text().await?,
+                        Some(res2.text().await?),
                     ));
                 }
             }
@@ -333,7 +333,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API add_members: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -353,7 +353,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API remove_member: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -403,13 +403,13 @@ impl Api {
             } else {
                 return Err(ChatError::new(
                     "API get_message returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ));
             }
         } else {
             Err(ChatError::new(
                 &format!("API get_messages: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -434,7 +434,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API send_message: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -460,7 +460,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API edit_message: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -484,7 +484,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API delete_message: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -516,13 +516,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     "API like_message returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API like_message: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -552,13 +552,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     "API unlike_message returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API unlike_message: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -578,7 +578,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API pin_message: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -598,7 +598,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API pin_message: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -620,13 +620,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     "API upload_image returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API upload_image: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -651,7 +651,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API create_poll: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -669,7 +669,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API get_poll: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -692,13 +692,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     "API get_polls returned bad data",
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API get_polls: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -726,7 +726,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API vote_poll: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -757,12 +757,12 @@ impl Api {
             }
             Err(ChatError::new(
                 &format!("API upload_file returned bad data"),
-                json.to_string(),
+                Some(json.to_string()),
             ))
         } else {
             Err(ChatError::new(
                 &format!("API upload_file: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -790,7 +790,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API create_event: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -809,7 +809,7 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API get_event: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }
@@ -833,13 +833,13 @@ impl Api {
             } else {
                 Err(ChatError::new(
                     &format!("API get_events returned bad data"),
-                    json.to_string(),
+                    Some(json.to_string()),
                 ))
             }
         } else {
             Err(ChatError::new(
                 &format!("API get_events: {}", res.status()),
-                res.text().await?,
+                Some(res.text().await?),
             ))
         }
     }

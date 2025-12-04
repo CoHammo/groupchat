@@ -3,7 +3,11 @@ use crate::{
     frb_generated::{RustAutoOpaque, StreamSink},
 };
 use flutter_rust_bridge::frb;
-use std::{collections::HashMap, fs, io::BufReader, net::Shutdown};
+use rustls::{
+    ServerConfig,
+    pki_types::{PrivateKeyDer, pem::PemObject},
+};
+use std::{collections::HashMap, fs, io::BufReader, net::Shutdown, sync::Arc};
 use std::{
     io::{BufRead, Write},
     net::TcpListener,
@@ -37,10 +41,10 @@ impl ChatController {
         let mut api: Option<Api> = None;
         if let Some(token) = db.get_meta("token")? {
             println!("GroupMe Token: {token}");
-            let a = Api::new(&token)?;
-            match a.get_me().await {
+            let api1 = Api::new(&token)?;
+            match api1.get_me().await {
                 Ok(me) => {
-                    api = Some(a);
+                    api = Some(api1);
                     db.save_me(&me)?;
                 }
                 Err(e) => {
@@ -71,11 +75,23 @@ impl ChatController {
     }
 
     pub async fn login(&mut self) -> Result<(), ChatError> {
+        // let ck = rcgen::generate_simple_self_signed(vec!["127.0.0.1".to_string()])?;
+        // let pk = PrivateKeyDer::from_pem_slice(ck.signing_key.serialize_pem().as_bytes())?;
+        // let config =
+        //     ServerConfig::builder_with_provider(Arc::new(rustls::crypto::ring::default_provider()))
+        //         .with_safe_default_protocol_versions()?
+        //         .with_no_client_auth()
+        //         .with_single_cert(vec![ck.cert.der().clone()], pk)?;
+
         let listener = TcpListener::bind("127.0.0.1:3000")?;
         let mut stream = listener.accept()?.0;
+        // let mut conn = rustls::ServerConnection::new(Arc::new(config))?;
+        // let mut tls_stream = rustls::Stream::new(&mut conn, &mut stream);
+
         let mut reader = BufReader::new(&mut stream);
         let mut line = String::new();
         reader.read_line(&mut line)?;
+        // tls_stream.read_line(&mut line)?;
         let splits = line
             .splitn(4, |c| c == ' ' || c == '=')
             .collect::<Vec<&str>>();
@@ -124,32 +140,43 @@ impl ChatController {
 
     #[frb(sync)]
     pub fn get_me(&self) -> Result<Me, ChatError> {
-        let me = self.db.get_me()?.unwrap();
+        let me = self.db.get_me()?.unwrap_or_default();
         Ok(me)
     }
 
-    pub async fn update_me(&mut self, mut me: Me) -> Result<(), ChatError> {
+    pub async fn update_me(
+        &mut self,
+        mut me: Me,
+        profile_photo: Option<Vec<u8>>,
+        gallery_photos: Option<Vec<Vec<u8>>>,
+    ) -> Result<bool, ChatError> {
         if let Some(api) = &self.api {
-            let mut photos: Vec<String> = Vec::new();
-            for image in me.photo_urls.iter() {
-                if !image.is_empty() {
-                    if image.starts_with("https://") {
-                        photos.push(image.clone());
-                    } else {
-                        let bytes = fs::read(image)?;
-                        let new_image = api.upload_image(bytes).await?;
-                        if let Attachment::Image { url } = new_image {
-                            photos.push(url);
-                        }
+            let mut photo_urls: Vec<String> = Vec::new();
+            for image in me.photo_urls {
+                if image.starts_with("https://") {
+                    photo_urls.push(image);
+                }
+            }
+            me.photo_urls = photo_urls;
+
+            if let Some(image) = profile_photo {
+                let attachment = api.upload_image(image).await?;
+                if let Attachment::Image { url } = attachment {
+                    me.image_url = Some(url);
+                }
+            }
+            if let Some(photos) = gallery_photos {
+                for image in photos {
+                    if let Attachment::Image { url } = api.upload_image(image).await? {
+                        me.photo_urls.push(url);
                     }
                 }
             }
-            me.photo_urls = photos;
             let new_me = api.update_me(&me).await?;
             self.db.save_me(&new_me)?;
             self.state.read().await.notify(StateChange::Me)?;
         }
-        Ok(())
+        Ok(true)
     }
 
     pub async fn load_groups(&mut self, load_all: bool) -> Result<(), ChatError> {
@@ -232,7 +259,7 @@ impl ChatController {
             self.state.read().await.notify(StateChange::Groups)?;
             Ok(())
         } else {
-            Err(ChatError::new("Not logged in", String::new()))
+            Err(ChatError::new("Not logged in", None))
         }
     }
 }

@@ -71,7 +71,11 @@ abstract class ChatController implements RustOpaqueInterface {
 
   void shrinkDb();
 
-  Future<void> updateMe({required Me me});
+  Future<bool> updateMe({
+    required Me me,
+    Uint8List? profilePhoto,
+    List<Uint8List>? galleryPhotos,
+  });
 }
 
 class ChangesId {

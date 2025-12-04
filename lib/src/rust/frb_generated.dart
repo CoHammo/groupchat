@@ -167,16 +167,18 @@ abstract class RustLibApi extends BaseApi {
     required ChatController that,
   });
 
-  Future<void> crateApiChatControllerChatControllerUpdateMe({
+  Future<bool> crateApiChatControllerChatControllerUpdateMe({
     required ChatController that,
     required Me me,
+    Uint8List? profilePhoto,
+    List<Uint8List>? galleryPhotos,
   });
 
   Future<Chat> crateApiTypesChatDefault();
 
   Future<ChatError> crateApiTypesChatErrorNew({
     required String message,
-    required String data,
+    String? data,
   });
 
   Future<String> crateApiTypesEmptyUnicode();
@@ -1024,9 +1026,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiChatControllerChatControllerUpdateMe({
+  Future<bool> crateApiChatControllerChatControllerUpdateMe({
     required ChatController that,
     required Me me,
+    Uint8List? profilePhoto,
+    List<Uint8List>? galleryPhotos,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -1037,6 +1041,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
             serializer,
           );
           sse_encode_box_autoadd_me(me, serializer);
+          sse_encode_opt_list_prim_u_8_strict(profilePhoto, serializer);
+          sse_encode_opt_list_list_prim_u_8_strict(galleryPhotos, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -1045,11 +1051,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           );
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_unit,
+          decodeSuccessData: sse_decode_bool,
           decodeErrorData: sse_decode_chat_error,
         ),
         constMeta: kCrateApiChatControllerChatControllerUpdateMeConstMeta,
-        argValues: [that, me],
+        argValues: [that, me, profilePhoto, galleryPhotos],
         apiImpl: this,
       ),
     );
@@ -1058,7 +1064,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   TaskConstMeta get kCrateApiChatControllerChatControllerUpdateMeConstMeta =>
       const TaskConstMeta(
         debugName: "ChatController_update_me",
-        argNames: ["that", "me"],
+        argNames: ["that", "me", "profilePhoto", "galleryPhotos"],
       );
 
   @override
@@ -1091,14 +1097,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   @override
   Future<ChatError> crateApiTypesChatErrorNew({
     required String message,
-    required String data,
+    String? data,
   }) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_String(message, serializer);
-          sse_encode_String(data, serializer);
+          sse_encode_opt_String(data, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -2125,6 +2131,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<Uint8List> dco_decode_list_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_list_prim_u_8_strict).toList();
+  }
+
+  @protected
   List<PollOption> dco_decode_list_poll_option(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return (raw as List<dynamic>).map(dco_decode_poll_option).toList();
@@ -2254,6 +2266,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   List<String>? dco_decode_opt_list_String(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_list_String(raw);
+  }
+
+  @protected
+  List<Uint8List>? dco_decode_opt_list_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_list_prim_u_8_strict(raw);
+  }
+
+  @protected
+  Uint8List? dco_decode_opt_list_prim_u_8_strict(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_list_prim_u_8_strict(raw);
   }
 
   @protected
@@ -2770,6 +2794,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<Uint8List> sse_decode_list_list_prim_u_8_strict(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <Uint8List>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_list_prim_u_8_strict(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   List<PollOption> sse_decode_list_poll_option(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
@@ -2959,6 +2997,30 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_list_String(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  List<Uint8List>? sse_decode_opt_list_list_prim_u_8_strict(
+    SseDeserializer deserializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_list_prim_u_8_strict(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  Uint8List? sse_decode_opt_list_prim_u_8_strict(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_list_prim_u_8_strict(deserializer));
     } else {
       return null;
     }
@@ -3451,6 +3513,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_list_prim_u_8_strict(
+    List<Uint8List> self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_list_prim_u_8_strict(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_list_poll_option(
     List<PollOption> self,
     SseSerializer serializer,
@@ -3616,6 +3690,32 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_list_String(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_list_list_prim_u_8_strict(
+    List<Uint8List>? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_list_prim_u_8_strict(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_list_prim_u_8_strict(
+    Uint8List? self,
+    SseSerializer serializer,
+  ) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_list_prim_u_8_strict(self, serializer);
     }
   }
 
@@ -3846,6 +3946,14 @@ class ChatControllerImpl extends RustOpaque implements ChatController {
   void shrinkDb() => RustLib.instance.api
       .crateApiChatControllerChatControllerShrinkDb(that: this);
 
-  Future<void> updateMe({required Me me}) => RustLib.instance.api
-      .crateApiChatControllerChatControllerUpdateMe(that: this, me: me);
+  Future<bool> updateMe({
+    required Me me,
+    Uint8List? profilePhoto,
+    List<Uint8List>? galleryPhotos,
+  }) => RustLib.instance.api.crateApiChatControllerChatControllerUpdateMe(
+    that: this,
+    me: me,
+    profilePhoto: profilePhoto,
+    galleryPhotos: galleryPhotos,
+  );
 }

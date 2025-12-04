@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:groupchat/ui/image_viewer.dart';
 import '../../src/rust/api/rust.dart';
 import 'group_page.dart';
 
@@ -34,29 +35,25 @@ class GroupListTile extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Row(
           children: [
             Container(
-              width: 70,
-              height: 70,
+              width: 65,
+              height: 65,
               margin: EdgeInsets.only(right: 10),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
-                color: Color.fromARGB(255, 131, 179, 255),
+                color: ColorScheme.of(context).secondary,
               ),
               clipBehavior: Clip.hardEdge,
-              child: group.imageUrl != null
-                  ? Image.network(group.imageUrl!, fit: BoxFit.cover)
-                  : null,
+              child: AnyImage(
+                url: group.imageUrl,
+                fit: BoxFit.cover,
+                child: Icon(Icons.people_alt_outlined, size: 30),
+              ),
             ),
             Text(group.name),
-            Spacer(),
-            Text(
-              DateTime.fromMillisecondsSinceEpoch(
-                (group.updatedAt * 1000),
-              ).toString(),
-            ),
           ],
         ),
       ),

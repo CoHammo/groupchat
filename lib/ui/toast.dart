@@ -15,7 +15,7 @@ class Toast extends StatefulWidget {
     BuildContext? context = scaffoldKey.currentContext;
     if (context != null) {
       if (error is ChatError) {
-        text = "Error: ${error.data}\nData: ${error.message}";
+        text = "Error: ${error.message}\nData: ${error.data}";
       } else {
         text = error.toString();
       }

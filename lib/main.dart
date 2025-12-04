@@ -20,7 +20,7 @@ void main() async {
     online: true,
   );
   if (controller.loggedIn()) {
-    await controller.refreshAll();
+    await controller.loadGroups(loadAll: true);
   }
 
   PlatformDispatcher.instance.onError = (error, stack) {
@@ -106,7 +106,8 @@ class GroupChat extends StatelessWidget {
           brightness: Brightness.light,
           primary: primaryColor,
           onPrimary: Colors.black,
-          secondary: Colors.blue.shade200,
+          // secondary: Colors.blue.shade200,
+          secondary: const Color.fromARGB(255, 146, 219, 253),
           onSecondary: Colors.black,
           error: Colors.red.shade400,
           onError: Colors.black,
@@ -114,8 +115,15 @@ class GroupChat extends StatelessWidget {
           onSurface: Colors.black,
         ),
         textTheme: TextTheme(
-          bodyLarge: TextStyle(fontSize: 22),
-          bodyMedium: TextStyle(fontSize: 22),
+          displayLarge: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          displayMedium: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          displaySmall: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+          titleLarge: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          titleMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          titleSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          bodyLarge: TextStyle(fontSize: 17),
+          bodyMedium: TextStyle(fontSize: 16),
+          bodySmall: TextStyle(fontSize: 14),
         ),
       ),
       home: HomePage(controller, key: Toast.scaffoldKey),

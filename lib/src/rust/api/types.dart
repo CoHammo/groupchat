@@ -73,7 +73,7 @@ class ChatError implements FrbException {
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<ChatError> newInstance({
     required String message,
-    required String data,
+    String? data,
   }) => RustLib.instance.api.crateApiTypesChatErrorNew(
     message: message,
     data: data,
@@ -470,16 +470,16 @@ class Message {
   final String groupId;
   final String senderId;
   final bool system;
-  final String? text;
-  final List<Reaction> reactions;
-  final List<Attachment> attachments;
+  String? text;
+  List<Reaction> reactions;
+  List<Attachment> attachments;
   final String sourceGuid;
-  final PlatformInt64? pinnedAt;
+  PlatformInt64? pinnedAt;
   final PlatformInt64 createdAt;
   final PlatformInt64? updatedAt;
-  final bool sending;
+  bool sending;
 
-  const Message({
+  Message({
     required this.id,
     required this.groupId,
     required this.senderId,
@@ -683,14 +683,14 @@ class Reaction {
 
 class User {
   final String id;
-  final String name;
-  final String imageUrl;
-  final String? bio;
-  final String? songUrl;
-  final List<String>? photoUrls;
-  final List<String> sharedGroups;
+  String name;
+  String imageUrl;
+  String? bio;
+  String? songUrl;
+  List<String>? photoUrls;
+  List<String> sharedGroups;
 
-  const User({
+  User({
     required this.id,
     required this.name,
     required this.imageUrl,

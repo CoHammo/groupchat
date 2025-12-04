@@ -29,6 +29,9 @@ class _HomePageState extends State<HomePage> {
           me = widget.controller.getMe();
           print("logged in on home page");
         }),
+        me: () => setState(() {
+          me = widget.controller.getMe();
+        }),
         logout: () => setState(() {
           me = widget.controller.getMe();
           print("logged out on home page");

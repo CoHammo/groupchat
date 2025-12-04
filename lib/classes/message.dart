@@ -1,4 +1,3 @@
-import 'package:uuid/uuid.dart';
 import 'me.dart';
 
 class Message {
@@ -47,7 +46,7 @@ class Message {
       groupId: groupId,
       senderId: sender.id,
       text: text,
-      sourceGuid: Uuid().v7(),
+      sourceGuid: "shouldBeUuid",
       senderName: senderName,
       imageUrl: sender.imageUrl,
     );

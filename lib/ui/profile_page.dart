@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:groupchat/ui/image_viewer.dart';
 import 'package:groupchat/ui/toast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
 import '../src/rust/api/rust.dart';
+import 'image_editor.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage(this.controller, {super.key});
@@ -43,158 +44,23 @@ class _ProfilePageState extends State<ProfilePage> {
     tempPhotos.clear();
   }
 
-  Future<Uint8List> editImage({
-    Uint8List? imageBytes,
-    required String imageString,
-    required bool galleryImage,
+  void editImage(
+    Img image, {
+    bool profile = false,
+    bool cropOnly = false,
+    double? forceCropAspect,
+    void Function(Uint8List bytes)? onDone,
   }) async {
-    Completer<Uint8List> editedImage = Completer();
-    String? file;
-    String? network;
-    imageString.startsWith("https://")
-        ? network = imageString
-        : file = imageString;
-
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProImageEditor.autoSource(
-          file: file,
-          networkUrl: network,
-          byteArray: imageBytes,
-          configs: ProImageEditorConfigs(
-            cropRotateEditor: CropRotateEditorConfigs(
-              tools: [
-                CropRotateTool.flip,
-                CropRotateTool.rotate,
-                CropRotateTool.reset,
-              ],
-              initAspectRatio: galleryImage ? 9 / 16 : 1 / 1,
-              aspectRatios: [
-                galleryImage
-                    ? AspectRatioItem(text: "9 / 16", value: 9 / 16)
-                    : AspectRatioItem(text: "Square", value: 1 / 1),
-              ],
-            ),
-          ),
-          callbacks: ProImageEditorCallbacks(
-            onImageEditingComplete: (bytes) async {
-              editedImage.complete(bytes);
-              Navigator.pop(context);
-            },
-          ),
+        builder: (context) => ImageEditor(
+          image: image,
+          cropOnly: cropOnly,
+          forceCropAspect: forceCropAspect,
+          onDone: onDone,
         ),
       ),
-    );
-    return editedImage.future;
-  }
-
-  void bottomSheet({required String imageKey, required bool galleryImage}) {
-    showModalBottomSheet(
-      context: context,
-      enableDrag: true,
-      constraints: BoxConstraints(maxWidth: double.infinity),
-      builder: (context) {
-        return SizedBox(
-          height: 80,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 65,
-                height: 65,
-                child: IconButton(
-                  onPressed: () async {
-                    if (galleryImage) {
-                      var bytes = await editImage(
-                        imageBytes: tempPhotos[imageKey],
-                        imageString: imageKey,
-                        galleryImage: galleryImage,
-                      );
-                      var key =
-                          imageKey +
-                          DateTime.now().millisecondsSinceEpoch.toString();
-                      tempPhotos.remove(imageKey);
-                      delta.photoUrls[delta.photoUrls.indexOf(imageKey)] = key;
-                      tempPhotos[key] = bytes;
-                    } else {
-                      var bytes = await editImage(
-                        imageBytes: tempImage,
-                        imageString: imageKey,
-                        galleryImage: galleryImage,
-                      );
-                      tempImage = bytes;
-                      delta.imageUrl = imageKey;
-                    }
-                    context.mounted ? Navigator.pop(context) : null;
-                    setState(() {});
-                  },
-                  style: OutlinedButton.styleFrom(shape: CircleBorder()),
-                  icon: Icon(Icons.brush_outlined, size: 36),
-                ),
-              ),
-              SizedBox(width: 10),
-              SizedBox(
-                width: 65,
-                height: 65,
-                child: IconButton(
-                  onPressed: () {
-                    if (galleryImage) {
-                      tempPhotos.remove(imageKey);
-                      delta.photoUrls.remove(imageKey);
-                    } else {
-                      tempImage = null;
-                      delta.imageUrl = null;
-                    }
-                    Navigator.pop(context);
-                    setState(() {});
-                  },
-                  style: OutlinedButton.styleFrom(shape: CircleBorder()),
-                  icon: Icon(Icons.delete_outline, size: 36),
-                ),
-              ),
-              SizedBox(width: 10),
-              SizedBox(
-                width: 65,
-                height: 65,
-                child: IconButton(
-                  onPressed: () async {
-                    var newImage = await picker.pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    if (newImage != null) {
-                      if (galleryImage) {
-                        var bytes = await editImage(
-                          imageString: newImage.path,
-                          galleryImage: true,
-                        );
-                        var key =
-                            newImage.path +
-                            DateTime.now().millisecondsSinceEpoch.toString();
-                        tempPhotos.remove(imageKey);
-                        delta.photoUrls[delta.photoUrls.indexOf(imageKey)] =
-                            key;
-                        tempPhotos[key] = bytes;
-                      } else {
-                        var bytes = await editImage(
-                          imageString: newImage.path,
-                          galleryImage: false,
-                        );
-                        tempImage = bytes;
-                        delta.imageUrl = newImage.path;
-                      }
-                    }
-                    context.mounted ? Navigator.pop(context) : null;
-                    setState(() {});
-                  },
-                  style: OutlinedButton.styleFrom(shape: CircleBorder()),
-                  icon: Icon(Icons.add, size: 36),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 
@@ -236,6 +102,13 @@ class _ProfilePageState extends State<ProfilePage> {
             icon: Icon(Icons.refresh),
             onPressed: () => setState(() => init()),
           ),
+          IconButton(
+            icon: Icon(Icons.logout_outlined),
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() => widget.controller.logout());
+            },
+          ),
         ],
       ),
       body: Builder(
@@ -249,20 +122,15 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Center(
                       child: SizedBox(
-                        width: 225,
-                        height: 225,
+                        width: 200,
+                        height: 200,
                         child: Stack(
                           children: [
-                            CircleAvatar(
-                              radius: double.infinity,
-                              backgroundColor: Theme.of(
-                                context,
-                              ).colorScheme.secondary,
-                              foregroundImage: tempImage == null
-                                  ? delta.imageUrl != null
-                                        ? NetworkImage(delta.imageUrl!)
-                                        : null
-                                  : MemoryImage(tempImage!),
+                            AnyImage(
+                              circle: true,
+                              circleRadius: double.infinity,
+                              bytes: tempImage,
+                              url: delta.imageUrl,
                               child: Text(
                                 me.initials(),
                                 style: TextStyle(fontSize: 32),
@@ -275,27 +143,57 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: InkWell(
                                 splashColor: Colors.black12,
                                 onTap: () async {
-                                  if (delta.imageUrl == null) {
+                                  if (delta.imageUrl == null &&
+                                      tempImage == null) {
                                     var newImage = await picker.pickImage(
                                       source: ImageSource.gallery,
                                     );
                                     if (newImage != null) {
-                                      var bytes = await editImage(
-                                        imageString: newImage.path,
-                                        galleryImage: false,
+                                      editImage(
+                                        Img(file: newImage.path),
+                                        profile: true,
+                                        cropOnly: true,
+                                        forceCropAspect: 1 / 1,
+                                        onDone: (bytes) => setState(() {
+                                          tempImage = bytes;
+                                          delta.imageUrl =
+                                              newImage.path +
+                                              DateTime.now()
+                                                  .millisecondsSinceEpoch
+                                                  .toString();
+                                        }),
                                       );
-                                      setState(() {
-                                        tempImage = bytes;
-                                        delta.imageUrl = newImage.path;
-                                      });
                                     }
-                                  }
-                                },
-                                onLongPress: () {
-                                  if (delta.imageUrl != null) {
-                                    bottomSheet(
-                                      imageKey: delta.imageUrl!,
-                                      galleryImage: false,
+                                  } else {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ImageViewer(
+                                          forceCropAspect: 1 / 1,
+                                          onReplace: (image, index) {
+                                            setState(() {
+                                              tempImage = image.bytes;
+                                              delta.imageUrl = image.file;
+                                            });
+                                          },
+                                          onEdit: (bytes, index) =>
+                                              setState(() {
+                                                tempImage = bytes;
+                                                delta.imageUrl = null;
+                                              }),
+                                          onTrash: (image, index) =>
+                                              setState(() {
+                                                tempImage = null;
+                                                delta.imageUrl = null;
+                                              }),
+                                          images: [
+                                            Img(
+                                              bytes: tempImage,
+                                              url: delta.imageUrl,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     );
                                   }
                                 },
@@ -305,14 +203,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 5),
                     TextField(
                       controller: nameController,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextTheme.of(context).displayLarge,
                       decoration: InputDecoration(
                         hintText: "Name",
                         filled: false,
@@ -320,40 +215,58 @@ class _ProfilePageState extends State<ProfilePage> {
                         error: delta.name.isNotEmpty ? null : empty,
                         suffixIcon: delta.name.isNotEmpty ? null : errorIcon,
                       ),
+                      onTapOutside: (event) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
                       onChanged: (value) => setState(() => delta.name = value),
                     ),
-                    SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4, bottom: 1),
+                      child: Text(
+                        "Bio",
+                        style: TextTheme.of(context).titleSmall,
+                      ),
+                    ),
                     TextField(
                       controller: bioController,
                       decoration: InputDecoration(
-                        icon: Icon(Icons.notes, size: 32),
                         hintText: "Tell people about yourself!",
+                        counterText: "",
                       ),
                       minLines: 3,
                       maxLines: 6,
                       maxLength: 225,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      onTapOutside: (event) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
                       onChanged: (value) => setState(() => delta.bio = value),
                     ),
                     SizedBox(height: 10),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4, bottom: 1),
+                      child: Text(
+                        "Email",
+                        style: TextTheme.of(context).titleSmall,
+                      ),
+                    ),
                     TextField(
                       controller: emailController,
                       decoration: InputDecoration(
-                        icon: Icon(Icons.email_outlined, size: 32),
                         hintText: "example@email.com",
                         error: delta.validEmail() ? null : empty,
                         suffixIcon: delta.validEmail() ? null : errorIcon,
                       ),
+                      onTapOutside: (event) =>
+                          FocusManager.instance.primaryFocus?.unfocus(),
                       onChanged: (value) => setState(() => delta.email = value),
                     ),
                     SizedBox(height: 18),
                     Text(
                       "Photo Gallery (Min 3, Max 6)",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextTheme.of(context).titleSmall,
                     ),
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 20),
-                      margin: EdgeInsets.only(top: 8),
+                      margin: EdgeInsets.only(top: 2),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(8),
@@ -364,7 +277,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 width: 2,
                               ),
                       ),
-                      height: 300,
+                      height: 275,
                       child: Center(
                         child: ListView(
                           padding: EdgeInsets.symmetric(horizontal: 8),
@@ -374,7 +287,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             parent: AlwaysScrollableScrollPhysics(),
                           ),
                           children: [
-                            for (final image in delta.photoUrls)
+                            for (final (index, image)
+                                in delta.photoUrls.indexed)
                               AspectRatio(
                                 aspectRatio: 9 / 16,
                                 child: Container(
@@ -385,26 +299,76 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                   child: Stack(
                                     children: [
-                                      tempPhotos[image] == null
-                                          ? image.startsWith("https://")
-                                                ? Image.network(
-                                                    image,
-                                                    fit: BoxFit.fitHeight,
-                                                    height: double.infinity,
-                                                  )
-                                                : Text("Photo Error")
-                                          : Image.memory(
-                                              tempPhotos[image]!,
-                                              fit: BoxFit.fitHeight,
-                                              height: double.infinity,
-                                            ),
+                                      AnyImage(
+                                        bytes: tempPhotos[image],
+                                        url: image,
+                                        fit: BoxFit.fitHeight,
+                                        height: double.infinity,
+                                      ),
                                       Material(
                                         color: Colors.transparent,
                                         child: InkWell(
-                                          onLongPress: () {
-                                            bottomSheet(
-                                              imageKey: image,
-                                              galleryImage: true,
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => ImageViewer(
+                                                  forceCropAspect: 9 / 16,
+                                                  initialIndex: index,
+                                                  onReplace: (img, ind) =>
+                                                      setState(() {
+                                                        var key =
+                                                            (img.file ?? "") +
+                                                            DateTime.now()
+                                                                .millisecondsSinceEpoch
+                                                                .toString();
+                                                        delta.photoUrls[ind] =
+                                                            key;
+                                                        tempPhotos.remove(
+                                                          img.file,
+                                                        );
+                                                        tempPhotos.remove(
+                                                          img.url,
+                                                        );
+                                                        tempPhotos[key] =
+                                                            img.bytes ??
+                                                            Uint8List(0);
+                                                      }),
+                                                  onEdit: (bytes, ind) =>
+                                                      setState(() {
+                                                        var key =
+                                                            image +
+                                                            DateTime.now()
+                                                                .millisecondsSinceEpoch
+                                                                .toString();
+                                                        delta.photoUrls[ind] =
+                                                            key;
+                                                        tempPhotos.remove(
+                                                          image,
+                                                        );
+                                                        tempPhotos[key] = bytes;
+                                                      }),
+                                                  onTrash: (img, ind) =>
+                                                      setState(() {
+                                                        delta.photoUrls
+                                                            .removeAt(ind);
+                                                        tempPhotos.remove(
+                                                          img.file,
+                                                        );
+                                                        tempPhotos.remove(
+                                                          img.url,
+                                                        );
+                                                      }),
+                                                  images: [
+                                                    for (final img
+                                                        in delta.photoUrls)
+                                                      Img(
+                                                        bytes: tempPhotos[img],
+                                                        url: img,
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
                                             );
                                           },
                                           splashColor: Colors.black12,
@@ -427,19 +391,21 @@ class _ProfilePageState extends State<ProfilePage> {
                                         source: ImageSource.gallery,
                                       );
                                       if (newImage != null) {
-                                        var bytes = await editImage(
-                                          imageString: newImage.path,
-                                          galleryImage: true,
+                                        editImage(
+                                          Img(file: newImage.path),
+                                          profile: false,
+                                          cropOnly: true,
+                                          forceCropAspect: 9 / 16,
+                                          onDone: (bytes) {
+                                            var key =
+                                                newImage.path +
+                                                DateTime.now()
+                                                    .millisecondsSinceEpoch
+                                                    .toString();
+                                            tempPhotos[key] = bytes;
+                                            delta.photoUrls.add(key);
+                                          },
                                         );
-                                        var key =
-                                            newImage.path +
-                                            DateTime.now()
-                                                .millisecondsSinceEpoch
-                                                .toString();
-                                        setState(() {
-                                          tempPhotos.addAll({key: bytes});
-                                          delta.photoUrls.add(key);
-                                        });
                                       }
                                     },
                                     child: Icon(
@@ -457,9 +423,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 18,
+                padding: EdgeInsets.only(
+                  left: 18,
+                  right: 18,
+                  top: 12,
+                  bottom: 6 + MediaQuery.of(context).padding.bottom,
                 ),
                 child: SizedBox(
                   height: 40,
@@ -468,7 +436,13 @@ class _ProfilePageState extends State<ProfilePage> {
                         ? () async {
                             setState(() => isSaving = true);
                             try {
-                              await widget.controller.updateMe(me: delta);
+                              await widget.controller.updateMe(
+                                me: delta,
+                                profilePhoto: tempImage,
+                                galleryPhotos: tempPhotos.isNotEmpty
+                                    ? tempPhotos.values.toList()
+                                    : null,
+                              );
                             } on ChatError catch (e) {
                               Toast.error(e);
                             }

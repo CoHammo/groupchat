@@ -13,10 +13,10 @@ pub struct ChatError {
 }
 
 impl ChatError {
-    pub fn new(message: &str, data: String) -> Self {
+    pub fn new(message: &str, data: Option<String>) -> Self {
         return ChatError {
             message: message.to_string(),
-            data: Some(data),
+            data,
         };
     }
 }
@@ -61,7 +61,7 @@ pub struct Me {
     pub id: String,
     #[frb(non_final)]
     pub name: String,
-    #[serde(alias = "avatar_url")]
+    #[serde(rename(serialize = "avatar_url"), alias = "avatar_url")]
     #[frb(non_final)]
     pub image_url: Option<String>,
     #[frb(non_final)]
@@ -147,14 +147,21 @@ impl TryFrom<&Value> for Me {
 
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 #[serde(default)]
+#[frb]
 pub struct User {
     pub id: String,
+    #[frb(non_final)]
     pub name: String,
     #[serde(alias = "avatar_url")]
+    #[frb(non_final)]
     pub image_url: String,
+    #[frb(non_final)]
     pub bio: Option<String>,
+    #[frb(non_final)]
     pub song_url: Option<String>,
+    #[frb(non_final)]
     pub photo_urls: Option<Vec<String>>,
+    #[frb(non_final)]
     pub shared_groups: Vec<String>,
 }
 
@@ -325,18 +332,24 @@ impl TryFrom<&Value> for Group {
 
 #[derive(Serialize, Deserialize, Debug, Default)]
 #[serde(default)]
+#[frb]
 pub struct Message {
     pub id: String,
     pub group_id: String,
     pub sender_id: String,
     pub system: bool,
+    #[frb(non_final)]
     pub text: Option<String>,
+    #[frb(non_final)]
     pub reactions: Vec<Reaction>,
+    #[frb(non_final)]
     pub attachments: Vec<Attachment>,
     pub source_guid: String,
+    #[frb(non_final)]
     pub pinned_at: Option<i64>,
     pub created_at: i64,
     pub updated_at: Option<i64>,
+    #[frb(non_final)]
     pub sending: bool,
 }
 
