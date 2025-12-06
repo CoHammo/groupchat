@@ -3,14 +3,16 @@ use crate::{
     frb_generated::{RustAutoOpaque, StreamSink},
 };
 use flutter_rust_bridge::frb;
-use rustls::{
-    ServerConfig,
-    pki_types::{PrivateKeyDer, pem::PemObject},
-};
-use std::{collections::HashMap, fs, io::BufReader, net::Shutdown, sync::Arc};
+// use rustls::{
+//     ServerConfig,
+//     pki_types::{PrivateKeyDer, pem::PemObject},
+// };
 use std::{
-    io::{BufRead, Write},
-    net::TcpListener,
+    collections::HashMap,
+    // fs,
+    io::{BufRead, BufReader, Write},
+    net::{Shutdown, TcpListener},
+    // sync::Arc,
 };
 
 #[derive(Clone)]

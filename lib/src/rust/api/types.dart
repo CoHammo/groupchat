@@ -8,7 +8,7 @@ import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `member_roles`
 // These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DbItem`, `GroupMeMeta`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
 // These functions are ignored (category: IgnoreBecauseExplicitAttribute): `bytes_decode`, `bytes_encode`
 // These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `default`
 
@@ -366,6 +366,9 @@ class Me {
     required this.shareQrCodeUrl,
   });
 
+  MeDeltaState compareDelta({required Me delta}) => RustLib.instance.api
+      .crateApiTypesMeCompareDelta(that: this, delta: delta);
+
   static Future<Me> default_() => RustLib.instance.api.crateApiTypesMeDefault();
 
   bool equals({required Me other}) =>
@@ -373,15 +376,23 @@ class Me {
 
   String initials() => RustLib.instance.api.crateApiTypesMeInitials(that: this);
 
-  bool isValid() => RustLib.instance.api.crateApiTypesMeIsValid(that: this);
+  (String, String) number() =>
+      RustLib.instance.api.crateApiTypesMeNumber(that: this);
+
+  bool valid() => RustLib.instance.api.crateApiTypesMeValid(that: this);
 
   bool validEmail() =>
       RustLib.instance.api.crateApiTypesMeValidEmail(that: this);
 
   bool validName() => RustLib.instance.api.crateApiTypesMeValidName(that: this);
 
+  bool validNumber() =>
+      RustLib.instance.api.crateApiTypesMeValidNumber(that: this);
+
   bool validPhotos() =>
       RustLib.instance.api.crateApiTypesMeValidPhotos(that: this);
+
+  bool validSong() => RustLib.instance.api.crateApiTypesMeValidSong(that: this);
 
   @override
   int get hashCode =>
@@ -417,6 +428,77 @@ class Me {
           updatedAt == other.updatedAt &&
           shareUrl == other.shareUrl &&
           shareQrCodeUrl == other.shareQrCodeUrl;
+}
+
+class MeDeltaState {
+  final bool change;
+  final bool nameChange;
+  final bool imageChange;
+  final bool numberChange;
+  final bool emailChange;
+  final bool bioChange;
+  final bool songChange;
+  final bool photosChange;
+  final bool valid;
+  final bool validName;
+  final bool validNumber;
+  final bool validEmail;
+  final bool validSong;
+  final bool validPhotos;
+
+  const MeDeltaState({
+    required this.change,
+    required this.nameChange,
+    required this.imageChange,
+    required this.numberChange,
+    required this.emailChange,
+    required this.bioChange,
+    required this.songChange,
+    required this.photosChange,
+    required this.valid,
+    required this.validName,
+    required this.validNumber,
+    required this.validEmail,
+    required this.validSong,
+    required this.validPhotos,
+  });
+
+  @override
+  int get hashCode =>
+      change.hashCode ^
+      nameChange.hashCode ^
+      imageChange.hashCode ^
+      numberChange.hashCode ^
+      emailChange.hashCode ^
+      bioChange.hashCode ^
+      songChange.hashCode ^
+      photosChange.hashCode ^
+      valid.hashCode ^
+      validName.hashCode ^
+      validNumber.hashCode ^
+      validEmail.hashCode ^
+      validSong.hashCode ^
+      validPhotos.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MeDeltaState &&
+          runtimeType == other.runtimeType &&
+          change == other.change &&
+          nameChange == other.nameChange &&
+          imageChange == other.imageChange &&
+          numberChange == other.numberChange &&
+          emailChange == other.emailChange &&
+          bioChange == other.bioChange &&
+          songChange == other.songChange &&
+          photosChange == other.photosChange &&
+          valid == other.valid &&
+          validName == other.validName &&
+          validNumber == other.validNumber &&
+          validEmail == other.validEmail &&
+          validSong == other.validSong &&
+          validPhotos == other.validPhotos;
 }
 
 class Member {

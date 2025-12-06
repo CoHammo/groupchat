@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:groupchat/ui/groups/groups_list.dart';
-import 'package:groupchat/ui/profile_page.dart';
+import 'package:groupchat/ui/profile/profile_page.dart';
 import 'package:groupchat/ui/toast.dart';
 import '../src/rust/api/rust.dart';
+import 'images/any_image.dart';
+import 'images/image_utils.dart';
 import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -79,12 +81,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               },
-              child: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.secondary,
-                foregroundImage: me.imageUrl != null
-                    ? NetworkImage(me.imageUrl!)
-                    : null,
-                child: Text(me.initials(), style: TextStyle(fontSize: 22)),
+              child: AnyImage(
+                Img(url: me.imageUrl),
+                circle: true,
+                child: Text(me.initials()),
               ),
             ),
           ),

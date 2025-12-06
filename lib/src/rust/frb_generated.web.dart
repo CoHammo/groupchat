@@ -189,6 +189,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Me dco_decode_me(dynamic raw);
 
   @protected
+  MeDeltaState dco_decode_me_delta_state(dynamic raw);
+
+  @protected
   Member dco_decode_member(dynamic raw);
 
   @protected
@@ -226,6 +229,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reaction dco_decode_reaction(dynamic raw);
+
+  @protected
+  (String, String) dco_decode_record_string_string(dynamic raw);
 
   @protected
   StateChange dco_decode_state_change(dynamic raw);
@@ -408,6 +414,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   Me sse_decode_me(SseDeserializer deserializer);
 
   @protected
+  MeDeltaState sse_decode_me_delta_state(SseDeserializer deserializer);
+
+  @protected
   Member sse_decode_member(SseDeserializer deserializer);
 
   @protected
@@ -449,6 +458,11 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   Reaction sse_decode_reaction(SseDeserializer deserializer);
+
+  @protected
+  (String, String) sse_decode_record_string_string(
+    SseDeserializer deserializer,
+  );
 
   @protected
   StateChange sse_decode_state_change(SseDeserializer deserializer);
@@ -670,6 +684,9 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
   void sse_encode_me(Me self, SseSerializer serializer);
 
   @protected
+  void sse_encode_me_delta_state(MeDeltaState self, SseSerializer serializer);
+
+  @protected
   void sse_encode_member(Member self, SseSerializer serializer);
 
   @protected
@@ -720,6 +737,12 @@ abstract class RustLibApiImplPlatform extends BaseApiImpl<RustLibWire> {
 
   @protected
   void sse_encode_reaction(Reaction self, SseSerializer serializer);
+
+  @protected
+  void sse_encode_record_string_string(
+    (String, String) self,
+    SseSerializer serializer,
+  );
 
   @protected
   void sse_encode_state_change(StateChange self, SseSerializer serializer);

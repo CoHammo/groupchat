@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:groupchat/ui/image_viewer.dart';
 import '../../src/rust/api/rust.dart';
+import '../images/any_image.dart';
+import '../images/image_utils.dart';
 import 'group_page.dart';
 
 class GroupListTile extends StatelessWidget {
@@ -48,7 +49,7 @@ class GroupListTile extends StatelessWidget {
               ),
               clipBehavior: Clip.hardEdge,
               child: AnyImage(
-                url: group.imageUrl,
+                Img(url: group.imageUrl),
                 fit: BoxFit.cover,
                 child: Icon(Icons.people_alt_outlined, size: 30),
               ),

@@ -4,7 +4,9 @@ use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::borrow::Cow;
+use std::collections::HashMap;
 use std::fmt::Debug;
+use std::sync::LazyLock;
 use uuid::Uuid;
 
 pub struct ChatError {
@@ -81,7 +83,72 @@ pub struct Me {
     pub share_qr_code_url: String,
 }
 
+#[derive(Debug)]
+pub struct MeDeltaState {
+    pub change: bool,
+    pub name_change: bool,
+    pub image_change: bool,
+    pub number_change: bool,
+    pub email_change: bool,
+    pub bio_change: bool,
+    pub song_change: bool,
+    pub photos_change: bool,
+
+    pub valid: bool,
+    pub valid_name: bool,
+    pub valid_number: bool,
+    pub valid_email: bool,
+    pub valid_song: bool,
+    pub valid_photos: bool,
+}
+
 impl Me {
+    #[frb(sync)]
+    pub fn compare_delta(&self, delta: &Me) -> MeDeltaState {
+        let name_change = self.name != delta.name;
+        let image_change = self.image_url != delta.image_url;
+        let number_change = self.phone_number != delta.phone_number;
+        let email_change = self.email != delta.email;
+        let bio_change = self.bio != delta.bio;
+        let song_change = self.song_url != delta.song_url;
+        let photos_change = self.photo_urls != delta.photo_urls;
+
+        let valid_name = delta.valid_name();
+        let valid_number = delta.valid_number();
+        let valid_email = delta.valid_email();
+        let valid_song = delta.valid_song();
+        let valid_photos = delta.valid_photos();
+
+        let state = MeDeltaState {
+            change: name_change
+                || image_change
+                || number_change
+                || email_change
+                || bio_change
+                || song_change
+                || photos_change,
+            name_change,
+            image_change,
+            number_change,
+            email_change,
+            bio_change,
+            song_change,
+            photos_change,
+            valid: valid_name && valid_number && valid_email && valid_song && valid_photos,
+            valid_name,
+            valid_number,
+            valid_email,
+            valid_song,
+            valid_photos,
+        };
+        return state;
+    }
+
+    #[frb(sync)]
+    pub fn equals(&self, other: &Me) -> bool {
+        self == other
+    }
+
     #[frb(sync)]
     pub fn initials(&self) -> String {
         let split = self.name.split_once(" ").unwrap_or(("-", "-"));
@@ -93,13 +160,20 @@ impl Me {
     }
 
     #[frb(sync)]
-    pub fn equals(&self, other: &Me) -> bool {
-        self == other
+    pub fn number(&self) -> (String, String) {
+        let split = self.phone_number.split_once(" ").unwrap_or(("+-", "---"));
+        return (
+            split.0.strip_prefix("+").unwrap().to_string(),
+            split.1.to_string(),
+        );
     }
 
     #[frb(sync)]
-    pub fn is_valid(&self) -> bool {
-        return self.valid_name() && self.valid_email() && self.valid_photos();
+    pub fn valid(&self) -> bool {
+        return self.valid_name()
+            && self.valid_email()
+            && self.valid_photos()
+            && self.valid_number();
     }
 
     #[frb(sync)]
@@ -109,12 +183,30 @@ impl Me {
 
     #[frb(sync)]
     pub fn valid_email(&self) -> bool {
-        let re = Regex::new(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$").unwrap();
+        static EMAIL_RE: LazyLock<Regex> = LazyLock::new(|| {
+            Regex::new(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?").unwrap()
+        });
         if let Some(email) = &self.email {
-            return re.is_match(email);
+            return EMAIL_RE.is_match(email);
         } else {
             return false;
         }
+    }
+
+    #[frb(sync)]
+    pub fn valid_song(&self) -> bool {
+        if let Some(song) = &self.song_url {
+            return song.starts_with("https://open.spotify.com/track/");
+        } else {
+            return true;
+        }
+    }
+
+    #[frb(sync)]
+    pub fn valid_number(&self) -> bool {
+        static NUMBER_RE: LazyLock<Regex> =
+            LazyLock::new(|| Regex::new(r"^\+\d{1,3} \d{10,12}$").unwrap());
+        return NUMBER_RE.is_match(&self.phone_number);
     }
 
     #[frb(sync)]

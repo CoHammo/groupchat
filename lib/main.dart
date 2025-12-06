@@ -31,12 +31,13 @@ void main() async {
   runApp(GroupChat(controller));
 }
 
+const double cornerRadius = 8;
+
 class GroupChat extends StatelessWidget {
   const GroupChat(this.controller, {super.key});
 
   final ChatController controller;
   static const Color primaryColor = Color.fromARGB(255, 21, 103, 255);
-  static const double cornerRadius = 8;
 
   @override
   Widget build(BuildContext context) {

@@ -1,24 +1,20 @@
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
-import 'image_viewer.dart';
+import 'image_utils.dart';
 
 class ImageEditor extends StatelessWidget {
-  const ImageEditor({
+  const ImageEditor(
+    this.image, {
     super.key,
-    required this.image,
-    // this.config,
     this.cropOnly = false,
     this.forceCropAspect,
     this.onDone,
   });
 
   final Img image;
-  // final ProImageEditorConfigs? config;
   final bool cropOnly;
   final double? forceCropAspect;
-  // final CropRotateEditorConfigs? cropConfig;
-  final void Function(Uint8List bytes)? onDone;
+  final void Function(Img newImage)? onDone;
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +38,8 @@ class ImageEditor extends StatelessWidget {
           ),
           callbacks: ProImageEditorCallbacks(
             onImageEditingComplete: (bytes) async {
-              onDone?.call(bytes);
-              Navigator.of(context).pop();
+              onDone?.call(image.edit(bytes));
+              Navigator.pop(context);
             },
           ),
         ),
@@ -66,8 +62,8 @@ class ImageEditor extends StatelessWidget {
         ),
         callbacks: ProImageEditorCallbacks(
           onImageEditingComplete: (bytes) async {
-            onDone?.call(bytes);
-            Navigator.of(context).pop();
+            onDone?.call(image.edit(bytes));
+            Navigator.pop(context);
           },
         ),
       );
