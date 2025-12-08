@@ -39,7 +39,7 @@ impl ChatController {
         meta_folder: String,
         online: bool,
     ) -> Result<Self, ChatError> {
-        let db = Db::open(&data_folder, &meta_folder)?;
+        let mut db = Db::open(&data_folder, &meta_folder)?;
         let mut api: Option<Api> = None;
         if let Some(token) = db.get_meta("token")? {
             println!("GroupMe Token: {token}");
@@ -149,32 +149,42 @@ impl ChatController {
     pub async fn update_me(
         &mut self,
         mut me: Me,
+        toggle_sharing: bool,
         profile_photo: Option<Vec<u8>>,
-        gallery_photos: Option<Vec<Vec<u8>>>,
+        gallery_photos: Option<Vec<(Option<Vec<u8>>, String)>>,
     ) -> Result<bool, ChatError> {
         if let Some(api) = &self.api {
-            let mut photo_urls: Vec<String> = Vec::new();
-            for image in me.photo_urls {
-                if image.starts_with("https://") {
-                    photo_urls.push(image);
-                }
-            }
-            me.photo_urls = photo_urls;
-
-            if let Some(image) = profile_photo {
-                let attachment = api.upload_image(image).await?;
-                if let Attachment::Image { url } = attachment {
+            if let Some(bytes) = profile_photo {
+                if let Attachment::Image { url } = api.upload_image(bytes).await? {
                     me.image_url = Some(url);
                 }
             }
+
             if let Some(photos) = gallery_photos {
+                me.photo_urls = Vec::new();
                 for image in photos {
-                    if let Attachment::Image { url } = api.upload_image(image).await? {
-                        me.photo_urls.push(url);
+                    if let Some(bytes) = image.0 {
+                        if let Attachment::Image { url } = api.upload_image(bytes).await? {
+                            me.photo_urls.push(url);
+                        }
+                    } else {
+                        me.photo_urls.push(image.1);
                     }
                 }
             }
-            let new_me = api.update_me(&me).await?;
+
+            let mut new_me = api.update_me(&me).await?;
+            if toggle_sharing {
+                let shares;
+                if me.share_url.is_some() {
+                    shares = api.toggle_sharing_me(true).await?;
+                } else {
+                    shares = api.toggle_sharing_me(false).await?;
+                }
+                new_me.share_url = shares.0;
+                new_me.share_qr_code_url = shares.1;
+            }
+
             self.db.save_me(&new_me)?;
             self.state.read().await.notify(StateChange::Me)?;
         }
@@ -262,6 +272,23 @@ impl ChatController {
             Ok(())
         } else {
             Err(ChatError::new("Not logged in", None))
+        }
+    }
+
+    pub async fn get_image(&mut self, id: &str) -> Result<Vec<u8>, ChatError> {
+        if let Some(image) = self.db.get_image(id)? {
+            Ok(image)
+        } else {
+            if let Some(api) = &self.api {
+                let image = api.get_image(id).await?;
+                self.db.save_image(id, image.clone())?;
+                Ok(image)
+            } else {
+                Err(ChatError::new(
+                    "Controller get_image: Image not cached and not logged in",
+                    None,
+                ))
+            }
         }
     }
 }

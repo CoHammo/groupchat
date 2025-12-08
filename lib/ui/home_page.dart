@@ -90,15 +90,11 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             IconButton(
-              onPressed: () {
-                Toast("Hello There!", seconds: 3);
-              },
+              onPressed: () => Toast("Hello There!", seconds: 3),
               icon: Icon(Icons.bubble_chart),
             ),
             IconButton(
-              onPressed: () {
-                widget.controller.shrinkDb();
-              },
+              onPressed: () => widget.controller.shrinkDb(),
               icon: Icon(Icons.compress),
             ),
             IconButton(

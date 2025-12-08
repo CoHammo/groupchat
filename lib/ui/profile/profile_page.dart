@@ -439,6 +439,108 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ),
+
+                    /// ============================
+                    /// Share Info
+                    /// ============================
+                    SizedBox(height: 10),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: lightBoxColor,
+                        borderRadius: BorderRadius.circular(cornerRadius),
+                        border: BoxBorder.all(
+                          color: diffs.shareChange
+                              ? Colors.green.shade600
+                              : Colors.transparent,
+                          width: 2.5,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () => setState(() {
+                                if (delta.shareUrl == null) {
+                                  delta.shareUrl = me.shareUrl ?? "";
+                                  delta.shareQrCodeUrl =
+                                      me.shareQrCodeUrl ?? "";
+                                } else {
+                                  delta.shareUrl = null;
+                                  delta.shareQrCodeUrl = null;
+                                }
+                              }),
+                              child: Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Allow Sharing",
+                                      style: TextTheme.of(context).titleSmall,
+                                    ),
+                                    Spacer(),
+                                    Switch(
+                                      value: delta.shareUrl != null,
+                                      onChanged: (value) => setState(() {
+                                        if (value) {
+                                          delta.shareUrl = me.shareUrl ?? "";
+                                          delta.shareQrCodeUrl =
+                                              me.shareQrCodeUrl ?? "";
+                                        } else {
+                                          delta.shareUrl = null;
+                                          delta.shareQrCodeUrl = null;
+                                        }
+                                      }),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (me.shareUrl != null &&
+                              me.shareQrCodeUrl != null) ...[
+                            SizedBox(
+                              child: Divider(
+                                thickness: 1,
+                                height: 4,
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.grey.shade600
+                                    : Colors.grey.shade400,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                me.shareUrl!,
+                                style: TextTheme.of(context).titleSmall,
+                              ),
+                            ),
+                            SizedBox(
+                              child: Divider(
+                                thickness: 1,
+                                height: 4,
+                                color:
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.grey.shade600
+                                    : Colors.grey.shade400,
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              height: 350,
+                              child: AnyImage(Img(url: me.shareQrCodeUrl)),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+
+                    /// ============================
+                    /// End of Profile Info
+                    /// ============================
                   ],
                 ),
               ),
@@ -460,19 +562,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         ? () async {
                             setState(() => isSaving = true);
                             try {
-                              List<Uint8List>? galleryPhotos;
-                              if (deltaPhotos.any((img) => img.isBytes)) {
-                                galleryPhotos = [];
-                                for (final img in deltaPhotos) {
-                                  if (img.isBytes) {
-                                    galleryPhotos.add(img.bytes!);
-                                  }
-                                }
-                              }
                               await widget.controller.updateMe(
                                 me: delta,
+                                toggleSharing: diffs.shareChange,
                                 profilePhoto: deltaImage.firstOrNull?.bytes,
-                                galleryPhotos: galleryPhotos,
+                                galleryPhotos: deltaPhotos.isNotEmpty
+                                    ? [
+                                        for (final img in deltaPhotos)
+                                          (img.bytes, img.url ?? ""),
+                                      ]
+                                    : null,
                               );
                             } on ChatError catch (e) {
                               Toast.error(e);

@@ -3,12 +3,14 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:pro_image_editor/core/platform/io/io_helper.dart';
+import '../../main.dart';
 import '../../src/rust/api/rust.dart';
 import 'image_editor.dart';
 import 'image_viewer.dart';
 
 class Img {
-  const Img({this.bytes, this.file, this.url, this.user, this.message})
+  Img({this.bytes, this.file, this.url, this.user, this.message})
     : editTime = null;
 
   Img._edited({required this.bytes, this.file, this.url})
@@ -16,21 +18,31 @@ class Img {
       user = null,
       message = null;
 
-  final Uint8List? bytes;
+  Uint8List? bytes;
   final String? file;
   final String? url;
   final User? user;
   final Message? message;
   final String? editTime;
 
-  bool get isBytes => bytes != null;
-  bool get isFile => bytes == null && file != null;
-  bool get isUrl => bytes == null && file == null && url != null;
+  bool get hasBytes => bytes != null;
+  bool get isFile => file != null;
+  bool get isUrl => file == null && url != null;
   bool get isEmpty => bytes == null && file == null && url == null;
+  bool get needsLoaded => bytes == null && (file != null || url != null);
   String get key => "${file ?? url}+$editTime";
 
   Img edit(Uint8List newBytes) {
     return Img._edited(bytes: newBytes, file: file, url: url);
+  }
+
+  Future<void> load(void Function(Uint8List bytes) onLoad) async {
+    if (isFile) {
+      bytes = await File(file!).readAsBytes();
+    } else if (isUrl) {
+      bytes = await controller.getImage(id: url!);
+    }
+    onLoad(bytes!);
   }
 }
 
@@ -59,8 +71,8 @@ class ImageUtils {
             child: child,
           );
         },
-        transitionDuration: Duration(milliseconds: 200),
-        reverseTransitionDuration: Duration(milliseconds: 200),
+        transitionDuration: Duration(milliseconds: 150),
+        reverseTransitionDuration: Duration(milliseconds: 150),
         pageBuilder: (context, _, _) {
           var veiwer = ImageViewer(
             images,

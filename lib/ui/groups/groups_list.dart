@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../src/rust/api/rust.dart';
+import '../images/image_utils.dart';
 import 'group_list_tile.dart';
 
 class GroupsList extends StatefulWidget {
@@ -12,18 +13,24 @@ class GroupsList extends StatefulWidget {
 }
 
 class _GroupsListState extends State<GroupsList> {
-  late List<Group> groups;
+  late List<(Img, Group)> groups;
   late ChangesId changesId;
 
   @override
   void initState() {
     super.initState();
-    groups = widget.controller.getGroups();
+    groups = [
+      for (final group in widget.controller.getGroups())
+        (Img(url: group.imageUrl), group),
+    ];
     changesId = widget.controller.state.nextId();
     widget.controller.state.changes(id: changesId).listen((state) {
       state.whenOrNull(
         groups: () => setState(() {
-          groups = widget.controller.getGroups();
+          groups = [
+            for (final group in widget.controller.getGroups())
+              (Img(url: group.imageUrl), group),
+          ];
           print("groups list changed");
         }),
       );

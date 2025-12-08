@@ -8,36 +8,42 @@ import 'package:groupchat/ui/toast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'ui/home_page.dart';
 
+late final ChatController controller;
+
 void main() async {
   await RustLib.init();
   WidgetsFlutterBinding.ensureInitialized();
   var dataFolder = "${(await getApplicationCacheDirectory()).path}/Database";
   var metaFolder = "${(await getApplicationSupportDirectory()).path}/Metadata";
 
-  var controller = await ChatController.newInstance(
+  var cont = await ChatController.newInstance(
     dataFolder: dataFolder,
     metaFolder: metaFolder,
     online: true,
   );
-  if (controller.loggedIn()) {
-    await controller.loadGroups(loadAll: true);
+  if (cont.loggedIn()) {
+    await cont.loadGroups(loadAll: true);
   }
+  controller = cont;
 
   PlatformDispatcher.instance.onError = (error, stack) {
     Toast.error(error);
     return true;
   };
 
-  runApp(GroupChat(controller));
+  runApp(GroupChat(cont));
 }
 
 const double cornerRadius = 8;
+final Color lightBoxColor = Colors.grey.shade300;
 
 class GroupChat extends StatelessWidget {
-  const GroupChat(this.controller, {super.key});
+  const GroupChat(this.cont, {super.key});
 
-  final ChatController controller;
+  final ChatController cont;
   static const Color primaryColor = Color.fromARGB(255, 21, 103, 255);
+  // static const Color secondaryColor = Color.fromARGB(255, 146, 219, 253);
+  static const Color secondaryColor = Color.fromARGB(255, 184, 217, 255);
 
   @override
   Widget build(BuildContext context) {
@@ -73,17 +79,40 @@ class GroupChat extends StatelessWidget {
             padding: EdgeInsets.all(0),
             textStyle: TextStyle(fontSize: 22),
             foregroundColor: primaryColor,
-            // backgroundColor: Colors.blueGrey.shade100,
             side: BorderSide(color: primaryColor, width: 3),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(cornerRadius),
             ),
           ),
         ),
+        switchTheme: SwitchThemeData(
+          thumbColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return secondaryColor;
+            } else {
+              return Colors.grey.shade800;
+            }
+          }),
+          trackColor: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return primaryColor;
+            } else {
+              return Colors.grey.shade500;
+            }
+          }),
+          trackOutlineColor: WidgetStateColor.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return primaryColor;
+            } else {
+              return Colors.grey.shade800;
+            }
+          }),
+          trackOutlineWidth: WidgetStateProperty.all(2.5),
+        ),
         inputDecorationTheme: InputDecorationTheme(
           contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           filled: true,
-          fillColor: Colors.grey.shade300,
+          fillColor: lightBoxColor,
           hintStyle: TextStyle(color: Colors.grey.shade700),
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
@@ -107,8 +136,7 @@ class GroupChat extends StatelessWidget {
           brightness: Brightness.light,
           primary: primaryColor,
           onPrimary: Colors.black,
-          // secondary: Colors.blue.shade200,
-          secondary: const Color.fromARGB(255, 146, 219, 253),
+          secondary: secondaryColor,
           onSecondary: Colors.black,
           error: Colors.red.shade400,
           onError: Colors.black,
@@ -127,7 +155,7 @@ class GroupChat extends StatelessWidget {
           bodySmall: TextStyle(fontSize: 14),
         ),
       ),
-      home: HomePage(controller, key: Toast.scaffoldKey),
+      home: HomePage(cont, key: Toast.scaffoldKey),
     );
   }
 }

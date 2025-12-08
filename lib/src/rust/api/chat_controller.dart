@@ -44,6 +44,8 @@ abstract class ChatController implements RustOpaqueInterface {
 
   List<Group> getGroups();
 
+  Future<Uint8List> getImage({required String id});
+
   Me getMe();
 
   Future<void> loadGroups({required bool loadAll});
@@ -73,8 +75,9 @@ abstract class ChatController implements RustOpaqueInterface {
 
   Future<bool> updateMe({
     required Me me,
+    required bool toggleSharing,
     Uint8List? profilePhoto,
-    List<Uint8List>? galleryPhotos,
+    List<(Uint8List?, String)>? galleryPhotos,
   });
 }
 

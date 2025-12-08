@@ -84,15 +84,10 @@ class _ImageViewerState extends State<ImageViewer> {
               itemCount: widget.images.length,
               onPageChanged: (value) => setState(() => currentIndex = value),
               itemBuilder: (context, index) {
-                return Expanded(
-                  child: InteractiveViewer(
-                    transformationController: transformationController,
-                    child: Center(
-                      child: AnyImage(
-                        widget.images[index],
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                return InteractiveViewer(
+                  transformationController: transformationController,
+                  child: Center(
+                    child: AnyImage(widget.images[index], fit: BoxFit.contain),
                   ),
                 );
               },

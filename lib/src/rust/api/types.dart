@@ -7,9 +7,9 @@ import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
 
 // These functions are ignored because they are not marked as `pub`: `member_roles`
-// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DbItem`, `GroupMeMeta`
-// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
-// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `bytes_decode`, `bytes_encode`
+// These types are ignored because they are neither used by any `pub` functions nor (for structs and enums) marked `#[frb(unignore)]`: `DbImage`, `DbItem`, `GroupMeMeta`
+// These function are ignored because they are on traits that is not defined in current crate (put an empty `#[frb]` on it to unignore): `clone`, `eq`, `eq`, `eq`, `eq`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `fmt`, `from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`, `try_from`
+// These functions are ignored (category: IgnoreBecauseExplicitAttribute): `bytes_decode`, `bytes_decode`, `bytes_encode`, `bytes_encode`
 // These functions are ignored (category: IgnoreBecauseOwnerTyShouldIgnore): `default`
 
 Future<String> emptyUnicode() =>
@@ -344,11 +344,11 @@ class Me {
   String? bio;
   String? songUrl;
   List<String> photoUrls;
-  final String locale;
+  String locale;
   final PlatformInt64 createdAt;
   final PlatformInt64 updatedAt;
-  final String shareUrl;
-  final String shareQrCodeUrl;
+  String? shareUrl;
+  String? shareQrCodeUrl;
 
   Me({
     required this.id,
@@ -362,8 +362,8 @@ class Me {
     required this.locale,
     required this.createdAt,
     required this.updatedAt,
-    required this.shareUrl,
-    required this.shareQrCodeUrl,
+    this.shareUrl,
+    this.shareQrCodeUrl,
   });
 
   MeDeltaState compareDelta({required Me delta}) => RustLib.instance.api
@@ -439,6 +439,7 @@ class MeDeltaState {
   final bool bioChange;
   final bool songChange;
   final bool photosChange;
+  final bool shareChange;
   final bool valid;
   final bool validName;
   final bool validNumber;
@@ -455,6 +456,7 @@ class MeDeltaState {
     required this.bioChange,
     required this.songChange,
     required this.photosChange,
+    required this.shareChange,
     required this.valid,
     required this.validName,
     required this.validNumber,
@@ -473,6 +475,7 @@ class MeDeltaState {
       bioChange.hashCode ^
       songChange.hashCode ^
       photosChange.hashCode ^
+      shareChange.hashCode ^
       valid.hashCode ^
       validName.hashCode ^
       validNumber.hashCode ^
@@ -493,6 +496,7 @@ class MeDeltaState {
           bioChange == other.bioChange &&
           songChange == other.songChange &&
           photosChange == other.photosChange &&
+          shareChange == other.shareChange &&
           valid == other.valid &&
           validName == other.validName &&
           validNumber == other.validNumber &&

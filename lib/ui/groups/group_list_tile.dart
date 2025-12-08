@@ -8,7 +8,7 @@ class GroupListTile extends StatelessWidget {
   const GroupListTile(this.controller, this.group, {super.key});
 
   final ChatController controller;
-  final Group group;
+  final (Img, Group) group;
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +49,22 @@ class GroupListTile extends StatelessWidget {
               ),
               clipBehavior: Clip.hardEdge,
               child: AnyImage(
-                Img(url: group.imageUrl),
+                group.$1,
                 fit: BoxFit.cover,
                 child: Icon(Icons.people_alt_outlined, size: 30),
               ),
             ),
-            Text(group.name),
+            SizedBox(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(group.$2.name, style: TextTheme.of(context).titleSmall),
+                  Text("heyo"),
+                ],
+              ),
+            ),
           ],
         ),
       ),

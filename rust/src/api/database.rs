@@ -1,7 +1,7 @@
 use crate::api::types::*;
 use flutter_rust_bridge::frb;
 use heed::{Database, Env, EnvOpenOptions, types::*};
-use std::fs;
+use std::{collections::HashMap, fs};
 
 #[derive(Debug)]
 #[frb(ignore)]
@@ -17,6 +17,8 @@ pub struct Db {
     messages: Database<Str, DbItem<Message>>,
     polls: Database<Str, DbItem<Poll>>,
     events: Database<Str, DbItem<Event>>,
+    images: Database<Str, DbImage>,
+    image_map: HashMap<String, Vec<u8>>,
     data_folder: String,
 }
 
@@ -66,6 +68,7 @@ impl Db {
             env.create_database::<Str, DbItem<Message>>(&mut writer, Some("messages"))?;
         let polls = env.create_database::<Str, DbItem<Poll>>(&mut writer, Some("polls"))?;
         let events = env.create_database::<Str, DbItem<Event>>(&mut writer, Some("events"))?;
+        let images = env.create_database::<Str, DbImage>(&mut writer, Some("images"))?;
         writer.commit()?;
 
         Ok(Db {
@@ -80,11 +83,13 @@ impl Db {
             messages,
             polls,
             events,
+            images,
+            image_map: HashMap::new(),
             data_folder: data_folder.to_string(),
         })
     }
 
-    pub fn clear_cache(&self) -> Result<(), ChatError> {
+    pub fn clear_cache(&mut self) -> Result<(), ChatError> {
         let mut wtxn = self.env.write_txn()?;
         self.me.clear(&mut wtxn)?;
         self.users.clear(&mut wtxn)?;
@@ -94,11 +99,13 @@ impl Db {
         self.messages.clear(&mut wtxn)?;
         self.polls.clear(&mut wtxn)?;
         self.events.clear(&mut wtxn)?;
+        self.images.clear(&mut wtxn)?;
         wtxn.commit()?;
+        self.shrink()?;
         Ok(())
     }
 
-    pub fn clear_all(&self) -> Result<(), ChatError> {
+    pub fn clear_all(&mut self) -> Result<(), ChatError> {
         let mut meta_wtxn = self.meta_env.write_txn()?;
         self.metadata.clear(&mut meta_wtxn)?;
         meta_wtxn.commit()?;
@@ -107,7 +114,7 @@ impl Db {
     }
 
     pub fn shrink(&mut self) -> Result<(), ChatError> {
-        let data_version = self.get_meta("AB_version")?.unwrap();
+        let data_version = self.get_meta("AB_version")?.unwrap_or("A".to_string());
         let old_data_folder: String;
         let new_data_folder: String;
         if data_version.as_str() == "A" {
@@ -131,11 +138,11 @@ impl Db {
                 .max_dbs(20)
                 .open(&new_data_folder)?
         };
+        println!("New Database Folder: {new_data_folder}");
         let mut writer = self.env.write_txn()?;
         self.me = self
             .env
-            .open_database::<Str, DbItem<Me>>(&mut writer, Some("me"))?
-            .unwrap();
+            .create_database::<Str, DbItem<Me>>(&mut writer, Some("me"))?;
         self.users = self
             .env
             .open_database::<Str, DbItem<User>>(&mut writer, Some("users"))?
@@ -163,6 +170,10 @@ impl Db {
         self.events = self
             .env
             .open_database::<Str, DbItem<Event>>(&mut writer, Some("events"))?
+            .unwrap();
+        self.images = self
+            .env
+            .open_database::<Str, DbImage>(&mut writer, Some("images"))?
             .unwrap();
         writer.commit()?;
 
@@ -339,11 +350,11 @@ impl Db {
         Ok(())
     }
 
-    pub fn get_poll(&self, id: &str) -> Result<(), ChatError> {
+    pub fn get_poll(&self, id: &str) -> Result<Option<Poll>, ChatError> {
         let rtxn = self.env.read_txn()?;
-        self.polls.get(&rtxn, id)?;
+        let poll = self.polls.get(&rtxn, id)?;
         rtxn.commit()?;
-        Ok(())
+        Ok(poll)
     }
 
     pub fn save_event(&self, event: &Event) -> Result<(), ChatError> {
@@ -353,10 +364,39 @@ impl Db {
         Ok(())
     }
 
-    pub fn get_event(&self, id: &str) -> Result<(), ChatError> {
+    pub fn get_event(&self, id: &str) -> Result<Option<Event>, ChatError> {
         let rtxn = self.env.read_txn()?;
-        self.events.get(&rtxn, id)?;
+        let event = self.events.get(&rtxn, id)?;
         rtxn.commit()?;
+        Ok(event)
+    }
+
+    pub fn save_image(&mut self, id: &str, image: Vec<u8>) -> Result<(), ChatError> {
+        // self.image_map.insert(id.to_string(), image.clone());
+        let mut wtxn = self.env.write_txn()?;
+        self.images.put(&mut wtxn, id, &DbImage(image))?;
+        wtxn.commit()?;
         Ok(())
+    }
+
+    pub fn get_image(&mut self, id: &str) -> Result<Option<Vec<u8>>, ChatError> {
+        // if let Some(img) = self.image_map.get(id) {
+        //     println!("Used image_map");
+        //     Ok(Some(img.clone()))
+        // } else {
+        //     let rtxn = self.env.read_txn()?;
+        //     let image = self.images.get(&rtxn, id)?;
+        //     rtxn.commit()?;
+        //     if let Some(img) = image {
+        //         self.image_map.insert(id.to_string(), img.0.clone());
+        //         Ok(Some(img.0))
+        //     } else {
+        //         Ok(None)
+        //     }
+        // }
+        let rtxn = self.env.read_txn()?;
+        let image = self.images.get(&rtxn, id)?;
+        rtxn.commit()?;
+        Ok(image.map(|i| i.0))
     }
 }

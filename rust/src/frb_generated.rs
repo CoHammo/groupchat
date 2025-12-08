@@ -39,7 +39,7 @@ flutter_rust_bridge::frb_generated_boilerplate!(
     default_rust_auto_opaque = RustAutoOpaqueMoi,
 );
 pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_VERSION: &str = "2.11.1";
-pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -1411162009;
+pub(crate) const FLUTTER_RUST_BRIDGE_CODEGEN_CONTENT_HASH: i32 = -97975333;
 
 // Section: executor
 
@@ -680,6 +680,66 @@ fn wire__crate__api__chat_controller__ChatController_get_groups_impl(
         },
     )
 }
+fn wire__crate__api__chat_controller__ChatController_get_image_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
+    ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
+    rust_vec_len_: i32,
+    data_len_: i32,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
+        flutter_rust_bridge::for_generated::TaskInfo {
+            debug_name: "ChatController_get_image",
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
+        },
+        move || {
+            let message = unsafe {
+                flutter_rust_bridge::for_generated::Dart2RustMessageSse::from_wire(
+                    ptr_,
+                    rust_vec_len_,
+                    data_len_,
+                )
+            };
+            let mut deserializer =
+                flutter_rust_bridge::for_generated::SseDeserializer::new(message);
+            let api_that = <RustOpaqueMoi<
+                flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ChatController>,
+            >>::sse_decode(&mut deserializer);
+            let api_id = <String>::sse_decode(&mut deserializer);
+            deserializer.end();
+            move |context| async move {
+                transform_result_sse::<_, crate::api::types::ChatError>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, true,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref_mut().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let mut api_that_guard = api_that_guard.unwrap();
+                        let output_ok = crate::api::chat_controller::ChatController::get_image(
+                            &mut *api_that_guard,
+                            &api_id,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
+        },
+    )
+}
 fn wire__crate__api__chat_controller__ChatController_get_me_impl(
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
@@ -1172,8 +1232,10 @@ fn wire__crate__api__chat_controller__ChatController_update_me_impl(
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ChatController>,
             >>::sse_decode(&mut deserializer);
             let api_me = <crate::api::types::Me>::sse_decode(&mut deserializer);
+            let api_toggle_sharing = <bool>::sse_decode(&mut deserializer);
             let api_profile_photo = <Option<Vec<u8>>>::sse_decode(&mut deserializer);
-            let api_gallery_photos = <Option<Vec<Vec<u8>>>>::sse_decode(&mut deserializer);
+            let api_gallery_photos =
+                <Option<Vec<(Option<Vec<u8>>, String)>>>::sse_decode(&mut deserializer);
             deserializer.end();
             move |context| async move {
                 transform_result_sse::<_, crate::api::types::ChatError>(
@@ -1198,6 +1260,7 @@ fn wire__crate__api__chat_controller__ChatController_update_me_impl(
                         let output_ok = crate::api::chat_controller::ChatController::update_me(
                             &mut *api_that_guard,
                             api_me,
+                            api_toggle_sharing,
                             api_profile_photo,
                             api_gallery_photos,
                         )
@@ -2499,18 +2562,6 @@ impl SseDecode for Vec<crate::api::types::Group> {
     }
 }
 
-impl SseDecode for Vec<Vec<u8>> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
-        let mut len_ = <i32>::sse_decode(deserializer);
-        let mut ans_ = vec![];
-        for idx_ in 0..len_ {
-            ans_.push(<Vec<u8>>::sse_decode(deserializer));
-        }
-        return ans_;
-    }
-}
-
 impl SseDecode for Vec<crate::api::types::PollOption> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2559,6 +2610,18 @@ impl SseDecode for Vec<crate::api::types::Reaction> {
     }
 }
 
+impl SseDecode for Vec<(Option<Vec<u8>>, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut len_ = <i32>::sse_decode(deserializer);
+        let mut ans_ = vec![];
+        for idx_ in 0..len_ {
+            ans_.push(<(Option<Vec<u8>>, String)>::sse_decode(deserializer));
+        }
+        return ans_;
+    }
+}
+
 impl SseDecode for crate::api::types::Me {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
@@ -2573,8 +2636,8 @@ impl SseDecode for crate::api::types::Me {
         let mut var_locale = <String>::sse_decode(deserializer);
         let mut var_createdAt = <i64>::sse_decode(deserializer);
         let mut var_updatedAt = <i64>::sse_decode(deserializer);
-        let mut var_shareUrl = <String>::sse_decode(deserializer);
-        let mut var_shareQrCodeUrl = <String>::sse_decode(deserializer);
+        let mut var_shareUrl = <Option<String>>::sse_decode(deserializer);
+        let mut var_shareQrCodeUrl = <Option<String>>::sse_decode(deserializer);
         return crate::api::types::Me {
             id: var_id,
             name: var_name,
@@ -2604,6 +2667,7 @@ impl SseDecode for crate::api::types::MeDeltaState {
         let mut var_bioChange = <bool>::sse_decode(deserializer);
         let mut var_songChange = <bool>::sse_decode(deserializer);
         let mut var_photosChange = <bool>::sse_decode(deserializer);
+        let mut var_shareChange = <bool>::sse_decode(deserializer);
         let mut var_valid = <bool>::sse_decode(deserializer);
         let mut var_validName = <bool>::sse_decode(deserializer);
         let mut var_validNumber = <bool>::sse_decode(deserializer);
@@ -2619,6 +2683,7 @@ impl SseDecode for crate::api::types::MeDeltaState {
             bio_change: var_bioChange,
             song_change: var_songChange,
             photos_change: var_photosChange,
+            share_change: var_shareChange,
             valid: var_valid,
             valid_name: var_validName,
             valid_number: var_validNumber,
@@ -2738,22 +2803,22 @@ impl SseDecode for Option<Vec<String>> {
     }
 }
 
-impl SseDecode for Option<Vec<Vec<u8>>> {
+impl SseDecode for Option<Vec<u8>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
-            return Some(<Vec<Vec<u8>>>::sse_decode(deserializer));
+            return Some(<Vec<u8>>::sse_decode(deserializer));
         } else {
             return None;
         }
     }
 }
 
-impl SseDecode for Option<Vec<u8>> {
+impl SseDecode for Option<Vec<(Option<Vec<u8>>, String)>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
         if (<bool>::sse_decode(deserializer)) {
-            return Some(<Vec<u8>>::sse_decode(deserializer));
+            return Some(<Vec<(Option<Vec<u8>>, String)>>::sse_decode(deserializer));
         } else {
             return None;
         }
@@ -2817,6 +2882,15 @@ impl SseDecode for crate::api::types::Reaction {
             unicode: var_unicode,
             user_ids: var_userIds,
         };
+    }
+}
+
+impl SseDecode for (Option<Vec<u8>>, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_decode(deserializer: &mut flutter_rust_bridge::for_generated::SseDeserializer) -> Self {
+        let mut var_field0 = <Option<Vec<u8>>>::sse_decode(deserializer);
+        let mut var_field1 = <String>::sse_decode(deserializer);
+        return (var_field0, var_field1);
     }
 }
 
@@ -2944,63 +3018,69 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
-        15 => wire__crate__api__chat_controller__ChatController_load_groups_impl(
+        14 => wire__crate__api__chat_controller__ChatController_get_image_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        16 => wire__crate__api__chat_controller__ChatController_load_me_impl(
+        16 => wire__crate__api__chat_controller__ChatController_load_groups_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        18 => wire__crate__api__chat_controller__ChatController_login_impl(
+        17 => wire__crate__api__chat_controller__ChatController_load_me_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        20 => wire__crate__api__chat_controller__ChatController_new_impl(
+        19 => wire__crate__api__chat_controller__ChatController_login_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        21 => wire__crate__api__chat_controller__ChatController_refresh_all_impl(
+        21 => wire__crate__api__chat_controller__ChatController_new_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        23 => wire__crate__api__chat_controller__ChatController_update_me_impl(
+        22 => wire__crate__api__chat_controller__ChatController_refresh_all_impl(
             port,
             ptr,
             rust_vec_len,
             data_len,
         ),
-        24 => wire__crate__api__types__chat_default_impl(port, ptr, rust_vec_len, data_len),
-        25 => wire__crate__api__types__chat_error_new_impl(port, ptr, rust_vec_len, data_len),
-        26 => wire__crate__api__types__empty_unicode_impl(port, ptr, rust_vec_len, data_len),
-        27 => wire__crate__api__types__event_default_impl(port, ptr, rust_vec_len, data_len),
-        28 => {
+        24 => wire__crate__api__chat_controller__ChatController_update_me_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
+        25 => wire__crate__api__types__chat_default_impl(port, ptr, rust_vec_len, data_len),
+        26 => wire__crate__api__types__chat_error_new_impl(port, ptr, rust_vec_len, data_len),
+        27 => wire__crate__api__types__empty_unicode_impl(port, ptr, rust_vec_len, data_len),
+        28 => wire__crate__api__types__event_default_impl(port, ptr, rust_vec_len, data_len),
+        29 => {
             wire__crate__api__types__event_location_default_impl(port, ptr, rust_vec_len, data_len)
         }
-        29 => wire__crate__api__types__event_new_impl(port, ptr, rust_vec_len, data_len),
-        30 => wire__crate__api__types__group_default_impl(port, ptr, rust_vec_len, data_len),
-        32 => wire__crate__api__types__me_default_impl(port, ptr, rust_vec_len, data_len),
-        42 => wire__crate__api__types__member_default_impl(port, ptr, rust_vec_len, data_len),
-        43 => wire__crate__api__types__message_default_impl(port, ptr, rust_vec_len, data_len),
-        44 => wire__crate__api__types__message_new_impl(port, ptr, rust_vec_len, data_len),
-        45 => wire__crate__api__types__poll_default_impl(port, ptr, rust_vec_len, data_len),
-        46 => wire__crate__api__types__poll_new_impl(port, ptr, rust_vec_len, data_len),
-        47 => wire__crate__api__types__poll_option_default_impl(port, ptr, rust_vec_len, data_len),
-        48 => wire__crate__api__types__poll_option_new_impl(port, ptr, rust_vec_len, data_len),
-        49 => wire__crate__api__types__reaction_default_impl(port, ptr, rust_vec_len, data_len),
-        50 => wire__crate__api__types__user_default_impl(port, ptr, rust_vec_len, data_len),
-        51 => wire__crate__api__types__visibility_default_impl(port, ptr, rust_vec_len, data_len),
-        52 => wire__crate__api__types__voting_type_default_impl(port, ptr, rust_vec_len, data_len),
+        30 => wire__crate__api__types__event_new_impl(port, ptr, rust_vec_len, data_len),
+        31 => wire__crate__api__types__group_default_impl(port, ptr, rust_vec_len, data_len),
+        33 => wire__crate__api__types__me_default_impl(port, ptr, rust_vec_len, data_len),
+        43 => wire__crate__api__types__member_default_impl(port, ptr, rust_vec_len, data_len),
+        44 => wire__crate__api__types__message_default_impl(port, ptr, rust_vec_len, data_len),
+        45 => wire__crate__api__types__message_new_impl(port, ptr, rust_vec_len, data_len),
+        46 => wire__crate__api__types__poll_default_impl(port, ptr, rust_vec_len, data_len),
+        47 => wire__crate__api__types__poll_new_impl(port, ptr, rust_vec_len, data_len),
+        48 => wire__crate__api__types__poll_option_default_impl(port, ptr, rust_vec_len, data_len),
+        49 => wire__crate__api__types__poll_option_new_impl(port, ptr, rust_vec_len, data_len),
+        50 => wire__crate__api__types__reaction_default_impl(port, ptr, rust_vec_len, data_len),
+        51 => wire__crate__api__types__user_default_impl(port, ptr, rust_vec_len, data_len),
+        52 => wire__crate__api__types__visibility_default_impl(port, ptr, rust_vec_len, data_len),
+        53 => wire__crate__api__types__voting_type_default_impl(port, ptr, rust_vec_len, data_len),
         _ => unreachable!(),
     }
 }
@@ -3023,20 +3103,20 @@ fn pde_ffi_dispatcher_sync_impl(
 10 => wire__crate__api__chat_controller__ChatController_auto_accessor_set_online_impl(ptr, rust_vec_len, data_len),
 11 => wire__crate__api__chat_controller__ChatController_auto_accessor_set_state_impl(ptr, rust_vec_len, data_len),
 13 => wire__crate__api__chat_controller__ChatController_get_groups_impl(ptr, rust_vec_len, data_len),
-14 => wire__crate__api__chat_controller__ChatController_get_me_impl(ptr, rust_vec_len, data_len),
-17 => wire__crate__api__chat_controller__ChatController_logged_in_impl(ptr, rust_vec_len, data_len),
-19 => wire__crate__api__chat_controller__ChatController_logout_impl(ptr, rust_vec_len, data_len),
-22 => wire__crate__api__chat_controller__ChatController_shrink_db_impl(ptr, rust_vec_len, data_len),
-31 => wire__crate__api__types__me_compare_delta_impl(ptr, rust_vec_len, data_len),
-33 => wire__crate__api__types__me_equals_impl(ptr, rust_vec_len, data_len),
-34 => wire__crate__api__types__me_initials_impl(ptr, rust_vec_len, data_len),
-35 => wire__crate__api__types__me_number_impl(ptr, rust_vec_len, data_len),
-36 => wire__crate__api__types__me_valid_impl(ptr, rust_vec_len, data_len),
-37 => wire__crate__api__types__me_valid_email_impl(ptr, rust_vec_len, data_len),
-38 => wire__crate__api__types__me_valid_name_impl(ptr, rust_vec_len, data_len),
-39 => wire__crate__api__types__me_valid_number_impl(ptr, rust_vec_len, data_len),
-40 => wire__crate__api__types__me_valid_photos_impl(ptr, rust_vec_len, data_len),
-41 => wire__crate__api__types__me_valid_song_impl(ptr, rust_vec_len, data_len),
+15 => wire__crate__api__chat_controller__ChatController_get_me_impl(ptr, rust_vec_len, data_len),
+18 => wire__crate__api__chat_controller__ChatController_logged_in_impl(ptr, rust_vec_len, data_len),
+20 => wire__crate__api__chat_controller__ChatController_logout_impl(ptr, rust_vec_len, data_len),
+23 => wire__crate__api__chat_controller__ChatController_shrink_db_impl(ptr, rust_vec_len, data_len),
+32 => wire__crate__api__types__me_compare_delta_impl(ptr, rust_vec_len, data_len),
+34 => wire__crate__api__types__me_equals_impl(ptr, rust_vec_len, data_len),
+35 => wire__crate__api__types__me_initials_impl(ptr, rust_vec_len, data_len),
+36 => wire__crate__api__types__me_number_impl(ptr, rust_vec_len, data_len),
+37 => wire__crate__api__types__me_valid_impl(ptr, rust_vec_len, data_len),
+38 => wire__crate__api__types__me_valid_email_impl(ptr, rust_vec_len, data_len),
+39 => wire__crate__api__types__me_valid_name_impl(ptr, rust_vec_len, data_len),
+40 => wire__crate__api__types__me_valid_number_impl(ptr, rust_vec_len, data_len),
+41 => wire__crate__api__types__me_valid_photos_impl(ptr, rust_vec_len, data_len),
+42 => wire__crate__api__types__me_valid_song_impl(ptr, rust_vec_len, data_len),
                         _ => unreachable!(),
                     }
 }
@@ -3273,6 +3353,7 @@ impl flutter_rust_bridge::IntoDart for crate::api::types::MeDeltaState {
             self.bio_change.into_into_dart().into_dart(),
             self.song_change.into_into_dart().into_dart(),
             self.photos_change.into_into_dart().into_dart(),
+            self.share_change.into_into_dart().into_dart(),
             self.valid.into_into_dart().into_dart(),
             self.valid_name.into_into_dart().into_dart(),
             self.valid_number.into_into_dart().into_dart(),
@@ -3723,16 +3804,6 @@ impl SseEncode for Vec<crate::api::types::Group> {
     }
 }
 
-impl SseEncode for Vec<Vec<u8>> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <i32>::sse_encode(self.len() as _, serializer);
-        for item in self {
-            <Vec<u8>>::sse_encode(item, serializer);
-        }
-    }
-}
-
 impl SseEncode for Vec<crate::api::types::PollOption> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3773,6 +3844,16 @@ impl SseEncode for Vec<crate::api::types::Reaction> {
     }
 }
 
+impl SseEncode for Vec<(Option<Vec<u8>>, String)> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <i32>::sse_encode(self.len() as _, serializer);
+        for item in self {
+            <(Option<Vec<u8>>, String)>::sse_encode(item, serializer);
+        }
+    }
+}
+
 impl SseEncode for crate::api::types::Me {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
@@ -3787,8 +3868,8 @@ impl SseEncode for crate::api::types::Me {
         <String>::sse_encode(self.locale, serializer);
         <i64>::sse_encode(self.created_at, serializer);
         <i64>::sse_encode(self.updated_at, serializer);
-        <String>::sse_encode(self.share_url, serializer);
-        <String>::sse_encode(self.share_qr_code_url, serializer);
+        <Option<String>>::sse_encode(self.share_url, serializer);
+        <Option<String>>::sse_encode(self.share_qr_code_url, serializer);
     }
 }
 
@@ -3803,6 +3884,7 @@ impl SseEncode for crate::api::types::MeDeltaState {
         <bool>::sse_encode(self.bio_change, serializer);
         <bool>::sse_encode(self.song_change, serializer);
         <bool>::sse_encode(self.photos_change, serializer);
+        <bool>::sse_encode(self.share_change, serializer);
         <bool>::sse_encode(self.valid, serializer);
         <bool>::sse_encode(self.valid_name, serializer);
         <bool>::sse_encode(self.valid_number, serializer);
@@ -3893,22 +3975,22 @@ impl SseEncode for Option<Vec<String>> {
     }
 }
 
-impl SseEncode for Option<Vec<Vec<u8>>> {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
-        <bool>::sse_encode(self.is_some(), serializer);
-        if let Some(value) = self {
-            <Vec<Vec<u8>>>::sse_encode(value, serializer);
-        }
-    }
-}
-
 impl SseEncode for Option<Vec<u8>> {
     // Codec=Sse (Serialization based), see doc to use other codecs
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <bool>::sse_encode(self.is_some(), serializer);
         if let Some(value) = self {
             <Vec<u8>>::sse_encode(value, serializer);
+        }
+    }
+}
+
+impl SseEncode for Option<Vec<(Option<Vec<u8>>, String)>> {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <bool>::sse_encode(self.is_some(), serializer);
+        if let Some(value) = self {
+            <Vec<(Option<Vec<u8>>, String)>>::sse_encode(value, serializer);
         }
     }
 }
@@ -3946,6 +4028,14 @@ impl SseEncode for crate::api::types::Reaction {
     fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
         <String>::sse_encode(self.unicode, serializer);
         <Vec<String>>::sse_encode(self.user_ids, serializer);
+    }
+}
+
+impl SseEncode for (Option<Vec<u8>>, String) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    fn sse_encode(self, serializer: &mut flutter_rust_bridge::for_generated::SseSerializer) {
+        <Option<Vec<u8>>>::sse_encode(self.0, serializer);
+        <String>::sse_encode(self.1, serializer);
     }
 }
 

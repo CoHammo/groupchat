@@ -1,11 +1,14 @@
+use flate2::Compression;
+use flate2::read::GzDecoder;
+use flate2::write::ZlibEncoder;
 use flutter_rust_bridge::frb;
 use heed::{BytesDecode, BytesEncode};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::borrow::Cow;
-use std::collections::HashMap;
 use std::fmt::Debug;
+use std::io::prelude::*;
 use std::sync::LazyLock;
 use uuid::Uuid;
 
@@ -76,11 +79,14 @@ pub struct Me {
     pub song_url: Option<String>,
     #[frb(non_final)]
     pub photo_urls: Vec<String>,
+    #[frb(non_final)]
     pub locale: String,
     pub created_at: i64,
     pub updated_at: i64,
-    pub share_url: String,
-    pub share_qr_code_url: String,
+    #[frb(non_final)]
+    pub share_url: Option<String>,
+    #[frb(non_final)]
+    pub share_qr_code_url: Option<String>,
 }
 
 #[derive(Debug)]
@@ -93,6 +99,7 @@ pub struct MeDeltaState {
     pub bio_change: bool,
     pub song_change: bool,
     pub photos_change: bool,
+    pub share_change: bool,
 
     pub valid: bool,
     pub valid_name: bool,
@@ -112,6 +119,8 @@ impl Me {
         let bio_change = self.bio != delta.bio;
         let song_change = self.song_url != delta.song_url;
         let photos_change = self.photo_urls != delta.photo_urls;
+        let share_change =
+            self.share_url != delta.share_url && self.share_qr_code_url != delta.share_qr_code_url;
 
         let valid_name = delta.valid_name();
         let valid_number = delta.valid_number();
@@ -126,7 +135,8 @@ impl Me {
                 || email_change
                 || bio_change
                 || song_change
-                || photos_change,
+                || photos_change
+                || share_change,
             name_change,
             image_change,
             number_change,
@@ -134,6 +144,7 @@ impl Me {
             bio_change,
             song_change,
             photos_change,
+            share_change,
             valid: valid_name && valid_number && valid_email && valid_song && valid_photos,
             valid_name,
             valid_number,
@@ -696,6 +707,31 @@ pub struct EventLocation {
     pub address: String,
     pub lat: f64,
     pub lng: f64,
+}
+
+#[derive(Debug)]
+pub struct DbImage(pub Vec<u8>);
+
+#[frb(ignore)]
+impl<'a> BytesEncode<'a> for DbImage {
+    type EItem = DbImage;
+
+    fn bytes_encode(image: &'a Self::EItem) -> Result<Cow<'a, [u8]>, heed::BoxedError> {
+        let mut compressed: Vec<u8> = Vec::new();
+        zstd::stream::copy_encode(image.0.as_slice(), &mut compressed, 0)?;
+        Ok(Cow::Owned(compressed))
+    }
+}
+
+#[frb(ignore)]
+impl<'a> BytesDecode<'a> for DbImage {
+    type DItem = DbImage;
+
+    fn bytes_decode(bytes: &'a [u8]) -> Result<Self::DItem, heed::BoxedError> {
+        let mut image: Vec<u8> = Vec::new();
+        zstd::stream::copy_decode(bytes, &mut image)?;
+        Ok(DbImage(image))
+    }
 }
 
 #[frb(ignore)]

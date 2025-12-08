@@ -75,6 +75,36 @@ impl Api {
         }
     }
 
+    pub async fn toggle_sharing_me(
+        &self,
+        enable: bool,
+    ) -> Result<(Option<String>, Option<String>), ChatError> {
+        let status: &str;
+        if enable {
+            status = "enable";
+        } else {
+            status = "disable";
+        }
+        let res = self
+            .api
+            .post(format!("https://api.groupme.com/v3/users/features/share"))
+            .json(&json!({"status": status}))
+            .send()
+            .await?;
+
+        if res.status() == 200 {
+            let json = &res.json::<Value>().await?["response"];
+            let url = json["share_url"].as_str().map(|s| s.to_string());
+            let qr_code = json["share_qr_code_url"].as_str().map(|s| s.to_string());
+            Ok((url, qr_code))
+        } else {
+            Err(ChatError::new(
+                &format!("API get_me: {}", res.status()),
+                Some(res.text().await?),
+            ))
+        }
+    }
+
     pub async fn get_user(&self, user_id: &str) -> Result<User, ChatError> {
         let res = self
             .api
@@ -626,6 +656,20 @@ impl Api {
         } else {
             Err(ChatError::new(
                 &format!("API upload_image: {}", res.status()),
+                Some(res.text().await?),
+            ))
+        }
+    }
+
+    pub async fn get_image(&self, url: &str) -> Result<Vec<u8>, ChatError> {
+        let res = self.api.get(url).send().await?;
+
+        if res.status() == 200 {
+            let bytes = res.bytes().await?.to_vec();
+            Ok(bytes)
+        } else {
+            Err(ChatError::new(
+                &format!("API get_image: {}", res.status()),
                 Some(res.text().await?),
             ))
         }
