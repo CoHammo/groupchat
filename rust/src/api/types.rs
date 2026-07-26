@@ -1,6 +1,3 @@
-use flate2::Compression;
-use flate2::read::GzDecoder;
-use flate2::write::ZlibEncoder;
 use flutter_rust_bridge::frb;
 use heed::{BytesDecode, BytesEncode};
 use regex::Regex;
@@ -8,7 +5,6 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::borrow::Cow;
 use std::fmt::Debug;
-use std::io::prelude::*;
 use std::sync::LazyLock;
 use uuid::Uuid;
 

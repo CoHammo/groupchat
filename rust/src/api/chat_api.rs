@@ -105,6 +105,64 @@ impl Api {
         }
     }
 
+    pub async fn update_password(
+        &self,
+        new_password: &str,
+        current_password: &str,
+    ) -> Result<bool, ChatError> {
+        let res = self
+            .api
+            .post(format!("https://api.groupme.com/v3/users/features/share"))
+            .json(&json!({"password": new_password, "password_current": current_password}))
+            .send()
+            .await?;
+
+        if res.status() == 201 {
+            Ok(true)
+        } else {
+            Err(ChatError::new(
+                &format!("API update_password: {}", res.status()),
+                Some(res.text().await?),
+            ))
+        }
+    }
+
+    pub async fn get_tokens(&self) -> Result<bool, ChatError> {
+        let res = self
+            .api
+            .get(format!("https://v2.groupme.com/access_tokens"))
+            .send()
+            .await?;
+
+        if res.status() == 200 {
+            let json = &res.json::<Value>().await?;
+            println!("{json:#?}");
+            Ok(true)
+        } else {
+            Err(ChatError::new(
+                &format!("API get_tokens: {}", res.status()),
+                Some(res.text().await?),
+            ))
+        }
+    }
+
+    pub async fn logout(&self) -> Result<bool, ChatError> {
+        let res = self
+            .api
+            .post("https://v2.groupme.com/access_tokens/current/destroy")
+            .send()
+            .await?;
+
+        if res.status() == 200 {
+            Ok(true)
+        } else {
+            Err(ChatError::new(
+                &format!("API logout: {}", res.status()),
+                Some(res.text().await?),
+            ))
+        }
+    }
+
     pub async fn get_user(&self, user_id: &str) -> Result<User, ChatError> {
         let res = self
             .api

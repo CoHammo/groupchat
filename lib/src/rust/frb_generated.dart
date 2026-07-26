@@ -154,7 +154,7 @@ abstract class RustLibApi extends BaseApi {
     required ChatController that,
   });
 
-  void crateApiChatControllerChatControllerLogout({
+  Future<void> crateApiChatControllerChatControllerLogout({
     required ChatController that,
   });
 
@@ -945,18 +945,23 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  void crateApiChatControllerChatControllerLogout({
+  Future<void> crateApiChatControllerChatControllerLogout({
     required ChatController that,
   }) {
-    return handler.executeSync(
-      SyncTask(
-        callFfi: () {
+    return handler.executeNormal(
+      NormalTask(
+        callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
           sse_encode_Auto_RefMut_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerChatController(
             that,
             serializer,
           );
-          return pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 20)!;
+          pdeCallFfi(
+            generalizedFrbRustBinding,
+            serializer,
+            funcId: 20,
+            port: port_,
+          );
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
@@ -4262,7 +4267,7 @@ class ChatControllerImpl extends RustOpaque implements ChatController {
   Future<void> login() => RustLib.instance.api
       .crateApiChatControllerChatControllerLogin(that: this);
 
-  void logout() => RustLib.instance.api
+  Future<void> logout() => RustLib.instance.api
       .crateApiChatControllerChatControllerLogout(that: this);
 
   Future<void> refreshAll() => RustLib.instance.api

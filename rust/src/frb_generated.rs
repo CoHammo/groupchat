@@ -1012,15 +1012,16 @@ fn wire__crate__api__chat_controller__ChatController_login_impl(
     )
 }
 fn wire__crate__api__chat_controller__ChatController_logout_impl(
+    port_: flutter_rust_bridge::for_generated::MessagePort,
     ptr_: flutter_rust_bridge::for_generated::PlatformGeneralizedUint8ListPtr,
     rust_vec_len_: i32,
     data_len_: i32,
-) -> flutter_rust_bridge::for_generated::WireSyncRust2DartSse {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap_sync::<flutter_rust_bridge::for_generated::SseCodec, _>(
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap_async::<flutter_rust_bridge::for_generated::SseCodec, _, _, _>(
         flutter_rust_bridge::for_generated::TaskInfo {
             debug_name: "ChatController_logout",
-            port: None,
-            mode: flutter_rust_bridge::for_generated::FfiCallMode::Sync,
+            port: Some(port_),
+            mode: flutter_rust_bridge::for_generated::FfiCallMode::Normal,
         },
         move || {
             let message = unsafe {
@@ -1036,25 +1037,35 @@ fn wire__crate__api__chat_controller__ChatController_logout_impl(
                 flutter_rust_bridge::for_generated::RustAutoOpaqueInner<ChatController>,
             >>::sse_decode(&mut deserializer);
             deserializer.end();
-            transform_result_sse::<_, crate::api::types::ChatError>((move || {
-                let mut api_that_guard = None;
-                let decode_indices_ =
-                    flutter_rust_bridge::for_generated::lockable_compute_decode_order(vec![
-                        flutter_rust_bridge::for_generated::LockableOrderInfo::new(
-                            &api_that, 0, true,
-                        ),
-                    ]);
-                for i in decode_indices_ {
-                    match i {
-                        0 => api_that_guard = Some(api_that.lockable_decode_sync_ref_mut()),
-                        _ => unreachable!(),
-                    }
-                }
-                let mut api_that_guard = api_that_guard.unwrap();
-                let output_ok =
-                    crate::api::chat_controller::ChatController::logout(&mut *api_that_guard)?;
-                Ok(output_ok)
-            })())
+            move |context| async move {
+                transform_result_sse::<_, crate::api::types::ChatError>(
+                    (move || async move {
+                        let mut api_that_guard = None;
+                        let decode_indices_ =
+                            flutter_rust_bridge::for_generated::lockable_compute_decode_order(
+                                vec![flutter_rust_bridge::for_generated::LockableOrderInfo::new(
+                                    &api_that, 0, true,
+                                )],
+                            );
+                        for i in decode_indices_ {
+                            match i {
+                                0 => {
+                                    api_that_guard =
+                                        Some(api_that.lockable_decode_async_ref_mut().await)
+                                }
+                                _ => unreachable!(),
+                            }
+                        }
+                        let mut api_that_guard = api_that_guard.unwrap();
+                        let output_ok = crate::api::chat_controller::ChatController::logout(
+                            &mut *api_that_guard,
+                        )
+                        .await?;
+                        Ok(output_ok)
+                    })()
+                    .await,
+                )
+            }
         },
     )
 }
@@ -3042,6 +3053,12 @@ fn pde_ffi_dispatcher_primary_impl(
             rust_vec_len,
             data_len,
         ),
+        20 => wire__crate__api__chat_controller__ChatController_logout_impl(
+            port,
+            ptr,
+            rust_vec_len,
+            data_len,
+        ),
         21 => wire__crate__api__chat_controller__ChatController_new_impl(
             port,
             ptr,
@@ -3105,7 +3122,6 @@ fn pde_ffi_dispatcher_sync_impl(
 13 => wire__crate__api__chat_controller__ChatController_get_groups_impl(ptr, rust_vec_len, data_len),
 15 => wire__crate__api__chat_controller__ChatController_get_me_impl(ptr, rust_vec_len, data_len),
 18 => wire__crate__api__chat_controller__ChatController_logged_in_impl(ptr, rust_vec_len, data_len),
-20 => wire__crate__api__chat_controller__ChatController_logout_impl(ptr, rust_vec_len, data_len),
 23 => wire__crate__api__chat_controller__ChatController_shrink_db_impl(ptr, rust_vec_len, data_len),
 32 => wire__crate__api__types__me_compare_delta_impl(ptr, rust_vec_len, data_len),
 34 => wire__crate__api__types__me_equals_impl(ptr, rust_vec_len, data_len),

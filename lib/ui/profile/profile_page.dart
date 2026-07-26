@@ -92,9 +92,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           IconButton(
             icon: Icon(Icons.logout_outlined),
-            onPressed: () {
-              Navigator.pop(context);
-              setState(() => widget.controller.logout());
+            onPressed: () async {
+              await widget.controller.logout();
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
             },
           ),
         ],

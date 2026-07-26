@@ -56,7 +56,7 @@ abstract class ChatController implements RustOpaqueInterface {
 
   Future<void> login();
 
-  void logout();
+  Future<void> logout();
 
   // HINT: Make it `#[frb(sync)]` to let it become the default constructor of Dart class.
   static Future<ChatController> newInstance({

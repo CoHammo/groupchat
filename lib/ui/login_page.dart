@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
                 "https://oauth.groupme.com/oauth/authorize?client_id=AN4x8tZwp28XvFE67ddPWGy2FJVrXl5uhmPAr2ccHytpClKL",
                 // "https://oauth.groupme.com/oauth/authorize?client_id=2wEgqNGf3t8TRngva1sqhc9JJbMoS2It19qhqHCiSul00ky6",
               ),
-              mode: LaunchMode.inAppWebView,
+              mode: LaunchMode.externalApplication,
             );
           },
           child: Text("Login"),

@@ -112,11 +112,13 @@ impl ChatController {
         Ok(())
     }
 
-    #[frb(sync)]
-    pub fn logout(&mut self) -> Result<(), ChatError> {
-        self.db.clear_all()?;
+    pub async fn logout(&mut self) -> Result<(), ChatError> {
+        if let Some(api) = &self.api {
+            api.logout().await?;
+        }
         self.api = None;
-        self.state.blocking_read().notify(StateChange::Logout)?;
+        self.db.clear_all()?;
+        self.state.read().await.notify(StateChange::Logout)?;
         Ok(())
     }
 
